@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Choosen Alliance Color": "String Chooser",
       "/SmartDashboard/Chosen Autonomous Path": "String Chooser"
     }
   },

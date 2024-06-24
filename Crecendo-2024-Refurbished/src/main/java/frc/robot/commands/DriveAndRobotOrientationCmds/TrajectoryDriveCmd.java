@@ -17,13 +17,15 @@ import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 import frc.robot.CatzConstants;
-import frc.robot.CatzConstants.TrajectoryConstants;
 
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryDriveCmd extends Command {
+
+    public static final double ALLOWABLE_POSE_ERROR = 0.05;
+    public static final double ALLOWABLE_ROTATION_ERROR = 5;
 
     private final HolonomicDriveController hocontroller;
     private CatzDrivetrain m_driveTrain;
@@ -69,12 +71,12 @@ public class TrajectoryDriveCmd extends Command {
         timer.start();
 
 
-        //flip auton path to mirrored red side if we choose red alliance 
+        // Flip auton path to mirrored red side if we choose red alliance 
         if(CatzConstants.choosenAllianceColor == CatzConstants.AllianceColor.Red) {
             path = path.flipPath();
         }
 
-        //create pathplanner trajectory
+        // Create pathplanner trajectory
         this.trajectory = new PathPlannerTrajectory(
                                 path, 
                                 DriveConstants.
@@ -92,7 +94,7 @@ public class TrajectoryDriveCmd extends Command {
 
             double currentTime = this.timer.get();
     
-            //getters from pathplanner and current robot pose
+            // Getters from pathplanner and current robot pose
             PathPlannerTrajectory.State goal = trajectory.sample(currentTime);
             Rotation2d targetOrientation     = goal.targetHolonomicRotation;
             Pose2d currentPose               = CatzRobotTracker.getInstance().getEstimatedPose();
@@ -158,9 +160,9 @@ public class TrajectoryDriveCmd extends Command {
         double yError =        Math.abs(desiredPosY - currentPosY);
         double rotationError = Math.abs(desiredRotation - currentRotation);
 
-        atTarget = (xError < TrajectoryConstants.ALLOWABLE_POSE_ERROR && 
-                    yError < TrajectoryConstants.ALLOWABLE_POSE_ERROR && 
-                    rotationError < TrajectoryConstants.ALLOWABLE_ROTATION_ERROR);
+        atTarget = (xError < ALLOWABLE_POSE_ERROR && 
+                    yError < ALLOWABLE_POSE_ERROR && 
+                    rotationError < ALLOWABLE_ROTATION_ERROR);
 
         return atTarget || timer.hasElapsed(pathTimeOut);
 

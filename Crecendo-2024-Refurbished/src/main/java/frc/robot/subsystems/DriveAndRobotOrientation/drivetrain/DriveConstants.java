@@ -24,7 +24,7 @@ public class DriveConstants {
               .robotWidthY(Units.inchesToMeters(23.5))
               .bumperWidthX(Units.inchesToMeters(37))
               .bumperWidthY(Units.inchesToMeters(33))
-              .maxLinearVelocity(Units.feetToMeters(15.0))
+              .maxLinearVelocity(Units.feetToMeters(17.0))
               .maxLinearAcceleration(Units.feetToMeters(75.0))
               .maxAngularVelocity(12.0)
               .maxAngularAcceleration(6.0)
@@ -44,41 +44,41 @@ public class DriveConstants {
 
 
     public static final ModuleGainsAndRatios moduleGainsAndRatios =
-    switch (CatzConstants.getRobot()) {
-    case SN1 ->
-        new ModuleGainsAndRatios(
-            5.0,
-            0.0,
-            1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
-            35.0,
-            0.0,
-            4000.0,
-            50.0,
-            Mk4iReductions.L2_PLUS.reduction,
-            Mk4iReductions.TURN.reduction);
-    case SN2 ->
-        new ModuleGainsAndRatios(
-            0.1,
-            0.13,
-            0.0,
-            0.1,
-            0.0,
-            10.0,
-            0.0,
-            Mk4iReductions.L2_PLUS.reduction,
-            Mk4iReductions.TURN.reduction);
-    case SIM ->
-        new ModuleGainsAndRatios(
-            0.014,
-            0.134,
-            0.0,
-            0.1,
-            0.0,
-            10.0,
-            0.0,
-            Mk4iReductions.L3.reduction,
-            Mk4iReductions.TURN.reduction);
-    };
+        switch (CatzConstants.getRobot()) {
+            case SN1 ->
+                new ModuleGainsAndRatios(
+                    5.0,
+                    0.0,
+                    1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
+                    35.0,
+                    0.0,
+                    4000.0,
+                    50.0,
+                    Mk4iReductions.L2_PLUS.reduction,
+                    Mk4iReductions.TURN.reduction);
+            case SN2 ->
+                new ModuleGainsAndRatios(
+                    0.1,
+                    0.13,
+                    0.0,
+                    0.1,
+                    0.0,
+                    10.0,
+                    0.0,
+                    Mk4iReductions.L2_PLUS.reduction,
+                    Mk4iReductions.TURN.reduction);
+            case SIM ->
+                new ModuleGainsAndRatios(
+                    0.014,
+                    0.134,
+                    0.0,
+                    0.1,
+                    0.0,
+                    10.0,
+                    0.0,
+                    Mk4iReductions.L2_PLUS.reduction,
+                    Mk4iReductions.TURN.reduction);
+        };
 
     public static final ModuleConfig[] moduleConfigs =
         switch (CatzConstants.getRobot()) {

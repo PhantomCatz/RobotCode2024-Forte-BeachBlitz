@@ -90,19 +90,6 @@ public final class CatzConstants {
 
   }
 
-  public static final class VisionConstants {
-    public static final double SPEAKER_HOOD_HEIGHT = 83.0;
-    public static final double LOWEST_DISTANCE = Units.feetToMeters(10.0);
-    public static final Transform3d LIMELIGHT_OFFSET = new Transform3d(-Units.inchesToMeters(12),
-        -Units.inchesToMeters(9), Units.inchesToMeters(20), new Rotation3d(0.0, 0.0, 180.0));
-    public static final Transform3d LIMELIGHT_OFFSET_2 = new Transform3d(0.0, 0.0, 0.0, null);
-  }
-
-  public static final class TrajectoryConstants {
-    public static final double ALLOWABLE_POSE_ERROR = 0.05;
-    public static final double ALLOWABLE_ROTATION_ERROR = 5;
-  }
-
   // COLOR CONSTANTS::
   public static final class CatzColorConstants {
     public static final Color PHANTOM_SAPPHIRE = new Color(15, 25, 200);

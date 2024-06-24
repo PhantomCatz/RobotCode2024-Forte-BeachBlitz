@@ -2,7 +2,6 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
 public class CatzMathUtils {

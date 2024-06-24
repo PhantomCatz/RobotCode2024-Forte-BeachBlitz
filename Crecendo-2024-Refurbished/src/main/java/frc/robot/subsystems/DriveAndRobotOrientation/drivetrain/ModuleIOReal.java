@@ -109,20 +109,20 @@ public class ModuleIOReal implements ModuleIO {
         }
 
 
-        inputs.driveMtrVelocity       = DRIVE_MOTOR.getRotorVelocity().getValue();
-        inputs.driveMtrSensorPosition = DRIVE_MOTOR.getRotorPosition().getValue();
-        //inputs.driveAppliedVolts      = DRIVE_MOTOR.getMotorVoltage().getValueAsDouble();
-        inputs.magEncoderValue        = magEnc.get();
+        // inputs.driveMtrVelocity       = DRIVE_MOTOR.getRotorVelocity().getValue();
+        // inputs.driveMtrSensorPosition = DRIVE_MOTOR.getRotorPosition().getValue();
+        // //inputs.driveAppliedVolts      = DRIVE_MOTOR.getMotorVoltage().getValueAsDouble();
+        // inputs.magEncoderValue        = magEnc.get();
 
     }
 
     @Override
-    public void setDriveVelocityIO(double velocity, double feedForward) {
+    public void runDriveVelocityRPSIO(double velocity, double feedForward) {
         DRIVE_MOTOR.setControl(new VelocityDutyCycle(velocity));
     }
 
     @Override
-    public void setDrivePwrPercentIO(double drivePwrPercent) {
+    public void runDrivePwrPercentIO(double drivePwrPercent) {
         DRIVE_MOTOR.setControl(new DutyCycleOut(drivePwrPercent,
                         true,
                         false,
@@ -132,7 +132,7 @@ public class ModuleIOReal implements ModuleIO {
     }
 
     @Override
-    public void setSteerPwrIO(double SteerPwr) {
+    public void runSteerPercentOutputIO(double SteerPwr) {
         STEER_MOTOR.set(SteerPwr);
     }
 
@@ -144,10 +144,6 @@ public class ModuleIOReal implements ModuleIO {
     @Override
     public void setDrvSensorPositionIO(double sensorPos) {
         DRIVE_MOTOR.setPosition(sensorPos);
-    }
-    @Override
-    public void reverseDriveIO(boolean enable) {
-        DRIVE_MOTOR.setInverted(enable);
     }
     
     @Override

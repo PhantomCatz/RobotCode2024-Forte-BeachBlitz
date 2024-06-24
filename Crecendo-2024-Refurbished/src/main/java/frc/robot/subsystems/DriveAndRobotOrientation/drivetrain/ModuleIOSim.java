@@ -45,10 +45,8 @@ public class ModuleIOSim implements ModuleIO {
     driveSim.update(CatzConstants.LOOP_TIME);
     turnSim.update(CatzConstants.LOOP_TIME);
 
-    inputs.drivePositionRads = driveSim.getAngularPositionRad();
-    inputs.driveVelocityRadsPerSec = driveSim.getAngularVelocityRadPerSec();
-    inputs.driveMtrVelocity = driveSim.getAngularVelocityRPM()/60;
-    inputs.driveMtrSensorPosition = driveSim.getAngularPositionRad()/(2*Math.PI);
+    inputs.driveVelocityRPS =   driveSim.getAngularVelocityRPM()/60; //Convert to RPS
+    inputs.drivePositionUnits = driveSim.getAngularPositionRad()/(2*Math.PI);
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.driveSupplyCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
 
@@ -56,16 +54,13 @@ public class ModuleIOSim implements ModuleIO {
         new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
     inputs.turnPosition = Rotation2d.fromRadians(turnSim.getAngularPositionRad());
     inputs.turnVelocityRadsPerSec = turnSim.getAngularVelocityRadPerSec();
-    inputs.turnAppliedVolts = turnAppliedVolts;
+    inputs.turnBussVolts = turnAppliedVolts;
     inputs.turnSupplyCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
 
     inputs.odometryDrivePositionsMeters =
         new double[] {driveSim.getAngularPositionRad() * DriveConstants.driveConfig.wheelRadius()};
     inputs.odometryTurnPositions =
         new Rotation2d[] {Rotation2d.fromRadians(turnSim.getAngularPositionRad())};
-
-    inputs.magEncoderValue = inputs.turnAbsolutePosition.getRotations();
-
 
   }
 
@@ -85,14 +80,15 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setDriveVelocityIO(double velocityRadsPerSec, double feedForward) {
+  public void runDriveVelocityRPSIO(double velocityRPS, double feedForward) {
+    double velocityRadsPerSec = Units.rotationsToRadians(velocityRPS);
     runDriveVolts(
         driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
             + feedForward);
   }
 
   @Override
-  public void runTurnPositionSetpoint(double angleRads) {
+  public void runSteerPositionSetpoint(double currentAngleRad, double angleRads) {
     runTurnVolts(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
   }
 
