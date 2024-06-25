@@ -119,51 +119,6 @@ public class CatzRobotTracker {
     return instance;
   }
 
-
-
-
-  public void addVisionObservation(List<CatzVision.PoseAndTimestamp> visionFrameUpdates) {
-    //------------------------------------------------------------------------------------------------
-    // Vison pose updating
-    //------------------------------------------------------------------------------------------------
-    var visionOdometry = visionFrameUpdates;   
-    for (int i = 0; i < visionOdometry.size(); i++) {
-        if(visionOdometry.get(i).getName().equals("limelight-ramen")){
-            continue;
-        } 
-        //pose estimators standard dev are increase x, y, rotatinal radians values to trust vision less   
-        xyStdDev = 0;
-
-        //tag count
-        if(visionOdometry.get(i).getNumOfTagsVisible() >= 2){
-
-            //vision is trusted more with more tags visible
-            xyStdDev = 5; 
-        } else {
-            xyStdDev = 1000;
-        }
-        
-        if(visionOdometry.get(i).getAvgArea() <= 0.05){
-
-            //Do not trust vision inputs if the tag size is extermely small
-            xyStdDev = 1000; 
-        } else {
-            xyStdDev = 5;
-        }
-
-        m_poseEstimator.setVisionMeasurementStdDevs(
-            VecBuilder.fill(xyStdDev, xyStdDev,99999999.0)
-        ); //gyro can be purely trusted for pose calculations so always trust it more than vision
-        
-        if(visionOdometry.get(i).hasTarget()) { 
-            m_poseEstimator.addVisionMeasurement(
-                new Pose2d(visionOdometry.get(i).getPose().getTranslation(), visionOdometry.get(i).getPose().getRotation()), //only use vison for x,y pose, because gyro is already accurate enough
-                visionOdometry.get(i).getTimestamp()
-            );
-        }
-    }
-  }
-
   /**************************************************************
    * 
    * Pose Estimation update setters

@@ -44,11 +44,13 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //default commands
+    // Default commands
     defaultCommands();
-    //DriveCommands
+    
+    // DriveCommands
     commandsDrive();
-    //AuxCommands
+    
+    // AuxCommands
     commandsAux();
 
   }

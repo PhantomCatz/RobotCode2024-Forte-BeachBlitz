@@ -2,8 +2,12 @@ package frc.robot.commands.DriveAndRobotOrientationCmds;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.CatzConstants;
+import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.OIConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
@@ -44,17 +48,27 @@ public class TeleopDriveCmd extends Command {
 
   @Override
   public void execute() {
-    //obtain realtime joystick inputs with supplier methods
-    xSpeed =       -m_supplierLeftJoyY.get(); //* Robot.flipDirection; //TODO revert back
-    ySpeed =       -m_supplierLeftJoyX.get();// * Robot.flipDirection; 
+    // obtain realtime joystick inputs with supplier methods
+    xSpeed =       -m_supplierLeftJoyY.get(); 
+    ySpeed =       -m_supplierLeftJoyX.get(); 
     turningSpeed =  m_supplierRightJoyX.get(); //alliance flip shouldn't change for turing speed when switching alliances
+
+    // Flip Directions for left joystick if alliance is red
+    if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
+      xSpeed = -xSpeed;
+      ySpeed = -ySpeed;
+    }
 
     // Apply deadbands to prevent modules from receiving unintentional pwr
     xSpeed =       Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
     ySpeed =       Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
     turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
 
-    //Construct desired chassis speeds
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", xSpeed);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", ySpeed);
+
+
+    // Construct desired chassis speeds
     if (m_isFieldOrientedDisabled.get()) {
         // Relative to robot
         chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
@@ -67,9 +81,6 @@ public class TeleopDriveCmd extends Command {
 
     //send new chassisspeeds object to the drivetrain
     m_drivetrain.driveWithDiscretizeKinematics(chassisSpeeds);
-
-  
-
   }
 
   /*

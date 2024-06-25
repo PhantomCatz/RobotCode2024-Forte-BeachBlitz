@@ -5,9 +5,13 @@
  */
 package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.driveConfig;
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.moduleGainsAndRatios;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -16,54 +20,91 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.util.Alert;
 import frc.robot.util.CatzMathUtils;
+import frc.robot.util.CatzMathUtils.Conversions;
+import frc.robot.util.LoggedTunableNumber;
 
 public class CatzSwerveModule {
     //Module delcaration block
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
-    //object variable declaration
-    private PIDController m_PID;
-                
-    //steering pid constants
-    private final double kP = 0.4; 
-    private final double kI = 0.01;
+    private static final LoggedTunableNumber drivekP =
+        new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
+    private static final LoggedTunableNumber drivekD =
+        new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
+    private static final LoggedTunableNumber drivekS =
+        new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.ffkS());
+    private static final LoggedTunableNumber drivekV =
+        new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.ffkV());
+    private static final LoggedTunableNumber turnkP =
+        new LoggedTunableNumber("Drive/Module/TurnkP", moduleGainsAndRatios.turnkP());
+    private static final LoggedTunableNumber turnkD =
+        new LoggedTunableNumber("Drive/Module/TurnkD", moduleGainsAndRatios.turnkD());
 
-    private final double kD = 0.000;
+    private static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
+
 
     //global swerve module constants
-    private double m_wheelOffset;
     private int m_index;
 
-    public CatzSwerveModule(ModuleConfig config) {
+    // FeedFoward definment
+    private SimpleMotorFeedforward ff =
+      new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(), moduleGainsAndRatios.ffkV(), 0.0);
+
+    // Alerts
+    private final Alert driveMotorDisconnected;
+    private final Alert turnMotorDisconnected;
+
+
+    public CatzSwerveModule(ModuleConfig config, int index) {
+        m_index = index;
 
         switch (CatzConstants.currentMode) {
-            case REAL: io = new ModuleIOReal(config);
-                        System.out.println("Module " + config.driveID() + " Configured for Real");
+            case REAL: io = new ModuleIORealFoc(config);
+                        System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
             break;
 
-            case REPLAY : io = new ModuleIOReal(config) {};
-                        System.out.println("Module " + config.driveID() + " Configured for Replay simulation");
+            case REPLAY : io = new ModuleIORealFoc(config) {};
+                        System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
             break;
 
             case SIM: io = new ModuleIOSim(config);
             break;
             default : io = null;
-                        System.out.println("Module " + config.driveID() + " Unconfigured");
+                        System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
             break;
         }
 
-        m_PID = new PIDController(kP, kI, kD);
-        m_index = config.driveID();
-        System.out.println(m_index);
-        m_wheelOffset = config.absoluteEncoderOffset();
+        // Disconnected Alerts
+        driveMotorDisconnected =
+            new Alert(moduleNames[index] + " drive motor disconnected!", Alert.AlertType.WARNING);
+        turnMotorDisconnected =
+            new Alert(moduleNames[index] + " turn motor disconnected!", Alert.AlertType.WARNING);
+
+        System.out.println(moduleNames[m_index]);
         resetDriveEncs();
     }
 
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Drv/M " + Integer.toString(m_index), inputs); 
+        Logger.processInputs("Drv/M " + moduleNames[m_index], inputs); 
+
+        // Update ff and controllers
+        LoggedTunableNumber.ifChanged(
+            hashCode(),
+            () -> ff = new SimpleMotorFeedforward(drivekS.get(), drivekV.get(), 0),
+            drivekS,
+            drivekV);
+        LoggedTunableNumber.ifChanged(
+            hashCode(), () -> io.setDrivePID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
+        LoggedTunableNumber.ifChanged(
+            hashCode(), () -> io.setTurnPID(turnkP.get(), 0, turnkD.get()), turnkP, turnkD);
+
+        // Display alerts
+        driveMotorDisconnected.set(!inputs.isDriveMotorConnected);
+        turnMotorDisconnected.set(!inputs.isTurnMotorConnected);
     }
 
     //-----------------------------------------LOGS----------------------------------------------
@@ -83,31 +124,20 @@ public class CatzSwerveModule {
 
     //----------------------------------------Setting pwr methods-------------------------------
     public void setSteerPower(double pwr) {
-        io.setSteerPwrIO(pwr);
+        io.runSteerPercentOutputIO(pwr);
     }
 
     public void setDriveVelocity(double velocity) {
-        io.setDriveVelocityIO(velocity, 0.0);
-    }
-
-    public double getAverageRawMagEnc(){
-        double sum = 0;
-
-        for(int i = 0; i < 100; i++){
-            sum += inputs.magEncoderValue;
-            Timer.delay(0.01);
-        }
-
-        return sum/100.0;
+        io.runDriveVelocityRPSIO(velocity, 0.0);
     }
 
     public void stopDriving() {
-        io.setDrivePwrPercentIO(0.0);
+        io.runDrivePwrPercentIO(0.0);
     }
 
     //----------------------------------Util Methods catzswerve------------------------
     public double getDrvDistanceRaw() {
-        return inputs.driveMtrSensorPosition;
+        return inputs.drivePositionUnits;
     }
 
     public void setBreakMode(boolean enable) {
@@ -115,15 +145,16 @@ public class CatzSwerveModule {
     }
 
     public double getPositionRads() {
-        return Units.rotationsToRadians(inputs.driveMtrSensorPosition);
+        return Units.rotationsToRadians(inputs.drivePositionUnits);
     }
 
-    public double getDrvVelocity() {
-        return inputs.driveMtrVelocity;
+    public double getDrvVelocityRPS() {
+        return inputs.driveVelocityRPS;
     }
     
     private double getAbsEncRadians() {
-        return (inputs.magEncoderValue - m_wheelOffset) * 2 * Math.PI;
+        //mag enc value should already have offset applied
+        return inputs.turnAbsolutePosition.getRadians();
     }
     
     /**
@@ -132,35 +163,28 @@ public class CatzSwerveModule {
      * @param state Desired state with speed and angle.
      */
     public void setDesiredState(SwerveModuleState state) {
-        double unadjustedSpeedSetpoint = state.speedMetersPerSecond;
         double targetAngleRad          = state.angle.getRadians();
         double currentAngleRad         = getAbsEncRadians();
         // Run closed loop drive control
 
-        //calculate drive pwr
-        double driveRPS = CatzMathUtils.Conversions.MPSToRPS(unadjustedSpeedSetpoint);
-        
-
-        //set drive velocity
-        setDriveVelocity(driveRPS);
-
-        //calculate steer pwr
-        //negative steer power because of coordinate system
-        double steerPIDpwr = -m_PID.calculate(currentAngleRad, targetAngleRad); 
+        double wheelTorqueNm = 0.0;//torqueFF.speedMetersPerSecond; // Using SwerveModuleState for torque for easy logging //TODO finish off
+        io.runDriveVelocityRPSIO(
+            Conversions.MPSToRPS(state.speedMetersPerSecond),
+            ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
+                + ((wheelTorqueNm / moduleGainsAndRatios.driveReduction()) * moduleGainsAndRatios.ffkT()));
 
         if(CatzConstants.getRobot() == CatzConstants.RobotType.SIM) {
-            io.runTurnPositionSetpoint(targetAngleRad);
+            io.runSteerPositionSetpoint(0.0, targetAngleRad);
         } else {
-            setSteerPower(steerPIDpwr);
+            io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);
         }
 
         //DEBUG
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/angle error deg", Math.toDegrees(targetAngleRad-currentAngleRad));
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/drive rps", driveRPS);
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/current state", getModuleState());
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/turn power", steerPIDpwr);
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/currentmoduleangle rad", currentAngleRad);
-        Logger.recordOutput("Module " + Integer.toString(m_index) + "/targetmoduleangle rad", targetAngleRad);
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/angle error deg", Math.toDegrees(targetAngleRad-currentAngleRad));
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/drive mps", state.speedMetersPerSecond);
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/current state", getModuleState());
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/currentmoduleangle rad", currentAngleRad);
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/targetmoduleangle rad", targetAngleRad);
     }
 
     //optimze wheel angles before sending to setdesiredstate method for logging
@@ -179,7 +203,7 @@ public class CatzSwerveModule {
     }
 
     public SwerveModuleState getModuleState() {
-        double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveMtrVelocity);
+        double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);
         
         return new SwerveModuleState(velocityMPS, getCurrentRotation());
     }
@@ -190,6 +214,6 @@ public class CatzSwerveModule {
     
     public double getDriveDistanceMeters() {
         // seconds cancels out
-        return CatzMathUtils.Conversions.RPSToMPS(inputs.driveMtrSensorPosition);
+        return CatzMathUtils.Conversions.RPSToMPS(inputs.drivePositionUnits);
     }
 }
