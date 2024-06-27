@@ -22,9 +22,9 @@ public class TeleopDriveCmd extends Command {
   private Supplier<Boolean> m_isFieldOrientedDisabled;
 
   //drive variables
-  private double xSpeed;
-  private double ySpeed;
-  private double turningSpeed;
+  private double xVelocity;
+  private double yVelocity;
+  private double turningVelocity;
 
   private ChassisSpeeds chassisSpeeds;
 
@@ -49,33 +49,33 @@ public class TeleopDriveCmd extends Command {
   @Override
   public void execute() {
     // obtain realtime joystick inputs with supplier methods
-    xSpeed =       -m_supplierLeftJoyY.get(); 
-    ySpeed =       -m_supplierLeftJoyX.get(); 
-    turningSpeed =  m_supplierRightJoyX.get(); //alliance flip shouldn't change for turing speed when switching alliances
+    xVelocity =       -m_supplierLeftJoyY.get(); 
+    yVelocity =       -m_supplierLeftJoyX.get(); 
+    turningVelocity =  m_supplierRightJoyX.get(); //alliance flip shouldn't change for turing speed when switching alliances
 
     // Flip Directions for left joystick if alliance is red
     if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
-      xSpeed = -xSpeed;
-      ySpeed = -ySpeed;
+      xVelocity = -xVelocity;
+      yVelocity = -yVelocity;
     }
 
     // Apply deadbands to prevent modules from receiving unintentional pwr
-    xSpeed =       Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    ySpeed =       Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
+    xVelocity =       Math.abs(xVelocity) > OIConstants.kDeadband ? xVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    yVelocity =       Math.abs(yVelocity) > OIConstants.kDeadband ? yVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    turningVelocity = Math.abs(turningVelocity) > OIConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
 
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", xSpeed);
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", ySpeed);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", xVelocity);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", yVelocity);
 
 
     // Construct desired chassis speeds
     if (m_isFieldOrientedDisabled.get()) {
         // Relative to robot
-        chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        chassisSpeeds = new ChassisSpeeds(xVelocity, yVelocity, turningVelocity);
     } else {
         // Relative to field
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                            xSpeed, ySpeed, turningSpeed, m_drivetrain.getRotation2d()
+                                            xVelocity, yVelocity, turningVelocity, m_drivetrain.getRotation2d()
                                                               );
     }
 

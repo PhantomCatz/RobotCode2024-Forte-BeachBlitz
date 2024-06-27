@@ -23,7 +23,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 
@@ -71,6 +70,7 @@ public class ModuleIORealFoc implements ModuleIO {
     steerNeo = new CANSparkMax(config.turnID(), MotorType.kBrushless);
     magEncPWMInput = new DigitalInput(config.absoluteEncoderChannel());
     steerAbsoluteMagEnc = new DutyCycleEncoder(magEncPWMInput);
+
     absoluteEncoderOffset = Rotation2d.fromRotations(config.absoluteEncoderOffset());
 
     // Restore Factory Defaults

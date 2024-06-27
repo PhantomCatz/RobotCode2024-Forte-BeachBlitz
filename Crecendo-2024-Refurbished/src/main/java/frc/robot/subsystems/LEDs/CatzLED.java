@@ -17,9 +17,12 @@ import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
 
 public class CatzLED extends SubsystemBase {
-    private static CatzLED instance = new CatzLED();
+    private static CatzLED instance = null;
     
     public static CatzLED getInstance() {
+        if(instance == null) {
+            instance = new CatzLED();
+        }
         return instance;
     }
 
@@ -134,7 +137,7 @@ public class CatzLED extends SubsystemBase {
 
         // Exit during initial cycles
         loopCycleCount += 1;
-            if (loopCycleCount < minLoopCycleCount) {
+        if (loopCycleCount < minLoopCycleCount) {
             return;
         }
 

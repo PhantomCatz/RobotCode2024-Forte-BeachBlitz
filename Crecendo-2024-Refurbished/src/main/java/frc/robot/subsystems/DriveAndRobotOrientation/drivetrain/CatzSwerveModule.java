@@ -46,8 +46,9 @@ public class CatzSwerveModule {
     private static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
 
 
-    //global swerve module constants
+    //global swerve module variables
     private int m_index;
+    private SwerveModuleState m_swerveModuleState = null;
 
     // FeedFoward definment
     private SimpleMotorFeedforward ff =
@@ -61,20 +62,28 @@ public class CatzSwerveModule {
     public CatzSwerveModule(ModuleConfig config, int index) {
         m_index = index;
 
-        switch (CatzConstants.currentMode) {
-            case REAL: io = new ModuleIORealFoc(config);
-                        System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
-            break;
+        // Run subsystem disconnect check
+        if(DriveConstants.isDriveDisabled) {
+                io = new ModuleIONull();
+                System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
+        } else {
+            // Run Robot Mode hardware assignment
+            switch (CatzConstants.hardwareMode) {
+                case REAL: io = new ModuleIORealFoc(config);
+                            System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
+                break;
 
-            case REPLAY : io = new ModuleIORealFoc(config) {};
-                        System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
-            break;
+                case REPLAY : io = new ModuleIORealFoc(config) {};
+                            System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
+                break;
 
-            case SIM: io = new ModuleIOSim(config);
-            break;
-            default : io = null;
-                        System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
-            break;
+                case SIM: io = new ModuleIOSim(config);
+                            System.out.println("Module " + moduleNames[m_index] + " Configured for WPILIB simulation");
+                break;
+                default : io = null;
+                            System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
+                break;
+            }
         }
 
         // Disconnected Alerts
@@ -83,7 +92,6 @@ public class CatzSwerveModule {
         turnMotorDisconnected =
             new Alert(moduleNames[index] + " turn motor disconnected!", Alert.AlertType.WARNING);
 
-        System.out.println(moduleNames[m_index]);
         resetDriveEncs();
     }
 
@@ -148,6 +156,16 @@ public class CatzSwerveModule {
         return Units.rotationsToRadians(inputs.drivePositionUnits);
     }
 
+    /** Get turn angle of module as {@link Rotation2d}. */
+    public Rotation2d getAngle() {
+        return inputs.turnAbsolutePosition;
+    }
+
+    /** Get velocity of drive wheel for characterization */
+    public double getCharacterizationVelocityRadPerSec() {
+        return Units.rotationsToRadians(getDrvVelocityRPS());
+    }
+
     public double getDrvVelocityRPS() {
         return inputs.driveVelocityRPS;
     }
@@ -163,6 +181,7 @@ public class CatzSwerveModule {
      * @param state Desired state with speed and angle.
      */
     public void setDesiredState(SwerveModuleState state) {
+        this.m_swerveModuleState = state;
         double targetAngleRad          = state.angle.getRadians();
         double currentAngleRad         = getAbsEncRadians();
         // Run closed loop drive control
@@ -173,7 +192,7 @@ public class CatzSwerveModule {
             ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
                 + ((wheelTorqueNm / moduleGainsAndRatios.driveReduction()) * moduleGainsAndRatios.ffkT()));
 
-        if(CatzConstants.getRobot() == CatzConstants.RobotType.SIM) {
+        if(CatzConstants.getRobotType() == CatzConstants.RobotType.SIM) {
             io.runSteerPositionSetpoint(0.0, targetAngleRad);
         } else {
             io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);
@@ -206,6 +225,10 @@ public class CatzSwerveModule {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);
         
         return new SwerveModuleState(velocityMPS, getCurrentRotation());
+    }
+
+    public SwerveModuleState getModuleStateSetpoint() {
+        return m_swerveModuleState;
     }
 
     public SwerveModulePosition getModulePosition() {

@@ -36,7 +36,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
-import frc.robot.subsystems.LEDs.Leds;
+import frc.robot.CatzConstants.RobotEnviroment;
+import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
@@ -57,13 +58,6 @@ public class Robot extends LoggedRobot {
   private static final double lowBatteryVoltage = 11.8;
   private static final double lowBatteryDisabledTime = 1.5;
 
-  private RobotContainer m_robotContainer;
-
-  private Optional<Alliance> alliance = Optional.empty();
-
-  private static LoggedDashboardChooser<AllianceColor> allianceChooser = 
-    new LoggedDashboardChooser<>("Choosen Alliance Color");
-
   private static final String defaultBatteryName = "BAT-0000-000";
   private final StringSubscriber batteryNameSubscriber =
       NetworkTableInstance.getDefault()
@@ -82,6 +76,14 @@ public class Robot extends LoggedRobot {
       new Alert("The battery has not been changed since the last match.", AlertType.WARNING);
   private final Alert gcAlert =
       new Alert("Please wait to enable, collecting garbage. 🗑️", AlertType.WARNING);
+  private final Alert driverStationDisconnectAlert =
+      new Alert("Driverstation is not online, alliance selection will not work", AlertType.ERROR);
+  private final Alert fmsDisconnectAlert =
+      new Alert("fms is offline, robot cannot compete in match", AlertType.ERROR);
+
+  private RobotContainer m_robotContainer;
+
+  private Optional<Alliance> alliance = Optional.empty();
 
   @Override
   public void robotInit() {
@@ -104,7 +106,7 @@ public class Robot extends LoggedRobot {
     }
 
     // Set up data receivers & replay source
-    switch (CatzConstants.currentMode) {
+    switch (CatzConstants.hardwareMode) {
         case REAL:
             // Running on a real robot, log to a USB stick ("/U/logs")
             Logger.addDataReceiver(new WPILOGWriter("/media/sda1/Logs/"));
@@ -113,7 +115,7 @@ public class Robot extends LoggedRobot {
 
         case SIM:
             // Running a physics simulator, log to NT
-            Logger.addDataReceiver(new WPILOGWriter("F:/robotics code projects/loggingfiles/"));
+            //Logger.addDataReceiver(new WPILOGWriter("F:/robotics code projects/loggingfiles/"));
             Logger.addDataReceiver(new NT4Publisher());
             break;
 
@@ -164,29 +166,11 @@ public class Robot extends LoggedRobot {
 
     RobotController.setBrownoutVoltage(6.0);
 
-    m_robotContainer = new RobotContainer();
+    System.out.println("Enviorment: " + CatzConstants.robotEnviroment.toString());
+    System.out.println("Mode: " + CatzConstants.hardwareMode.toString());
+    System.out.println("Type: " + CatzConstants.getRobotType().toString());
 
-    //-------------------------------------------------------------
-    // Alliance selections
-    //------------------------------------------------------------
-    allianceChooser.addOption("Blue", AllianceColor.Blue);
-    allianceChooser.addOption("Red", AllianceColor.Red);
-    
-    // Run Driver Station Chooser
-    if(DriverStation.isDSAttached()) {
-      alliance = DriverStation.getAlliance();
-      CatzConstants.choosenAllianceColor =
-          alliance
-              .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
-              .orElse(AllianceColor.Red);
-    } else {
-      // Run Dashboard Alliance chooser
-      if(allianceChooser.get() == AllianceColor.Red) {
-        CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
-      } else {
-        CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
-      }
-    }
+    m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -205,12 +189,17 @@ public class Robot extends LoggedRobot {
               "*** Auto cancelled in %.2f secs ***%n", Timer.getFPGATimestamp() - autoStart);
         }
         autoMessagePrinted = true;
-        Leds.getInstance().autoFinished = true;
-        Leds.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
+        CatzLED.getInstance().autoFinished = true;
+        CatzLED.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
       }
 
       //TODO add note visualizer stuff
     }
+
+    // Robot container periodic methods
+    m_robotContainer.checkControllers();
+    m_robotContainer.updateDashboardOutputs();
+    m_robotContainer.updateAlerts();
 
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
@@ -228,7 +217,7 @@ public class Robot extends LoggedRobot {
     if (RobotController.getBatteryVoltage() <= lowBatteryVoltage
         && disabledTimer.hasElapsed(lowBatteryDisabledTime)) {
       lowBatteryAlert.set(true);
-      Leds.getInstance().lowBatteryAlert = true;
+      CatzLED.getInstance().lowBatteryAlert = true;
     }
 
     // GC alert
@@ -237,7 +226,7 @@ public class Robot extends LoggedRobot {
     // Update battery alert
     String batteryName = batteryNameSubscriber.get();
     Logger.recordOutput("BatteryName", batteryName);
-    if (CatzConstants.currentMode == CatzConstants.Mode.REAL && !batteryName.equals(defaultBatteryName)) {
+    if (CatzConstants.hardwareMode == CatzConstants.RobotMode.REAL && !batteryName.equals(defaultBatteryName)) {
       // Check for battery alert
       if (!batteryNameChecked) {
         batteryNameChecked = true;
@@ -254,7 +243,7 @@ public class Robot extends LoggedRobot {
           if (previousBatteryName.equals(batteryName)) {
             // Same battery, set alert
             sameBatteryAlert.set(true);
-            Leds.getInstance().sameBattery = true;
+            CatzLED.getInstance().sameBattery = true;
           } else {
             // New battery, delete file
             file.delete();
@@ -262,8 +251,8 @@ public class Robot extends LoggedRobot {
         }
       }
 
-      // Write battery name if connected to FMS
-      if (!batteryNameWritten && DriverStation.isFMSAttached()) {
+      // Write battery name if in Competition Mode
+      if (!batteryNameWritten && CatzConstants.robotEnviroment == RobotEnviroment.COMPETITION) {
         batteryNameWritten = true;
         try {
           FileWriter fileWriter = new FileWriter(batteryNameFile);
@@ -283,11 +272,19 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if(allianceChooser.get() == AllianceColor.Red) {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
-    } else {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
-    }
+    // Run Driver Station Chooser
+    if(DriverStation.isDSAttached()) {
+      alliance = DriverStation.getAlliance();
+      CatzConstants.choosenAllianceColor =
+          alliance
+              .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
+              .orElse(AllianceColor.Red);
+    } 
+
+    // Driver Station Alerts
+    driverStationDisconnectAlert.set(!DriverStation.isDSAttached());
+    fmsDisconnectAlert.set(!DriverStation.isFMSAttached());
+
   }
 
   @Override
