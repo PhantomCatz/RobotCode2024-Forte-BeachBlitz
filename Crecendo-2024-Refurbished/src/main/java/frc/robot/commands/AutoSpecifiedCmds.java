@@ -56,6 +56,6 @@ public class AutoSpecifiedCmds {
 
     //configured dashboard
     public Command getCommand() { //TODO fix back to network tables
-        return testAuto(m_container);
+        return autoPathChooser.get();
     }
 }

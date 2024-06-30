@@ -6,9 +6,9 @@ package frc.robot.commands.DriveAndRobotOrientationCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class AutoDriveCmd extends Command {
+public class WaypointDriveCmd extends Command {
   /** Creates a new AutoDriveCmd. */
-  public AutoDriveCmd() {
+  public WaypointDriveCmd() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

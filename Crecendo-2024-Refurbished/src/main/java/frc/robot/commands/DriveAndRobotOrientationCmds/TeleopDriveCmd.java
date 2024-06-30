@@ -75,7 +75,7 @@ public class TeleopDriveCmd extends Command {
     } else {
         // Relative to field
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                            xVelocity, yVelocity, turningVelocity, m_drivetrain.getRotation2d()
+                                            xVelocity, yVelocity, turningVelocity, m_drivetrain.getDriveRotation2d()
                                                               );
     }
 

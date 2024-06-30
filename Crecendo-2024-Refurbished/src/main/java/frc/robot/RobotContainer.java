@@ -27,6 +27,7 @@ import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
 import frc.robot.subsystems.LEDs.CatzLED;
+import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.subsystems.elevator.CatzElevator;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
@@ -35,7 +36,8 @@ public class RobotContainer {
 
   private static CatzDrivetrain   drive        = new CatzDrivetrain();
   private static CatzElevator     elevator     = new CatzElevator();
-  //private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
+  private static CatzShooterFeeder shooterFeeder = new CatzShooterFeeder();
+  private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
   // private static CatzVision       vision       = new CatzVision(new VisionIO[] {
   //                                                             new VisionIOLimeLight("limelight-udon"),    //index 0 left
   //                                                             new VisionIOLimeLight("limelight-soba"),    //index 1 right

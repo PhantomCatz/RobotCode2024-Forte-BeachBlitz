@@ -18,10 +18,4 @@ public interface GyroIO
 
   public default void updateInputs(GyroIOInputs inputs) {}
 
-  public default void resetNavXIO(double angle) {}
-
-  public default void setAngleAdjustmentIO(double gyroYaw) {}
-
-  public default double getAngleAdjustmentIO() {return 0.0;}
-
 }

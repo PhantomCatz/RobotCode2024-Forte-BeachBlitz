@@ -5,6 +5,8 @@ import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
 import java.io.IOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -92,6 +94,43 @@ import edu.wpi.first.math.util.Units;
           topLeftSpeaker.getX() / 2.0,
           fieldWidth - Units.inchesToMeters(104.0),
           (bottomLeftSpeaker.getZ() + bottomRightSpeaker.getZ()) / 2.0);
+    }
+
+    public static final class Stage {
+      public static final Pose2d podiumLeg =
+          new Pose2d(Units.inchesToMeters(126.75), Units.inchesToMeters(161.638), new Rotation2d());
+      public static final Pose2d ampLeg =
+          new Pose2d(
+              Units.inchesToMeters(220.873),
+              Units.inchesToMeters(212.425),
+              Rotation2d.fromDegrees(-30));
+      public static final Pose2d sourceLeg =
+          new Pose2d(
+              Units.inchesToMeters(220.873),
+              Units.inchesToMeters(110.837),
+              Rotation2d.fromDegrees(30));
+
+      public static final Pose2d centerPodiumAmpChain =
+          new Pose2d(
+              podiumLeg.getTranslation().interpolate(ampLeg.getTranslation(), 0.5),
+              Rotation2d.fromDegrees(120.0));
+      public static final Pose2d centerAmpSourceChain =
+          new Pose2d(
+              ampLeg.getTranslation().interpolate(sourceLeg.getTranslation(), 0.5), new Rotation2d());
+      public static final Pose2d centerSourcePodiumChain =
+          new Pose2d(
+              sourceLeg.getTranslation().interpolate(podiumLeg.getTranslation(), 0.5),
+              Rotation2d.fromDegrees(240.0));
+      public static final Pose2d center =
+          new Pose2d(Units.inchesToMeters(192.55), Units.inchesToMeters(161.638), new Rotation2d());
+      public static final double centerToChainDistance =
+          center.getTranslation().getDistance(centerPodiumAmpChain.getTranslation());
+    }
+
+    public static final class Amp {
+      public static final Translation2d ampTapeTopCorner =
+          new Translation2d(Units.inchesToMeters(130.0), Units.inchesToMeters(305.256));
+      public static final double ampBottomY = fieldWidth - Units.inchesToMeters(17.75);
     }
 
     public static double aprilTagWidth = Units.inchesToMeters(6.50);
