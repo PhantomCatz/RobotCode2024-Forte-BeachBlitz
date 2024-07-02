@@ -18,11 +18,13 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
+import frc.robot.subsystems.Intake.IntakePivot.CatzIntake;
 
 public class RobotContainer {
 
   private static CatzDrivetrain   drive        = new CatzDrivetrain();
-  //private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
+  private static CatzIntake       intake       = new CatzIntake();
+  // private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
   // private static CatzVision       vision       = new CatzVision(new VisionIO[] {
   //                                                             new VisionIOLimeLight("limelight-udon"),    //index 0 left
   //                                                             new VisionIOLimeLight("limelight-soba"),    //index 1 right
@@ -30,6 +32,7 @@ public class RobotContainer {
   //                                                             });   //index 2 turret)
 
   private CommandXboxController xboxDrv = new CommandXboxController(0);
+  private CommandXboxController xboxAux = new CommandXboxController(1);
 
   private static LoggedDashboardChooser<AllianceColor> allianceChooser = new LoggedDashboardChooser<>("Chosen Autonomous Path");
 
@@ -37,7 +40,7 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    allianceChooser.addDefaultOption("blue", AllianceColor.Blue);
+    allianceChooser.addDefaultOption("Blue", AllianceColor.Blue);
     allianceChooser.addOption("Red", AllianceColor.Red);
 
     configureBindings();
@@ -50,11 +53,13 @@ public class RobotContainer {
     commandsDrive();
     //AuxCommands
     commandsAux();
-
   }
 
   private void commandsDrive() {
+    xboxDrv.leftBumper().onTrue(intake.cmdRollerIn());
+    xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
 
+    // xboxDrv.b().onTrue //set target position using command
   }
 
   private void commandsAux() {

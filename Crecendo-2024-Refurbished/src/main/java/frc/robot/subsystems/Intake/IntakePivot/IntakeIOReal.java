@@ -12,7 +12,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-/** Add your docs here. */
 public class IntakeIOReal implements IntakeIO
 {
     private TalonFX pivotMtr;
@@ -37,9 +36,9 @@ public class IntakeIOReal implements IntakeIO
         talonConfigsPivot.MotionMagic.MotionMagicAcceleration = 160;
         talonConfigsPivot.MotionMagic.MotionMagicJerk = 800;
 
-        talonConfigsPivot.Slot0.kP = IntakeConstants.PIVOT_PID_kP;
-        talonConfigsPivot.Slot0.kI = IntakeConstants.PIVOT_PID_kI;
-        talonConfigsPivot.Slot0.kD = IntakeConstants.PIVOT_PID_kD;
+        talonConfigsPivot.Slot0.kP = CatzIntake.PIVOT_PID_kP;
+        talonConfigsPivot.Slot0.kI = CatzIntake.PIVOT_PID_kI;
+        talonConfigsPivot.Slot0.kD = CatzIntake.PIVOT_PID_kD;
 
         // -----------------------------------------------------------------------------------------------
         // Set Current Limit
@@ -59,7 +58,9 @@ public class IntakeIOReal implements IntakeIO
         pivotMtr.setPosition(IntakeConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
 
         // -----------------------------------------------------------------------------------------------
+        // 
         // Check if Wrist Motor was initialized correctly
+        // 
         // -----------------------------------------------------------------------------------------------
         pivotInitializationStatus = pivotMtr.getConfigurator().apply(talonConfigsPivot);
         if (!pivotInitializationStatus.isOK())
