@@ -4,4 +4,7 @@
 
 package frc.robot.subsystems.Intake.IntakePivot;
 
-public class IntakeIOSim {}
+public class IntakeIOSim
+{
+    
+}

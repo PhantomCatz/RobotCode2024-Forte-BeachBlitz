@@ -6,7 +6,6 @@ package frc.robot.subsystems.Intake.IntakePivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface IntakeIO
 {
     @AutoLog

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+// import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
 
 public class AutoSpecifiedCmds {
     
@@ -38,9 +38,7 @@ public class AutoSpecifiedCmds {
 
     private Command testAuto(RobotContainer container) {
         return new SequentialCommandGroup(
-            setAutonStartPose(testPath),
-
-            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, container.getCatzDrivetrain()))
+            setAutonStartPose(testPath)
         );
     }
     private Command setAutonStartPose(PathPlannerPath startPath){
@@ -50,7 +48,7 @@ public class AutoSpecifiedCmds {
                 path = startPath.flipPath();
             }
 
-            m_container.getCatzDrivetrain().resetPosition(path.getPreviewStartingHolonomicPose());
+            // m_container.getCatzDrivetrain().resetPosition(path.getPreviewStartingHolonomicPose());
         });
     }
 

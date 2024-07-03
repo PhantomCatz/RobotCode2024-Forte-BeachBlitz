@@ -12,24 +12,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.commands.AutoSpecifiedCmds;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
 import frc.robot.subsystems.Intake.IntakePivot.CatzIntake;
 
 public class RobotContainer {
 
-  private static CatzDrivetrain   drive        = new CatzDrivetrain();
-  private static CatzIntake       intake       = new CatzIntake();
-  // private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
-  // private static CatzVision       vision       = new CatzVision(new VisionIO[] {
-  //                                                             new VisionIOLimeLight("limelight-udon"),    //index 0 left
-  //                                                             new VisionIOLimeLight("limelight-soba"),    //index 1 right
-  //                                                             new VisionIOLimeLight("limelight-ramen") 
-  //                                                             });   //index 2 turret)
+  private static CatzIntake intake = new CatzIntake();
 
   private CommandXboxController xboxDrv = new CommandXboxController(0);
   private CommandXboxController xboxAux = new CommandXboxController(1);
@@ -47,8 +34,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //default commands
-    defaultCommands();
     //DriveCommands
     commandsDrive();
     //AuxCommands
@@ -56,28 +41,19 @@ public class RobotContainer {
   }
 
   private void commandsDrive() {
+    //Intake Rollers
     xboxDrv.leftBumper().onTrue(intake.cmdRollerIn());
     xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
+    xboxDrv.leftBumper().and(xboxDrv.rightBumper()).onTrue(intake.cmdRollerOff());
+    // xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
 
-    // xboxDrv.b().onTrue //set target position using command
+    //Intake Pivot
+    xboxDrv.b().onTrue(intake.cmdSetIntakePivotGround());
   }
 
   private void commandsAux() {
 
   }
-
-  private void defaultCommands() {
-    drive.setDefaultCommand(new TeleopDriveCmd(()->xboxDrv.getLeftX(), 
-                                               ()->xboxDrv.getLeftY(), 
-                                               ()->xboxDrv.getRightX(), 
-                                               ()->xboxDrv.a().getAsBoolean(), drive));
-  }
-
-  public CatzDrivetrain getCatzDrivetrain() {
-    return drive;
-  }
-
-
 
   public Command getAutonomousCommand() {
     return autoSpecifiedCmds.getCommand();

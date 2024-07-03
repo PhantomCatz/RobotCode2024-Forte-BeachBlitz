@@ -3,7 +3,6 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
 public class CatzMathUtils {
     public static double velocityCntsToRPM(double velocityCounts, double gearRatio) {
@@ -77,24 +76,4 @@ public class CatzMathUtils {
         double rotations = angleRadians / (2 * Math.PI);
         return (angleRadians - Math.round(rotations - 0.500) * Math.PI * 2.0);
     }
-
-
-    /************************************************************************************************
-     * 
-     * Conversions
-     * 
-     ***********************************************************************************************/
-    public class Conversions {
-        private static final double wheelCircumference = DriveConstants.driveConfig.wheelRadius() * 2.0;
-        private static final double gearRatio = DriveConstants.moduleGainsAndRatios.driveReduction();
-    
-        public static double RPSToMPS(double rps){
-            return rps * wheelCircumference / gearRatio;
-        }
-    
-        public static double MPSToRPS(double velocity){
-            return velocity / wheelCircumference * gearRatio;
-        }
-    }
-
 }

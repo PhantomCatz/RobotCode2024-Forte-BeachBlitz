@@ -12,18 +12,13 @@ public class IntakePivotMoveToPosition extends Command {
   
   // -----------------------------------------------------------------------------------------------
   // 
-  // Pivot Closed Loop Processing (PID)
+  // Pivot Control Loop Processing (PID and FF)
   // 
   // -----------------------------------------------------------------------------------------------
   public static final double PIVOT_PID_kP = 9.00; // 0.044
   public static final double PIVOT_PID_kI = 0.00; // 0.005
   public static final double PIVOT_PID_kD = 0.27;
 
-  // -----------------------------------------------------------------------------------------------
-  // 
-  // Pivot Open Loop Processing (Feedforward)
-  // 
-  // -----------------------------------------------------------------------------------------------
   public final double PIVOT_FF_kS = 0.00;
   public final double PIVOT_FF_kG = 0.437;
   public final double PIVOT_FF_kV = 0.00;
@@ -31,19 +26,28 @@ public class IntakePivotMoveToPosition extends Command {
 
   private double m_ffVolts = 0.0;
 
+  // -----------------------------------------------------------------------------------------------
+  // 
+  // Pivot Position Definitions & Variables
+  // 
+  // -----------------------------------------------------------------------------------------------
+  private double pivotVelRadPerSec = 0.0;
+  private double positionErrorDeg  = 0.0;
+
   private double m_targetPositionDeg = 0.0;
   private double m_nextTargetPositionDeg = IntakeConstants.INTAKE_NULL_DEG;
   private double m_currentPositionDeg = 0.0;
   private double m_previousTargetPositionDeg = 0.0;
 
-  private boolean isIntakeInScoreAmp;
-
   private int m_iterationCounter;
-
-  private double positionErrorDeg = 0.0;
-  private double pivotVelRadPerSec = 0.0;
   
+  private static boolean m_intakeTurretInSafetyZone = false;
+  private static boolean m_intakeElevatorInSafetyZone = false;
+
+  private static boolean m_intakeInPosition = false;
+
   private CatzIntake intake2; //Holden's change to help get access to get methods from intake subsystem, not sure if optimal
+                              //specifically for getWristAngle for feedforward caluclation
 
   public IntakePivotMoveToPosition(CatzIntake intake)
   {
@@ -51,7 +55,17 @@ public class IntakePivotMoveToPosition extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize()
+  {
+    m_nextTargetPositionDeg = IntakeConstants.INTAKE_NULL_DEG;
+    // m_currentIntakeControlState = IntakeControlState.AUTO;
+
+    m_iterationCounter = 0; // reset counter for intake in position
+
+    m_intakeInPosition = false;
+
+    // m_targetPositionDeg = targetPosition;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -64,11 +78,9 @@ public class IntakePivotMoveToPosition extends Command {
     m_ffVolts = calculatePivotFeedFoward(Math.toRadians(m_currentPositionDeg), pivotVelRadPerSec, 0);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

@@ -12,13 +12,21 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class IntakeIOReal implements IntakeIO
 {
     private TalonFX pivotMtr;
+    private TalonFX rollerMtr;
 
     private StatusCode pivotInitializationStatus = StatusCode.StatusCodeNotInitialized;
+    private StatusCode rollerInitializationStatus = StatusCode.StatusCodeNotInitialized;
 
     private TalonFXConfiguration talonConfigsPivot = new TalonFXConfiguration();
+    private TalonFXConfiguration talonConfigsRoller = new TalonFXConfiguration();
+
+    public DigitalInput adjustBeamBreak = new DigitalInput(4);
+    public DigitalInput loadBeamBreak = new DigitalInput(5);
     
     //Motor Instantiation
     public IntakeIOReal()
@@ -58,14 +66,29 @@ public class IntakeIOReal implements IntakeIO
         pivotMtr.setPosition(IntakeConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
 
         // -----------------------------------------------------------------------------------------------
-        // 
         // Check if Wrist Motor was initialized correctly
-        // 
         // -----------------------------------------------------------------------------------------------
         pivotInitializationStatus = pivotMtr.getConfigurator().apply(talonConfigsPivot);
         if (!pivotInitializationStatus.isOK())
         {
             System.out.println("Failed to Configure Pivot Mtr Controller CAN ID" + IntakeConstants.PIVOT_MTR_ID);
+        }
+
+        // -----------------------------------------------------------------------------------------------
+        // 
+        // Rollers
+        // 
+        // -----------------------------------------------------------------------------------------------
+        rollerMtr = new TalonFX(IntakeConstants.ROLLER_MTR_ID);
+        rollerMtr.getConfigurator().apply(new TalonFXConfiguration());  //reset to factory defaults
+
+        talonConfigsRoller = talonConfigsPivot;
+        talonConfigsRoller.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        
+        //check if roller motor is initialized correctly
+        rollerInitializationStatus = rollerMtr.getConfigurator().apply(talonConfigsRoller);
+        if(!rollerInitializationStatus.isOK()) {
+            System.out.println("Failed to Configure Roller Mtr Controller CAN ID" + IntakeConstants.ROLLER_MTR_ID);
         }
     }
 
@@ -73,6 +96,10 @@ public class IntakeIOReal implements IntakeIO
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.pivotMtrRev =            pivotMtr.getPosition().getValue();
         inputs.closedLoopPivotMtr =     pivotMtr.getClosedLoopError().getValue();
+
+        //true if beambreak is broken \/ \/
+        inputs.AdjustBeamBrkState =     !adjustBeamBreak.get(); 
+        inputs.LoadBeamBrkState =       !loadBeamBreak.get();
     }
 
     @Override
