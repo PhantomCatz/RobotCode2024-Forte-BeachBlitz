@@ -42,7 +42,7 @@ public class CatzVision extends SubsystemBase {
     public void periodic() {
         
         // For every limelight camera process vision with according logic
-        for (int i = 0; i < inputs.length; i++) { //change to -1 if soba is installed
+        for (int i = 0; i < inputs.length; i++) {
             // update and process new inputs[cameraNum] for camera
             cameras[i].updateInputs(inputs[i]);
             Logger.processInputs("Vsn/" + cameras[i].getName() + "/Inputs", inputs[i]);

@@ -59,7 +59,7 @@ public class FeederIOReal implements FeederIO {
         feederNeo.set(ShooterConstants.LOAD_MOTOR_SHOOTING_SPEED);
     }
 
-    public void disabled() {
+    public void feedDisabled() {
         feederNeo.set(0.0);
     }
 

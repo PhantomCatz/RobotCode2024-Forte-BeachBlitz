@@ -21,7 +21,7 @@ public interface FeederIO {
 
     public default void fineAdjustFwd() {}
 
-    public default void disabled() {}
+    public default void feedDisabled() {}
 
     public default void feedShooter() {}
     

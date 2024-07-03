@@ -27,6 +27,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   public enum ShooterFeederState{
     TO_SHOOTER,
     TO_INTAKE,
+    SHOOT,
     DISABLED
   }
 
@@ -80,8 +81,11 @@ public class CatzShooterFeeder extends SubsystemBase {
         case TO_INTAKE:
           handleToIntakeInit();
         break;
+        case SHOOT:
+          handleShootInit();
+        break;
         case DISABLED:
-          io.disabled();
+          io.feedDisabled();
         break;
       }
     }
@@ -93,6 +97,9 @@ public class CatzShooterFeeder extends SubsystemBase {
       break;
       case TO_INTAKE:
         handleToIntakePeriodic();
+      break;
+      case SHOOT:
+        handleShootPeriodic();
       break;
       case DISABLED:
       break;
@@ -130,11 +137,11 @@ public class CatzShooterFeeder extends SubsystemBase {
     if(isAdjustStateDetermined == true) {
       if(determinedAdjustState == AdjustState.BCK) {
         if(inputs.isAdjustBeamBreakBroken == false) {
-          io.disabled();
+          io.feedDisabled();
         }
       } else {
         if(inputs.isAdjustBeamBreakBroken == true) {
-          io.disabled();
+          io.feedDisabled();
         }
       }
     }
@@ -142,6 +149,7 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOINTAKE state state change */
   private void handleToIntakeInit() {
+        System.out.println("Intake INIT");
     io.resetLoadEnc();
     io.loadFoward();
     hasNoteClearedIntake = false;
@@ -149,12 +157,28 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOINTAKE state Periodic */
   private void handleToIntakePeriodic() {
+    System.out.println("Intake");
     // Measure how far note travels
     if(hasNoteClearedIntake == false) {
       if(inputs.noteMovementUpInches > 2.0) {
         io.loadBackward();
         hasNoteClearedIntake = true; //Logic Exit
       }
+    }
+  }
+
+  /** Feeder SHOOT state state change */
+  private void handleShootInit() {
+    System.out.println("Shooter Init");
+    io.feedShooter();
+  }
+
+  /** Feeder SHOOT state Periodic */
+  private void handleShootPeriodic() {
+    System.out.println("Shooter periodic");
+    // check if note has exited shooter
+    if(!inputs.isAdjustBeamBreakBroken) {
+      io.feedDisabled();
     }
   }
 

@@ -143,7 +143,7 @@ public class CatzDrivetrain extends SubsystemBase {
         SwerveDriveWheelPositions wheelPositions = new SwerveDriveWheelPositions(getModulePositions());
         Rotation2d gyroAngle2d;
         // Grab latest gyro measurments
-        if(CatzConstants.hardwareMode == CatzConstants.RobotMode.SIM) {
+        if(CatzConstants.hardwareMode == CatzConstants.HardwareMode.SIM) {
             gyroAngle2d = null;
         } else {
             gyroAngle2d = getDriveRotation2d();
@@ -189,7 +189,7 @@ public class CatzDrivetrain extends SubsystemBase {
         // Scale down wheel speeds
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.driveConfig.maxLinearVelocity());
 
-        //optimize wheel angles
+        // optimize wheel angles
         SwerveModuleState[] optimizedDesiredStates = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {  
             // The module returns the optimized state, useful for logging

@@ -55,7 +55,7 @@ public class AutoSpecifiedCmds {
     }
 
     //configured dashboard
-    public Command getCommand() { //TODO fix back to network tables
-        return autoPathChooser.get();
+    public Command getCommand() { 
+        return AutomatedSequenceCmds.testSequence(m_container);
     }
 }

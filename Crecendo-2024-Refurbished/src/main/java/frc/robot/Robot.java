@@ -226,7 +226,7 @@ public class Robot extends LoggedRobot {
     // Update battery alert
     String batteryName = batteryNameSubscriber.get();
     Logger.recordOutput("BatteryName", batteryName);
-    if (CatzConstants.hardwareMode == CatzConstants.RobotMode.REAL && !batteryName.equals(defaultBatteryName)) {
+    if (CatzConstants.hardwareMode == CatzConstants.HardwareMode.REAL && !batteryName.equals(defaultBatteryName)) {
       // Check for battery alert
       if (!batteryNameChecked) {
         batteryNameChecked = true;

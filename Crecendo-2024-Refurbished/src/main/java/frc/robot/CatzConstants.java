@@ -19,7 +19,7 @@ public final class CatzConstants {
    * Robot Modes
    *************************************************/
   public static final RobotEnviroment robotEnviroment = RobotEnviroment.PRACTICE;
-  public static final RobotMode hardwareMode = RobotMode.SIM;
+  public static final HardwareMode hardwareMode = HardwareMode.SIM;
   private static RobotType robotType = RobotType.SIM;
   
   public static AllianceColor choosenAllianceColor = null;
@@ -34,7 +34,7 @@ public final class CatzConstants {
     COMPETITION //Competition Setting
   }
 
-  public static enum RobotMode {
+  public static enum HardwareMode {
     /** Running on a real robot. */
     REAL,
     /** Running a physics simulator. */

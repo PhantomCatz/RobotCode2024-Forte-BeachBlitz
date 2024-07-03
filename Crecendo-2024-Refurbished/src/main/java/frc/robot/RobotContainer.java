@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotEnviroment;
 import frc.robot.commands.AutoSpecifiedCmds;
+import frc.robot.commands.AutomatedSequenceCmds;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
@@ -106,7 +107,7 @@ public class RobotContainer {
   }
 
   private void commandsDrive() {
-
+    xboxDrv.leftStick().onTrue(AutomatedSequenceCmds.NoteDetectIntakeToShooter(this));
   }
 
   private void commandsAux() {
@@ -114,10 +115,10 @@ public class RobotContainer {
   }
 
   private void defaultCommands() {
-    // drive.setDefaultCommand(new TeleopDriveCmd(()->xboxDrv.getLeftX(), 
-    //                                            ()->xboxDrv.getLeftY(), 
-    //                                            ()->xboxDrv.getRightX(), 
-    //                                            ()->xboxDrv.a().getAsBoolean(), drive));
+    drive.setDefaultCommand(new TeleopDriveCmd(()->xboxDrv.getLeftX(), 
+                                               ()->xboxDrv.getLeftY(), 
+                                               ()->xboxDrv.getRightX(), 
+                                               ()->xboxDrv.a().getAsBoolean(), drive));
   }
 
   /** Creates a controller rumble command with specified rumble and controllers */
@@ -155,6 +156,14 @@ public class RobotContainer {
 
   public CatzDrivetrain getCatzDrivetrain() {
     return drive;
+  }
+
+  public CatzElevator getCatzElevator() {
+    return elevator;
+  }
+
+  public CatzShooterFeeder getCatzShooterFeeder() {
+    return shooterFeeder;
   }
 
 

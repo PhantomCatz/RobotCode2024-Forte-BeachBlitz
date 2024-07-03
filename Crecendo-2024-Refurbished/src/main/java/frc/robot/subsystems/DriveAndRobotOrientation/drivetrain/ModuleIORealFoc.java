@@ -126,6 +126,8 @@ public class ModuleIORealFoc implements ModuleIO {
     //---------------------------------------------------------------------------
     // Refresh Drive Kraken status signals
     //---------------------------------------------------------------------------
+    //vs
+    // Refresh Drive Kraken status signals
     inputs.isDriveMotorConnected =
         BaseStatusSignal.refreshAll(
                 drivePosition,
@@ -142,7 +144,8 @@ public class ModuleIORealFoc implements ModuleIO {
     inputs.driveSupplyCurrentAmps = driveSupplyCurrent.getValueAsDouble();
     inputs.driveTorqueCurrentAmps = driveTorqueCurrent.getValueAsDouble();
 
-    inputs.isTurnMotorConnected = (true); //TODO need to find better way of ensuring neos are connected
+    // Refresh Turn Motor Values
+    inputs.isTurnMotorConnected = true; //TODO need to find better way of ensuring neos are connected
     inputs.turnAbsolutePosition = 
         Rotation2d.fromRotations(
             steerAbsoluteMagEnc.getAbsolutePosition()-absoluteEncoderOffset.getRotations()

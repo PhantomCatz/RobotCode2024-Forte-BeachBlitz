@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
+import frc.robot.CatzConstants.RobotEnviroment;
+import frc.robot.CatzConstants.HardwareMode;
 
 public class CatzLED extends SubsystemBase {
     private static CatzLED instance = null;
@@ -59,15 +61,13 @@ public class CatzLED extends SubsystemBase {
     private boolean estopped = false;
 
     // LED IO
-    private final AddressableLED leaderLedStrip;
-    private final AddressableLED followerLedStrip;
+    private final AddressableLED ledStrip;
     private final AddressableLEDBuffer buffer;
     private final Notifier loadingNotifier;
 
     // LED PWM IDs
-    private final int LEADER_LED_PWM_PORT = 2; 
-    private final int FOLLOW_LED_PWM_PORT = 3;
-    private final int LED_COUNT_HALF = 17; 
+    private final int LEADER_LED_PWM_PORT = 8; 
+    private final int LED_COUNT_HALF = 17/2; //TODO what does this mean
 
 
     // Constants
@@ -87,24 +87,19 @@ public class CatzLED extends SubsystemBase {
     private static final double autoFadeMaxTime = 5.0; // Return to normal
 
     private CatzLED() {
-        leaderLedStrip = new AddressableLED(LEADER_LED_PWM_PORT);
-        followerLedStrip = new AddressableLED(FOLLOW_LED_PWM_PORT);
-        buffer = new AddressableLEDBuffer(LED_COUNT_HALF);
+        ledStrip = new AddressableLED(LEADER_LED_PWM_PORT);
+        buffer = new AddressableLEDBuffer(LED_COUNT_HALF); // NOTE -WPILIB doesn't support creation of 2 led objects
 
-        leaderLedStrip.setLength(length);
-        leaderLedStrip.setData(buffer);
-        leaderLedStrip.start();
-        
-        followerLedStrip.setLength(length);
-        followerLedStrip.setData(buffer);
-        followerLedStrip.start();
+        ledStrip.setLength(buffer.getLength());
+        ledStrip.setData(buffer);        
+        ledStrip.start();
 
         loadingNotifier =
             new Notifier(
                 () -> {
                   synchronized (this) {
                     breath(Color.kWhite, Color.kBlack, System.currentTimeMillis() / 1000.0);
-                    leaderLedStrip.setData(buffer);
+                    ledStrip.setData(buffer);
                   }
                 });
         loadingNotifier.startPeriodic(0.02);
@@ -194,8 +189,8 @@ public class CatzLED extends SubsystemBase {
         }
 
         // Update LEDs
-        leaderLedStrip.setData(buffer);
-
+        ledStrip.setData(buffer);
+        
     }
 
     private void solid(Color color) {

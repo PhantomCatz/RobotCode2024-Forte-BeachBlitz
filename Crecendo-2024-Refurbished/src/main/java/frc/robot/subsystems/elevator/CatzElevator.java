@@ -134,7 +134,7 @@ public class CatzElevator extends SubsystemBase {
         mmAcceleration,
         mmJerk);
 
-    if(DriverStation.isDisabled()) {
+    if(DriverStation.isDisabled() || m_elevatorState == null) {
       io.stop();
     } else {
       // Run Softlimit check
