@@ -25,8 +25,8 @@ public class IntakeIOReal implements IntakeIO
     private TalonFXConfiguration talonConfigsPivot = new TalonFXConfiguration();
     private TalonFXConfiguration talonConfigsRoller = new TalonFXConfiguration();
 
-    public DigitalInput adjustBeamBreak = new DigitalInput(4);
-    public DigitalInput loadBeamBreak = new DigitalInput(5);
+    // public DigitalInput adjustBeamBreak = new DigitalInput(4);
+    // public DigitalInput loadBeamBreak = new DigitalInput(5);
     
     //Motor Instantiation
     public IntakeIOReal()
@@ -63,7 +63,7 @@ public class IntakeIOReal implements IntakeIO
 
         talonConfigsPivot.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        pivotMtr.setPosition(IntakeConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
+        // pivotMtr.setPosition(IntakeConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
 
         // -----------------------------------------------------------------------------------------------
         // Check if Wrist Motor was initialized correctly
@@ -94,12 +94,12 @@ public class IntakeIOReal implements IntakeIO
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.pivotMtrRev =            pivotMtr.getPosition().getValue();
-        inputs.closedLoopPivotMtr =     pivotMtr.getClosedLoopError().getValue();
+        // inputs.pivotMtrRev =            pivotMtr.getPosition().getValue();
+        // inputs.closedLoopPivotMtr =     pivotMtr.getClosedLoopError().getValue();
 
-        //true if beambreak is broken \/ \/
-        inputs.AdjustBeamBrkState =     !adjustBeamBreak.get(); 
-        inputs.LoadBeamBrkState =       !loadBeamBreak.get();
+        // //true if beambreak is broken \/ \/
+        // inputs.AdjustBeamBrkState =     !adjustBeamBreak.get(); 
+        // inputs.LoadBeamBrkState =       !loadBeamBreak.get();
     }
 
     @Override

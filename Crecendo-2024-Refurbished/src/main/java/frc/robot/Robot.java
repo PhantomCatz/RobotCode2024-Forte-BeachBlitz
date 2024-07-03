@@ -64,15 +64,15 @@ public class Robot extends LoggedRobot {
         }
 
         // Start AdvantageKit logger
-        Logger.start();
+        // Logger.start();
 
     m_robotContainer = new RobotContainer();
 
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
-    } else {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
-    }
+    // if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //   CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
+    // } else {
+    //   CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
+    // }
   }
 
   @Override
@@ -85,11 +85,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
-    } else {
-      CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
-    }
+    // if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //   CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Red;
+    // } else {
+    //   CatzConstants.choosenAllianceColor = CatzConstants.AllianceColor.Blue;
+    // }
   }
 
   @Override
