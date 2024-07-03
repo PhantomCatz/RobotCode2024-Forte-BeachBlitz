@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.commands.AutoSpecifiedCmds;
@@ -25,10 +24,9 @@ public class RobotContainer {
 
   private AutoSpecifiedCmds autoSpecifiedCmds = new AutoSpecifiedCmds(this);
 
-
   public RobotContainer() {
-    allianceChooser.addDefaultOption("Blue", AllianceColor.Blue);
-    allianceChooser.addOption("Red", AllianceColor.Red);
+    // allianceChooser.addDefaultOption("Blue", AllianceColor.Blue);
+    // allianceChooser.addOption("Red", AllianceColor.Red);
 
     configureBindings();
   }
@@ -36,8 +34,9 @@ public class RobotContainer {
   private void configureBindings() {
     //DriveCommands
     commandsDrive();
+
     //AuxCommands
-    commandsAux();
+    // commandsAux();
   }
 
   private void commandsDrive() {
@@ -45,17 +44,16 @@ public class RobotContainer {
     xboxDrv.leftBumper().onTrue(intake.cmdRollerIn());
     xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
     xboxDrv.leftBumper().and(xboxDrv.rightBumper()).onTrue(intake.cmdRollerOff());
-    // xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
+    xboxDrv.a().onTrue(intake.cmdStopRollersAfterTimeOut());
 
     //Intake Pivot
-    xboxDrv.b().onTrue(intake.cmdSetIntakePivotGround());
+    // xboxDrv.b().onTrue(intake.cmdSetIntakePivotGround());
   }
 
-  private void commandsAux() {
+  private void commandsAux() {}
 
-  }
-
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand()
+  {
     return autoSpecifiedCmds.getCommand();
   }
 }

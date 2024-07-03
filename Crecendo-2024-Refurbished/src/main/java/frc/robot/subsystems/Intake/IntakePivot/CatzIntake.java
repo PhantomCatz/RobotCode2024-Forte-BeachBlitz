@@ -9,7 +9,9 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.CatzConstants;
 
 public class CatzIntake extends SubsystemBase {
@@ -135,8 +137,8 @@ public class CatzIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("intake/inputs", inputs);
+    // io.updateInputs(inputs);
+    // Logger.processInputs("intake/inputs", inputs);
 
     // collect ff variables and pid variables
     m_currentPositionDeg = calcWristAngleDeg();
@@ -235,4 +237,13 @@ public class CatzIntake extends SubsystemBase {
     return runOnce(() -> setRollersOff());
   }
 
+
+  public Command cmdStopRollersAfterTimeOut()
+  {
+    return new SequentialCommandGroup(
+      cmdRollerIn(),
+      new WaitCommand(2),
+      cmdRollerOff()
+    );
+  }
 }

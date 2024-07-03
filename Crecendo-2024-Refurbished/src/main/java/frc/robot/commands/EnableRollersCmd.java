@@ -25,7 +25,7 @@ public class EnableRollersCmd extends Command
   @Override
   public void execute()
   {
-    loadBeamBrkState = intakeioreal.loadBeamBreak.get();
+    // loadBeamBrkState = intakeioreal.loadBeamBreak.get();
   }
 
   @Override
@@ -34,6 +34,7 @@ public class EnableRollersCmd extends Command
   @Override
   public boolean isFinished()
   {
-    return loadBeamBrkState;
+    // return loadBeamBrkState;
+    return false;
   }
 }
