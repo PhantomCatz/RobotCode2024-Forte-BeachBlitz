@@ -13,7 +13,7 @@ public class CatzIntake extends SubsystemBase {
   /** Creates a new CatzIntake. */
   private CatzIntake()
   {
-    switch (CatzConstants.currentMode) {
+    switch (CatzConstants.hardwareMode) {
       case REAL:
         // io = new IntakeIOReal();
         System.out.println("Intake Configured for Real");

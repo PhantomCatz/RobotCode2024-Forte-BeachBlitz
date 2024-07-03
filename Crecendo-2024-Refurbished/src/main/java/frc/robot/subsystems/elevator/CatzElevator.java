@@ -79,28 +79,34 @@ public class CatzElevator extends SubsystemBase {
   private boolean brakeModeEnabled = true;
 
   public CatzElevator() {
+    if(ElevatorConstants.isElevatorDisabled) {
+      io = new ElevatorIONull();
+      System.out.println("Elevator Unconfigured");
+    } else {
+      switch (CatzConstants.hardwareMode) {
+        case REAL:
+          io = new ElevatorIOReal();
+          System.out.println("Elevator Configured for Real");
+          break;
 
-    switch (CatzConstants.currentMode) {
-      case REAL:
-        io = new ElevatorIOReal();
-        System.out.println("Elevator Configured for Real");
-        break;
+        case REPLAY:
+          io = new ElevatorIOReal() {};
+          System.out.println("Elevator Configured for Replayed simulation");
+          break;
 
-      case REPLAY:
-        io = new ElevatorIOReal() {};
-        System.out.println("Elevator Configured for Replayed simulation");
-        break;
+        case SIM:
+          io = new ElevatorIOSim();
+          System.out.println("Elevator Configured for WPILIB simulation");
+          break;
 
-      case SIM:
-        io = new ElevatorIOSim();
-        System.out.println("Elevator Configured for WPILIB simulation");
-        break;
-
-      default:
-        io = null;
-        System.out.println("Elevator Unconfigured");
-        break;
+        default:
+          io = null;
+          System.out.println("Elevator Unconfigured");
+          break;
+      }
     }
+
+    ff = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
 
   }
 
@@ -128,7 +134,7 @@ public class CatzElevator extends SubsystemBase {
         mmAcceleration,
         mmJerk);
 
-    if(DriverStation.isDisabled()) {
+    if(DriverStation.isDisabled() || m_elevatorState == null) {
       io.stop();
     } else {
       // Run Softlimit check

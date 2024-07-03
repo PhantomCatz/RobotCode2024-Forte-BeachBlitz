@@ -17,13 +17,13 @@ public interface ModuleIO {
    
    public boolean isTurnMotorConnected;
    public double turnAbsoluteInitPosition;
-   public Rotation2d turnPosition;
+   public Rotation2d turnPosition = new Rotation2d();
    public double turnVelocityRadsPerSec;
-   public Rotation2d turnAbsolutePosition;
+   public Rotation2d turnAbsolutePosition = new Rotation2d();
    public double turnBussVolts;
    public double turnSupplyCurrentAmps;
-   public double[] odometryDrivePositionsMeters;
-   public Rotation2d[] odometryTurnPositions;
+   public double[] odometryDrivePositionsMeters = new double[0];
+   public Rotation2d[] odometryTurnPositions = new Rotation2d[0];
 
 
  }

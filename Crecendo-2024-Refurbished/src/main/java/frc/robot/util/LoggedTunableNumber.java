@@ -15,6 +15,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import frc.robot.CatzConstants;
+import frc.robot.CatzConstants.RobotEnviroment;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
@@ -58,7 +59,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
     if (!hasDefault) {
       hasDefault = true;
       this.defaultValue = defaultValue;
-      if (CatzConstants.tuningMode) {
+      if (CatzConstants.robotEnviroment == RobotEnviroment.TUNING) {
         dashboardNumber = new LoggedDashboardNumber(key, defaultValue);
       }
     }
@@ -73,7 +74,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
     if (!hasDefault) {
       return 0.0;
     } else {
-      return CatzConstants.tuningMode ? dashboardNumber.get() : defaultValue;
+      return CatzConstants.robotEnviroment == RobotEnviroment.TUNING ? dashboardNumber.get() : defaultValue;
     }
   }
 

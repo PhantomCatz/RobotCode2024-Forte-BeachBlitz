@@ -1,11 +1,8 @@
 package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
-import com.google.flatbuffers.Constants;
-
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -15,8 +12,11 @@ import frc.robot.CatzConstants;
 import lombok.Builder;
 
 public class DriveConstants {
+    // Disabled flag for testing
+    public static final boolean isDriveDisabled = true;
+
     public static final DriveConfig driveConfig =
-    switch (CatzConstants.getRobot()) {
+    switch (CatzConstants.getRobotType()) {
       case SIM, SN2 ->
           DriveConfig.builder()
               .wheelRadius(Units.inchesToMeters(1.891))
@@ -44,7 +44,7 @@ public class DriveConstants {
 
 
     public static final ModuleGainsAndRatios moduleGainsAndRatios =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN1 ->
                 new ModuleGainsAndRatios(
                     5.0,
@@ -81,7 +81,7 @@ public class DriveConstants {
         };
 
     public static final ModuleConfig[] moduleConfigs =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN2 ->
                 new ModuleConfig[] {
                     new ModuleConfig(1, 2, 9, 0.228031255+0.5, true),

@@ -6,8 +6,8 @@ package frc.robot;
 
 /** Add your docs here. */
 public class SuperstructureCommandLogger {
-    public static SUPERSTATE_COMMAND previousSuperStateCommand;
-    public static enum SUPERSTATE_COMMAND {
+    public static SuperStateCommand previousSuperStateCommand;
+    public static enum SuperStateCommand {
       STOW,
       AUTO_AIM,
       SCORE_AMP,

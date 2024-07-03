@@ -1,21 +1,9 @@
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
-import edu.wpi.first.math.geometry.*;
-
 
 /***
  * CatzConstants
@@ -30,13 +18,23 @@ public final class CatzConstants {
   /**************************************************
    * Robot Modes
    *************************************************/
-  public static final boolean tuningMode = true;
-  public static final Mode currentMode = Mode.SIM;
+  public static final RobotEnviroment robotEnviroment = RobotEnviroment.PRACTICE;
+  public static final HardwareMode hardwareMode = HardwareMode.SIM;
   private static RobotType robotType = RobotType.SIM;
+  
+  public static AllianceColor choosenAllianceColor = null;
+  public static boolean disableHAL = false;
 
   public static final double LOOP_TIME = 0.02;
 
-  public static enum Mode {
+
+  public static enum RobotEnviroment {
+    TUNING, //In PID enviroment with logged tunable numbers
+    PRACTICE, //Driver Practice + Testing
+    COMPETITION //Competition Setting
+  }
+
+  public static enum HardwareMode {
     /** Running on a real robot. */
     REAL,
     /** Running a physics simulator. */
@@ -45,7 +43,7 @@ public final class CatzConstants {
     REPLAY
   }
 
-  public static RobotType getRobot() {
+  public static RobotType getRobotType() {
     if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIM) {
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
           .set(true);
@@ -66,10 +64,6 @@ public final class CatzConstants {
   public static enum AllianceColor {
     Blue, Red
   }
-  
-  public static AllianceColor choosenAllianceColor = null;
-
-  public static boolean disableHAL = false;
 
   public static void disableHAL() {
     disableHAL = true;

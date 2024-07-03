@@ -20,8 +20,6 @@ import frc.robot.CatzConstants;
 
 import java.util.List;
 
-import org.littletonrobotics.junction.Logger;
-
 public class TrajectoryDriveCmd extends Command {
 
     public static final double ALLOWABLE_POSE_ERROR = 0.05;
@@ -82,7 +80,7 @@ public class TrajectoryDriveCmd extends Command {
                                 DriveConstants.
                                     swerveDriveKinematics.
                                         toChassisSpeeds(m_driveTrain.getModuleStates()),
-                                m_driveTrain.getRotation2d());
+                                m_driveTrain.getDriveRotation2d());
                                 
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_RATIO;
 

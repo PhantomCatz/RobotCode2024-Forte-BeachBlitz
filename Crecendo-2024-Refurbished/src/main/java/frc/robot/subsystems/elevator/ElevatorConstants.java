@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems.elevator;
 
+import com.google.flatbuffers.Constants;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.CatzConstants;
 
 /** Add your docs here. */
 public class ElevatorConstants {
+    public static final boolean isElevatorDisabled = true;
 
     private static final double MAXPLANETARY_GEAR_RATIO = 4.0 * 4.0;
 
@@ -24,26 +29,34 @@ public class ElevatorConstants {
     public static final double  maxRotations = 117.0;
 
     public static final int leaderID =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN2 -> 25;
             default -> 11;
         };
 
     public static final int followerID =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN2 -> 25;
             default -> 11;
         };
 
+    public static final double elevatorLength =
+        switch (CatzConstants.getRobotType()) {
+            case SN2 -> Units.inchesToMeters(24.8);
+            default -> Units.inchesToMeters(25.866);
+        };
+
+    public static final Translation2d elevatorOrigin = new Translation2d(-0.238, 0.298);
+
     public static final Gains gains =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN2 -> new Gains(90.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);//TODO fix gains
             case SN1 -> new Gains(75.0, 0.0, 2.5, 0.0, 0.0, 0.0, 0.0);
             case SIM -> new Gains(7000.0, 0.0, 250.0, 8.4, 0.0, 0.0, 22.9);
         };
 
     public static final MotionMagicParameters motionMagicParameters =
-        switch (CatzConstants.getRobot()) {
+        switch (CatzConstants.getRobotType()) {
             case SN2, SN1 -> new MotionMagicParameters(260, 400, 1600);
             case SIM -> new MotionMagicParameters(0.0, 0.0, 0.0);
         };
