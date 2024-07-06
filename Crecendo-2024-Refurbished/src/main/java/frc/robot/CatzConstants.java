@@ -24,8 +24,8 @@ public final class CatzConstants {
    * Robot Modes
    *************************************************/
   public static final boolean tuningMode = true;
-  public static final Mode currentMode = Mode.SIM;
-  private static RobotType robotType = RobotType.SIM;
+  public static final Mode currentMode = Mode.REAL;
+  private static RobotType robotType = RobotType.SN2;
 
   public static final double LOOP_TIME = 0.02;
 
