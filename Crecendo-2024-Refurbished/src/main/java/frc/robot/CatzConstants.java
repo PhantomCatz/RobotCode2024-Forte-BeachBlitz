@@ -1,13 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
-import edu.wpi.first.math.geometry.*;
 
 
 /***
@@ -29,7 +22,7 @@ public final class CatzConstants {
 
   public static final double LOOP_TIME = 0.02;
 
-  public static enum Mode {
+  public static enum Mode {     
     /** Running on a real robot. */
     REAL,
     /** Running a physics simulator. */
@@ -40,8 +33,8 @@ public final class CatzConstants {
 
   public static RobotType getRobot() {
     if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIM) {
-      new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-          .set(true);
+      // new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
+      //     .set(true);
       robotType = RobotType.SN2;
     }
     return robotType;
@@ -80,7 +73,6 @@ public final class CatzConstants {
 
     public static final double kDeadband = 0.1;
     public static final double kOffPwr = 0.1;
-
   }
 
 }
