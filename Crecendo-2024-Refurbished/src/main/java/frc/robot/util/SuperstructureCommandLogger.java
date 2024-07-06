@@ -4,7 +4,6 @@
 
 package frc.robot.util;
 
-/** Add your docs here. */
 public class SuperstructureCommandLogger {
     public static POSITION_COMMAND previousCommand;
     public static enum POSITION_COMMAND {

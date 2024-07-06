@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CatzConstants.AllianceColor;
+import frc.robot.CatzConstants.OIConstants;
 import frc.robot.commands.AutoSpecifiedCmds;
 import frc.robot.subsystems.Intake.IntakePivot.CatzIntake;
 
@@ -17,8 +18,8 @@ public class RobotContainer {
 
   private static CatzIntake intake = new CatzIntake();
 
-  private CommandXboxController xboxDrv = new CommandXboxController(0);
-  private CommandXboxController xboxAux = new CommandXboxController(1);
+  private CommandXboxController xboxDrv = new CommandXboxController(OIConstants.XBOX_DRV_PORT);
+  private CommandXboxController xboxAux = new CommandXboxController(OIConstants.XBOX_AUX_PORT);
 
   private static LoggedDashboardChooser<AllianceColor> allianceChooser = new LoggedDashboardChooser<>("Chosen Autonomous Path");
 
