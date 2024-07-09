@@ -8,16 +8,16 @@ public class FlywheelConstants {
 
   public static final FlywheelConfig flywheelConfig =
       switch (CatzConstants.getRobotType()) {
-        case SN2 -> new FlywheelConfig(4, 0, (1.0 / 2.0), 9000.0);
+        case SN2 -> new FlywheelConfig(20, 21, (1.0 / 2.0), 9000.0);
         case SN1 -> new FlywheelConfig(5, 4, (1.0 / 2.0), 6000.0);
-        case SIM -> new FlywheelConfig(0, 0, (1.0 / 2.0), 9000.0);
+        case SN_TEST -> new FlywheelConfig(0, 0, (1.0 / 2.0), 9000.0);
       };
 
   public static final Gains gains =
       switch (CatzConstants.getRobotType()) {
         case SN2 -> new Gains(0.18, 0, 0.0006, 0.38367, 0.00108, 0);
         case SN1 -> new Gains(0.0003, 0.0, 0.0, 0.33329, 0.00083, 0.0);
-        case SIM -> new Gains(0.05, 0.0, 0.0, 0.01, 0.00103, 0.0);
+        case SN_TEST -> new Gains(0.05, 0.0, 0.0, 0.01, 0.00103, 0.0);
       };
 
   // PID gains

@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
-import frc.robot.CatzConstants.OIConstants;
+import frc.robot.CatzConstants.XboxInterfaceConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
@@ -61,9 +61,9 @@ public class TeleopDriveCmd extends Command {
     }
 
     // Apply deadbands to prevent modules from receiving unintentional pwr
-    xVelocity =       Math.abs(xVelocity) > OIConstants.kDeadband ? xVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    yVelocity =       Math.abs(yVelocity) > OIConstants.kDeadband ? yVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    turningVelocity = Math.abs(turningVelocity) > OIConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
+    xVelocity =       Math.abs(xVelocity) > XboxInterfaceConstants.kDeadband ? xVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    yVelocity =       Math.abs(yVelocity) > XboxInterfaceConstants.kDeadband ? yVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    turningVelocity = Math.abs(turningVelocity) > XboxInterfaceConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
 
     Logger.recordOutput("Telopdrvcmd/CmdVelocityX", xVelocity);
     Logger.recordOutput("Telopdrvcmd/CmdVelocityY", yVelocity);

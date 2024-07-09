@@ -50,8 +50,7 @@ public class AutomatedSequenceCmds {
                 Commands.print("Run Rollers To Intake"),
                 container.getCatzShooterFeeder().commandToIntake()
             ).until(()->container.getCatzShooterFeeder()
-                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position
-            
+                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position  
         );
     }
 

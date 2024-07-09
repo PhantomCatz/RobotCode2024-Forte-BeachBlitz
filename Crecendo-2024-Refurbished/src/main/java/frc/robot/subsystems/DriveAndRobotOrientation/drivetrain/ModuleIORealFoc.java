@@ -66,8 +66,8 @@ public class ModuleIORealFoc implements ModuleIO {
 
   public ModuleIORealFoc(ModuleConfig config) {
     // Init controllers and encoders from config constants
-    driveTalon = new TalonFX(config.driveID(), "*");
-    steerNeo = new CANSparkMax(config.turnID(), MotorType.kBrushless);
+    driveTalon = new TalonFX(config.driveID());
+    steerNeo = new CANSparkMax(config.steerID(), MotorType.kBrushless);
     magEncPWMInput = new DigitalInput(config.absoluteEncoderChannel());
     steerAbsoluteMagEnc = new DutyCycleEncoder(magEncPWMInput);
 
@@ -148,14 +148,12 @@ public class ModuleIORealFoc implements ModuleIO {
     inputs.isTurnMotorConnected = true; //TODO need to find better way of ensuring neos are connected
     inputs.turnAbsolutePosition = 
         Rotation2d.fromRotations(
-            steerAbsoluteMagEnc.getAbsolutePosition()-absoluteEncoderOffset.getRotations()
+            steerAbsoluteMagEnc.getAbsolutePosition() - absoluteEncoderOffset.getRotations()
                                 ); //TODO getAbsoultePosition() vs get()
     inputs.turnPosition = Rotation2d.fromRotations(steerNeo.getEncoder().getPosition());
     inputs.turnVelocityRadsPerSec = Units.rotationsToRadians(steerNeo.getEncoder().getVelocity());
     inputs.turnBussVolts = steerNeo.getBusVoltage();
     inputs.turnSupplyCurrentAmps = -999.0;
-
-    //steer Enc input collection
 
     inputs.odometryDrivePositionsMeters = new double[] {drivePosition.getValueAsDouble() * driveConfig.wheelRadius()};
     inputs.odometryTurnPositions = new Rotation2d[] {inputs.turnAbsolutePosition};

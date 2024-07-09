@@ -63,7 +63,7 @@ public class CatzSwerveModule {
         m_index = index;
 
         // Run subsystem disconnect check
-        if(DriveConstants.isDriveDisabled) {
+        if(DriveConstants.isDriveDisabled) { //TODO add extra robot enviroment //TODO have discussion on mode and states definement
                 io = new ModuleIONull();
                 System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
         } else {
@@ -194,7 +194,7 @@ public class CatzSwerveModule {
             ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
                 + ((wheelTorqueNm / moduleGainsAndRatios.driveReduction()) * moduleGainsAndRatios.ffkT()));
 
-        if(CatzConstants.getRobotType() == CatzConstants.RobotType.SIM) {
+        if(CatzConstants.getRobotType() == CatzConstants.RobotID.SN_TEST) {
             io.runSteerPositionSetpoint(0.0, targetAngleRad);
         } else {
             io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);

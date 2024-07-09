@@ -38,8 +38,8 @@ public class FlywheelsIOReal implements FlywheelsIO {
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0.0);
 
   public FlywheelsIOReal() {
-    leftTalon = new TalonFX(flywheelConfig.leftID(), "rio");
-    rightTalon = new TalonFX(flywheelConfig.rightID(), "rio");
+    leftTalon = new TalonFX(flywheelConfig.leftID());
+    rightTalon = new TalonFX(flywheelConfig.rightID());
 
     // General config
     TalonFXConfiguration config = new TalonFXConfiguration();

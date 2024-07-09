@@ -42,8 +42,8 @@ public class ElevatorIOReal implements ElevatorIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
 
   public ElevatorIOReal() {
-    leaderTalon = new TalonFX(ElevatorConstants.leaderID, "*");
-    followerTalon = new TalonFX(ElevatorConstants.followerID, "*");
+    leaderTalon = new TalonFX(ElevatorConstants.leaderID);
+    followerTalon = new TalonFX(ElevatorConstants.followerID);
     followerTalon.setControl(new Follower(ElevatorConstants.leaderID, true));
 
 

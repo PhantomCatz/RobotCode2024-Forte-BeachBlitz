@@ -19,11 +19,10 @@ public final class CatzConstants {
    * Robot Modes
    *************************************************/
   public static final RobotEnviroment robotEnviroment = RobotEnviroment.PRACTICE;
-  public static final HardwareMode hardwareMode = HardwareMode.SIM;
-  private static RobotType robotType = RobotType.SIM;
+  public static final HardwareMode hardwareMode = HardwareMode.REAL;
+  private static RobotID robotType = RobotID.SN2;
   
   public static AllianceColor choosenAllianceColor = null;
-  public static boolean disableHAL = false;
 
   public static final double LOOP_TIME = 0.02;
 
@@ -43,48 +42,46 @@ public final class CatzConstants {
     REPLAY
   }
 
-  public static RobotType getRobotType() {
-    if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIM) {
+  public static RobotID getRobotType() {
+    // Checks to ensure that //TODO define modes and come back to finishing describing what is does
+    //Check if selected sim, nest if statment that checks if we are conected to a simulator
+    //Seperate from Robot.java
+    if (RobotBase.isReal() && robotType == RobotID.SN_TEST) {
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-          .set(true);
-      robotType = RobotType.SN2;
+          .set(true); //TODO have errors show up until fixed...Have a way to make it sticky for a user specified time
+      robotType = RobotID.SN2;
     }
     return robotType;
   }
 
-  public static enum RobotType {
-    /** Running on SN1. */
+  public static enum RobotID {
     SN1,
-    /** Running on SN2. */
     SN2,
-    /** Running on physics simulator */
-    SIM
+    SN_TEST // Select alternate test robot parameters
   }
 
   public static enum AllianceColor {
     Blue, Red
   }
 
-  public static void disableHAL() {
-    disableHAL = true;
-  }
-
-  public static final class OIConstants {
-
+  public static final class XboxInterfaceConstants {
+    // Xbox Driver Ports
     public static final int XBOX_DRV_PORT = 0;
     public static final int XBOX_AUX_PORT = 1;
 
+    // Xbox Axis IDs
     public static final int kDriverYAxis = 1;
     public static final int kDriverXAxis = 0;
     public static final int kDriverRotAxis = 4;
+
+    // Xbox Button Mapping
     public static final int kDriverFieldOrientedButtonIdx = 1;
 
+    // Deadbands
     public static final double kDeadband = 0.1;
-    public static final double kOffPwr = 0.1;
-
   }
 
-  // COLOR CONSTANTS::
+  // COLOR CONSTANTS
   public static final class CatzColorConstants {
     public static final Color PHANTOM_SAPPHIRE = new Color(15, 25, 200);
   }

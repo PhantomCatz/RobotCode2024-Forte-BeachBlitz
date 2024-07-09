@@ -42,6 +42,9 @@ import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
+  //LED instantiation
+  CatzLED led = CatzLED.getInstance();
+
   private Command m_autonomousCommand;
   private double autoStart;
   private boolean autoMessagePrinted;
@@ -109,7 +112,8 @@ public class Robot extends LoggedRobot {
     switch (CatzConstants.hardwareMode) {
         case REAL:
             // Running on a real robot, log to a USB stick ("/U/logs")
-            Logger.addDataReceiver(new WPILOGWriter("/media/sda1/Logs/"));
+            Logger.addDataReceiver(new WPILOGWriter());
+            //Logger.addDataReceiver(new WPILOGWriter("E:/Logs"));
             Logger.addDataReceiver(new NT4Publisher());
             break;
 

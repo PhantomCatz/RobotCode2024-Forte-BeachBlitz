@@ -118,7 +118,9 @@ public class CatzRobotTracker {
   }
 
   public static CatzRobotTracker getInstance() {
-    if(instance == null) instance = new CatzRobotTracker();
+    if(instance == null) {
+      instance = new CatzRobotTracker();
+    }
     return instance;
   }
 

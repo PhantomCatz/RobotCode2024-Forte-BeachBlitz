@@ -5,18 +5,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
 public class CatzMathUtils {
-    public static double velocityCntsToRPM(double velocityCounts, double gearRatio) {
-        double motorRPM = velocityCounts * (600.0 / 2048.0);        
-        double mechRPM = motorRPM / gearRatio;
-        return mechRPM;
-    }
 
-    public static double velocityCntsToMPS(double velocitycounts, double circumference, double gearRatio){
-        double wheelRPM = velocityCntsToRPM(velocitycounts, gearRatio);
-        double wheelMPS = (wheelRPM * circumference) / 60;
-        return wheelMPS;
-    }
-
+    //TODO swerve specific should be a swerve util? Look for a library?
     public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
         double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
         double targetSpeed = desiredState.speedMetersPerSecond;
@@ -26,7 +16,7 @@ public class CatzMathUtils {
             targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
         }        
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
-      }
+    }
     
     /**
      * @param scopeReference Current Angle
@@ -93,6 +83,25 @@ public class CatzMathUtils {
     
         public static double MPSToRPS(double velocity){
             return velocity / wheelCircumference * gearRatio;
+        }
+
+        /**
+         *  TODO update it works for all motors/controllers
+         *  600 is a conversion factor from cnts/100 ms to cnts/minute
+         * @param velocityCounts
+         * @param gearRatio
+         * @return
+         */
+        public static double velocityCntsToRPM(double velocityCounts, double gearRatio) {
+            double motorRPM = velocityCounts * (600.0 / 2048.0);        
+            double mechRPM = motorRPM / gearRatio;
+            return mechRPM;
+        }
+
+        public static double velocityCntsToMPS(double velocitycounts, double circumference, double gearRatio){
+            double wheelRPM = velocityCntsToRPM(velocitycounts, gearRatio);
+            double wheelMPS = (wheelRPM * circumference) / 60;
+            return wheelMPS;
         }
     }
 

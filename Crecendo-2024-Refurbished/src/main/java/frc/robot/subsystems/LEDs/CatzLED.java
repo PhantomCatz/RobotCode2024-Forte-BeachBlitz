@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
+import frc.robot.CatzConstants.CatzColorConstants;
 import frc.robot.CatzConstants.RobotEnviroment;
 import frc.robot.CatzConstants.HardwareMode;
 
@@ -66,14 +67,14 @@ public class CatzLED extends SubsystemBase {
     private final Notifier loadingNotifier;
 
     // LED PWM IDs
-    private final int LEADER_LED_PWM_PORT = 8; 
-    private final int LED_COUNT_HALF = 17/2; //TODO what does this mean
+    private final int LEADER_LED_PWM_PORT = 2; 
+    private final int LED_COUNT_HALF = 5; //TODO what does this mean
 
 
     // Constants
     private static final boolean paradeLeds = false;
     private static final int minLoopCycleCount = 10;
-    private static final int length = 12;
+    private static final int length = 34;
     private static final double strobeDuration = 0.1;
     private static final double breathDuration = 1.0;
     private static final double rainbowCycleLength = 25.0;
@@ -88,9 +89,8 @@ public class CatzLED extends SubsystemBase {
 
     private CatzLED() {
         ledStrip = new AddressableLED(LEADER_LED_PWM_PORT);
-        buffer = new AddressableLEDBuffer(LED_COUNT_HALF); // NOTE -WPILIB doesn't support creation of 2 led objects
-
-        ledStrip.setLength(buffer.getLength());
+        buffer = new AddressableLEDBuffer(length); // NOTE -WPILIB doesn't support creation of 2 led objects
+        ledStrip.setLength(length);
         ledStrip.setData(buffer);        
         ledStrip.start();
 
@@ -98,7 +98,7 @@ public class CatzLED extends SubsystemBase {
             new Notifier(
                 () -> {
                   synchronized (this) {
-                    breath(Color.kWhite, Color.kBlack, System.currentTimeMillis() / 1000.0);
+                    breath(Color.kBlack, Color.kWhite, System.currentTimeMillis() / 1000.0);
                     ledStrip.setData(buffer);
                   }
                 });
@@ -108,13 +108,13 @@ public class CatzLED extends SubsystemBase {
     @Override
     public void periodic(){
         // Update alliance color
-        if (DriverStation.isFMSAttached()) {
+        if (DriverStation.isDSAttached()) {
             alliance = DriverStation.getAlliance();
             allianceColor =
                 alliance
                     .map(alliance -> alliance == Alliance.Blue ? Color.kBlue : Color.kRed)
                     .orElse(Color.kGold);
-            secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kDarkBlue;
+            secondaryDisabledColor = alliance.isPresent() ? Color.kYellow : Color.kBlack;
         }
 
         // Update auto state
@@ -190,7 +190,6 @@ public class CatzLED extends SubsystemBase {
 
         // Update LEDs
         ledStrip.setData(buffer);
-        
     }
 
     private void solid(Color color) {

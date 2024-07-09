@@ -13,11 +13,11 @@ import lombok.Builder;
 
 public class DriveConstants {
     // Disabled flag for testing
-    public static final boolean isDriveDisabled = true;
+    public static final boolean isDriveDisabled = false;
 
     public static final DriveConfig driveConfig =
     switch (CatzConstants.getRobotType()) {
-      case SIM, SN2 ->
+      case SN_TEST, SN2 ->
           DriveConfig.builder()
               .wheelRadius(Units.inchesToMeters(1.891))
               .robotLengthX(Units.inchesToMeters(24.0))
@@ -67,7 +67,7 @@ public class DriveConstants {
                     0.0,
                     Mk4iReductions.L2_PLUS.reduction,
                     Mk4iReductions.TURN.reduction);
-            case SIM ->
+            case SN_TEST ->
                 new ModuleGainsAndRatios(
                     0.014,
                     0.134,
@@ -80,7 +80,7 @@ public class DriveConstants {
                     Mk4iReductions.TURN.reduction);
         };
 
-    public static final ModuleConfig[] moduleConfigs =
+    public static final ModuleConfig[] moduleConfigs = 
         switch (CatzConstants.getRobotType()) {
             case SN2 ->
                 new ModuleConfig[] {
@@ -96,7 +96,7 @@ public class DriveConstants {
                     new ModuleConfig(5, 6, 7, -0.1892973047, true),
                     new ModuleConfig(7, 8, 6, 0.010002000, true)
                 };
-            case SIM -> 
+            case SN_TEST -> 
                 new ModuleConfig[] {
                     new ModuleConfig(1, 2, 9, 0.0, true),
                     new ModuleConfig(3, 4, 8, 0.0, true),
@@ -134,7 +134,7 @@ public class DriveConstants {
      *******************************************************************************************/
     public record ModuleConfig(
         int driveID,
-        int turnID,
+        int steerID,
         int absoluteEncoderChannel,
         double absoluteEncoderOffset,
         boolean turnMotorInverted) {}

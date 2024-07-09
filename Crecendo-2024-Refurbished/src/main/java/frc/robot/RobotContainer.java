@@ -41,6 +41,7 @@ public class RobotContainer {
   private static CatzElevator     elevator     = new CatzElevator();
   private static CatzShooterFeeder shooterFeeder = new CatzShooterFeeder();
   private static CatzShooterFlywheels shooterFlywheels = new CatzShooterFlywheels();
+  private static CatzLED          led = CatzLED.getInstance();
   private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
   private static CatzVision       vision       = new CatzVision(new VisionIO[] {
                                                               new VisionIOLimeLight("limelight-udon"),    //index 0 left
