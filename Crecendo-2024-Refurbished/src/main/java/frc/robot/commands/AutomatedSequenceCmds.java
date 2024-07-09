@@ -48,9 +48,9 @@ public class AutomatedSequenceCmds {
             new STOW(container).until(()->true),
             new ParallelCommandGroup(
                 Commands.print("Run Rollers To Intake"),
-                Commands.runOnce(() -> container.getCatzShooterFeeder()
-                                                    .setCurrentShooterFeederState(ShooterFeederState.TO_INTAKE), container.getCatzShooterFeeder())
-            ).until(()->true) // Until Shooter finalizes note position
+                container.getCatzShooterFeeder().commandToIntake()
+            ).until(()->container.getCatzShooterFeeder()
+                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position
             
         );
     }
@@ -63,9 +63,9 @@ public class AutomatedSequenceCmds {
             new STOW(container).until(()->true), // Until Intake has stowed 
             new ParallelCommandGroup(
                 Commands.print("Run Rollers"),
-                Commands.runOnce(() -> container.getCatzShooterFeeder()
-                                                    .setCurrentShooterFeederState(ShooterFeederState.TO_SHOOTER), container.getCatzShooterFeeder())
-            ).until(()->true) // Until Shooter finalizes note position
+                container.getCatzShooterFeeder().commandToShooter()
+            ).until(()->container.getCatzShooterFeeder()
+                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position
         );
     }
 
@@ -80,19 +80,16 @@ public class AutomatedSequenceCmds {
                 Commands.print("StartUp flywheels"),
                 new SequentialCommandGroup(
                     Commands.waitUntil(()->(true && true)).unless(()->driverOveride.get()), // Until flywheels and shootersuperstructure are in position or driveroverride
-                    Commands.runOnce(() -> container.getCatzShooterFeeder()
-                                                        .setCurrentShooterFeederState(ShooterFeederState.SHOOT), container.getCatzShooterFeeder())
+                    container.getCatzShooterFeeder().commandShootNote()
                 )
             )
         );
     }
 
     public static Command testSequence(RobotContainer container) {
-        return Commands.sequence(Commands.runOnce(() -> container.getCatzShooterFeeder()
-                                                        .setCurrentShooterFeederState(ShooterFeederState.SHOOT), container.getCatzShooterFeeder()),
+        return Commands.sequence(container.getCatzShooterFeeder().commandShootNote(),
                                  Commands.waitSeconds(3),
-                                 Commands.runOnce(()->container.getCatzShooterFeeder()
-                                                                    .setCurrentShooterFeederState(ShooterFeederState.TO_INTAKE), container.getCatzShooterFeeder()));
+                                 container.getCatzShooterFeeder().commandShootNote());
     }
 
     

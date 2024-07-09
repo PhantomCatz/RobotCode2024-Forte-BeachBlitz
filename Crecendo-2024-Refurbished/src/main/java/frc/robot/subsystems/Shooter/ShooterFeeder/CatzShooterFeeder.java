@@ -6,9 +6,9 @@ package frc.robot.subsystems.Shooter.ShooterFeeder;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.Shooter.ShooterConstants;
 
 public class CatzShooterFeeder extends SubsystemBase {
 
@@ -23,7 +23,9 @@ public class CatzShooterFeeder extends SubsystemBase {
   // Flag Definement
   private boolean isAdjustStateDetermined;
   private boolean hasNoteClearedIntake;
+  private boolean isNoteInPosition;
 
+  // Access Feeder State Enums
   public enum ShooterFeederState{
     TO_SHOOTER,
     TO_INTAKE,
@@ -31,6 +33,7 @@ public class CatzShooterFeeder extends SubsystemBase {
     DISABLED
   }
 
+  // Inner Feeder Direction Enums
   private enum AdjustState{
     FWD,
     BCK,
@@ -39,7 +42,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   
   /** Creates a new CatzShooterFeeder. */
   public CatzShooterFeeder() {
-     if(ShooterConstants.isShooterDisabledFeeder) {
+     if(ShooterFeederConstants.isShooterDisabledFeeder) {
       io = new FeederIONull();
       System.out.println("Feeder Unconfigured");
     } else {
@@ -48,17 +51,14 @@ public class CatzShooterFeeder extends SubsystemBase {
           io = new FeederIOReal();
           System.out.println("Feeder Configured for Real");
           break;
-
         case REPLAY:
           io = new FeederIOReal() {};
           System.out.println("Feeder Configured for Replayed simulation");
           break;
-
         case SIM:
           io = new FeederIOSim();
           System.out.println("Feeder Configured for WPILIB simulation");
           break;
-
         default:
           io = null;
           System.out.println("Feeder Unconfigured");
@@ -75,31 +75,24 @@ public class CatzShooterFeeder extends SubsystemBase {
     // Feeder State Change Init
     if(currentShooterFeederState != previousShooterFeederState) {
       switch(currentShooterFeederState) {
-        case TO_SHOOTER:
-          handleToShooterInit();
+        case TO_SHOOTER: handleToShooterInit();
         break;
-        case TO_INTAKE:
-          handleToIntakeInit();
+        case TO_INTAKE: handleToIntakeInit();
         break;
-        case SHOOT:
-          handleShootInit();
+        case SHOOT: handleShootInit();
         break;
-        case DISABLED:
-          io.feedDisabled();
+        case DISABLED: io.feedDisabled();
         break;
       }
     }
 
     // Feeder State Periodic
     switch(currentShooterFeederState) {
-      case TO_SHOOTER:
-        handleToShooterPeriodic();
+      case TO_SHOOTER: handleToShooterPeriodic();
       break;
-      case TO_INTAKE:
-        handleToIntakePeriodic();
+      case TO_INTAKE: handleToIntakePeriodic();
       break;
-      case SHOOT:
-        handleShootPeriodic();
+      case SHOOT: handleShootPeriodic();
       break;
       case DISABLED:
       break;
@@ -109,10 +102,14 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   } //-End of feeder Periodic
 
+  //-----------------------------------------------------------------------------------------
+  //    Feeder State Machine
+  //-----------------------------------------------------------------------------------------
   /** Feeder TOSHOOTER state on state change */
   private void handleToShooterInit() {
     io.loadFoward();
     isAdjustStateDetermined = false;
+    isNoteInPosition = false;
     determinedAdjustState = AdjustState.UNDETERMINED;
   }
 
@@ -138,10 +135,12 @@ public class CatzShooterFeeder extends SubsystemBase {
       if(determinedAdjustState == AdjustState.BCK) {
         if(inputs.isAdjustBeamBreakBroken == false) {
           io.feedDisabled();
+          isNoteInPosition = true;
         }
       } else {
         if(inputs.isAdjustBeamBreakBroken == true) {
           io.feedDisabled();
+          isNoteInPosition = true;
         }
       }
     }
@@ -149,15 +148,14 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOINTAKE state state change */
   private void handleToIntakeInit() {
-        System.out.println("Intake INIT");
     io.resetLoadEnc();
     io.loadFoward();
     hasNoteClearedIntake = false;
+    isNoteInPosition = false;
   }
 
   /** Feeder TOINTAKE state Periodic */
   private void handleToIntakePeriodic() {
-    System.out.println("Intake");
     // Measure how far note travels
     if(hasNoteClearedIntake == false) {
       if(inputs.noteMovementUpInches > 2.0) {
@@ -169,22 +167,50 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder SHOOT state state change */
   private void handleShootInit() {
-    System.out.println("Shooter Init");
     io.feedShooter();
+    isNoteInPosition = false;
   }
 
   /** Feeder SHOOT state Periodic */
   private void handleShootPeriodic() {
-    System.out.println("Shooter periodic");
     // check if note has exited shooter
     if(!inputs.isAdjustBeamBreakBroken) {
       io.feedDisabled();
     }
   }
+  //-----------------------------------------------------------------------------------------
+  //    Feeder MISC
+  //-----------------------------------------------------------------------------------------
+  public boolean isNoteInShooterPosition() {
+    return isNoteInPosition;
+  }
 
-
+  //-----------------------------------------------------------------------------------------
+  //    Command Feeder State Access methods
+  //-----------------------------------------------------------------------------------------
   /** Shooter Feeder Access Method for Changing state */
-  public void setCurrentShooterFeederState(ShooterFeederState wantedState) {
+  private void setShooterFeederState(ShooterFeederState wantedState) {
     currentShooterFeederState = wantedState;
   }
+
+  public Command commandToShooter() {
+    return startEnd(() -> setShooterFeederState(ShooterFeederState.TO_SHOOTER), 
+                    () -> setShooterFeederState(ShooterFeederState.DISABLED))
+        .withName("Feeder TOSHOOTER");
+  }
+
+  public Command commandToIntake() {
+    return startEnd(() -> setShooterFeederState(ShooterFeederState.TO_INTAKE), 
+                    () -> setShooterFeederState(ShooterFeederState.DISABLED))
+        .withName("Feeder TOINTAKE");
+  }
+
+  public Command commandShootNote() {
+    return startEnd(() -> setShooterFeederState(ShooterFeederState.SHOOT), 
+                    () -> setShooterFeederState(ShooterFeederState.DISABLED))
+        .withName("Feeder Shoot");
+  }
+
+
+
 }

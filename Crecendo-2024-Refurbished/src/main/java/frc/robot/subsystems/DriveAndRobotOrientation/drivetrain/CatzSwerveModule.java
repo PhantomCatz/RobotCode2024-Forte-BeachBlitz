@@ -72,11 +72,9 @@ public class CatzSwerveModule {
                 case REAL: io = new ModuleIORealFoc(config);
                             System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
                 break;
-
                 case REPLAY : io = new ModuleIORealFoc(config) {};
                             System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
                 break;
-
                 case SIM: io = new ModuleIOSim(config);
                             System.out.println("Module " + moduleNames[m_index] + " Configured for WPILIB simulation");
                 break;

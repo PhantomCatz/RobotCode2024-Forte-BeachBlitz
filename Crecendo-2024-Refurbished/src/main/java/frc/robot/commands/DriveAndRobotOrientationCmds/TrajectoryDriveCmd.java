@@ -79,8 +79,8 @@ public class TrajectoryDriveCmd extends Command {
                                 path, 
                                 DriveConstants.
                                     swerveDriveKinematics.
-                                        toChassisSpeeds(m_driveTrain.getModuleStates()),
-                                m_driveTrain.getDriveRotation2d());
+                                        toChassisSpeeds(CatzRobotTracker.getInstance().getRobotSwerveModuleStates()),
+                                CatzRobotTracker.getInstance().getRobotRotation());
                                 
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_RATIO;
 

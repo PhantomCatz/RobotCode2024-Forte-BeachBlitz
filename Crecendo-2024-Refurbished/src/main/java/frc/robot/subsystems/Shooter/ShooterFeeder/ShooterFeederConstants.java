@@ -1,10 +1,7 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.Shooter.ShooterFeeder;
 
-public class ShooterConstants {
+public class ShooterFeederConstants {
     public static final boolean isShooterDisabledFeeder = true;
-    public static final boolean isShooterDisabledFlywheels = true;
-    public static final boolean isShooterDisabledPivot = true;
-    public static final boolean isShooterDisabledTurret = true;
 
     // Feeder Ratio
     public static final double FEEDER_GEAR_RATIO = 3.0;
@@ -16,5 +13,4 @@ public class ShooterConstants {
     public static final double LOAD_MOTOR_BACKWARD_SPEED   = 0.8;
     public static final double LOAD_MOTOR_ADJUST_SPEED     = 0.04;
     public static final double LOAD_MOTOR_TRANSFER_SPEED   = 0.4;
-
 }

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotEnviroment;
-import frc.robot.commands.AutoSpecifiedCmds;
+import frc.robot.commands.CatzAutoFactory;
 import frc.robot.commands.AutomatedSequenceCmds;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
@@ -29,25 +29,30 @@ import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
 import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
+import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.subsystems.elevator.CatzElevator;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
 public class RobotContainer {
 
+  // Subsystem Declaration
   private static CatzDrivetrain   drive        = new CatzDrivetrain();
   private static CatzElevator     elevator     = new CatzElevator();
   private static CatzShooterFeeder shooterFeeder = new CatzShooterFeeder();
+  private static CatzShooterFlywheels shooterFlywheels = new CatzShooterFlywheels();
   private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
-  // private static CatzVision       vision       = new CatzVision(new VisionIO[] {
-  //                                                             new VisionIOLimeLight("limelight-udon"),    //index 0 left
-  //                                                             new VisionIOLimeLight("limelight-soba"),    //index 1 right
-  //                                                             new VisionIOLimeLight("limelight-ramen") 
-  //                                                             });   //index 2 turret)
+  private static CatzVision       vision       = new CatzVision(new VisionIO[] {
+                                                              new VisionIOLimeLight("limelight-udon"),    //index 0 left
+                                                              new VisionIOLimeLight("limelight-soba"),    //index 1 right
+                                                              new VisionIOLimeLight("limelight-ramen") 
+                                                              });   //index 2 turret)
 
+  // Drive Controller Declaration
   private CommandXboxController xboxDrv = new CommandXboxController(0);
   private CommandXboxController xboxAux = new CommandXboxController(1);
 
+  // Alert Declaration
   private final Alert driverDisconnected =
       new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
   private final Alert operatorDisconnected =
@@ -57,15 +62,12 @@ public class RobotContainer {
   private final LoggedDashboardNumber endgameAlert2 =
       new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
-  private final LoggedDashboardChooser<AllianceColor> allianceChooser = new LoggedDashboardChooser<>("Chosen Autonomous Path");
-
-  private AutoSpecifiedCmds autoSpecifiedCmds = new AutoSpecifiedCmds(this);
+  // Auto Declaration
+  private CatzAutoFactory auto = new CatzAutoFactory(this);
 
 
   public RobotContainer() {
-    allianceChooser.addDefaultOption("blue", AllianceColor.Blue);
-    allianceChooser.addOption("Red", AllianceColor.Red);
-
+    // Drive And Aux Command Mapping
     configureBindings();
 
     // Endgame alert triggers
@@ -154,6 +156,10 @@ public class RobotContainer {
             || !DriverStation.getJoystickIsXbox(xboxAux.getHID().getPort()));
   }
 
+  //---------------------------------------------------------------------------
+  //      Subsystem getters
+  //---------------------------------------------------------------------------
+
   public CatzDrivetrain getCatzDrivetrain() {
     return drive;
   }
@@ -166,9 +172,13 @@ public class RobotContainer {
     return shooterFeeder;
   }
 
+  public CatzShooterFlywheels getCatzShooterFlywheels() {
+    return shooterFlywheels;
+  }
+
 
 
   public Command getAutonomousCommand() {
-    return autoSpecifiedCmds.getCommand();
+    return auto.getCommand();
   }
 }

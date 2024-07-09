@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.OIConstants;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
@@ -75,7 +76,7 @@ public class TeleopDriveCmd extends Command {
     } else {
         // Relative to field
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                            xVelocity, yVelocity, turningVelocity, m_drivetrain.getDriveRotation2d()
+                                            xVelocity, yVelocity, turningVelocity, CatzRobotTracker.getInstance().getRobotRotation()
                                                               );
     }
 
