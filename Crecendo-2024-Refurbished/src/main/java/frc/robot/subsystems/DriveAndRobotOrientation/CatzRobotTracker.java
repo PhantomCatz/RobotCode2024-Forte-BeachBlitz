@@ -66,6 +66,9 @@ public class CatzRobotTracker {
   private Optional<Pose2d> robotPoseFromCameraPose = Optional.empty();
   private double visionHorizontalDistance = 0.0;
 
+  private Twist2d robotVelocity;
+  private Twist2d trajectoryVelocity;
+
   private boolean hasTarget;
 
   @AutoLogOutput @Getter @Setter private boolean flywheelAccelerating = false;
@@ -164,8 +167,6 @@ public class CatzRobotTracker {
     }
   }
   
-
-
   public void addOdometryObservation(OdometryObservation observation) {
     //-------------------------------------------------------------------
     //  Gyro input collection
@@ -216,6 +217,14 @@ public class CatzRobotTracker {
     lastAccelerationYFromNavX = observation.accelerationY;
   }
 
+  public void addVelocityData(Twist2d robotVelocity) {
+    this.robotVelocity = robotVelocity;
+  }
+
+  public void addTrajectoryVelocityData(Twist2d robotVelocity) {
+    this.trajectoryVelocity = robotVelocity;
+  }
+
 
   /**
    * Applies latency compensation to a vision observation.
@@ -238,8 +247,6 @@ public class CatzRobotTracker {
               cameraPose.getRotation());
   }
 
-
-
   /**
    * Resets the robot pose estimator and odometry
    *
@@ -249,6 +256,24 @@ public class CatzRobotTracker {
     odometry.resetPosition(m_currentGyroAngle, m_currentWheelPositions, pose);
     odometryPose = odometry.getPoseMeters();
     m_poseEstimator.resetPosition(m_currentGyroAngle, m_currentWheelPositions, pose);
+  }
+
+  /**
+   * Predicts what our pose will be in the future. Allows separate translation and rotation
+   * lookaheads to account for varying latencies in the different measurements.
+   *
+   * @param translationLookaheadS The lookahead time for the translation of the robot
+   * @param rotationLookaheadS The lookahead time for the rotation of the robot
+   * @return The predicted pose.
+   */
+  public Pose2d getPredictedPose(double translationLookaheadS, double rotationLookaheadS) {
+    Twist2d velocity = DriverStation.isAutonomousEnabled() ? trajectoryVelocity : robotVelocity;
+    return getEstimatedPose()
+        .transformBy(
+            new Transform2d(
+                velocity.dx * translationLookaheadS,
+                velocity.dy * translationLookaheadS,
+                Rotation2d.fromRadians(velocity.dtheta * rotationLookaheadS)));
   }
 
 

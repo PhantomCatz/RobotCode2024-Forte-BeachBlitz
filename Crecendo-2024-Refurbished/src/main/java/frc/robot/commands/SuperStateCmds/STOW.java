@@ -6,8 +6,7 @@ package frc.robot.commands.SuperStateCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.SuperstructureCommandLogger;
-import frc.robot.SuperstructureCommandLogger.SuperStateCommand;
+import frc.robot.commands.SuperStateCmds.SuperStateCommandLogger.SuperStateCommand;
 import frc.robot.subsystems.elevator.CatzElevator;
 import frc.robot.subsystems.elevator.CatzElevator.ElevatorState;
 
@@ -27,7 +26,7 @@ public class STOW extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    switch(SuperstructureCommandLogger.previousSuperStateCommand) {
+    switch(SuperStateCommandLogger.previousSuperStateCommand) {
       case INTAKE_SOURCE:
       case SCORE_AMP:
         // Move intake to upright position
@@ -66,7 +65,7 @@ public class STOW extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SuperstructureCommandLogger.previousSuperStateCommand = SuperStateCommand.STOW;
+    SuperStateCommandLogger.previousSuperStateCommand = SuperStateCommand.STOW;
   }
 
   // Returns true when the command should end.

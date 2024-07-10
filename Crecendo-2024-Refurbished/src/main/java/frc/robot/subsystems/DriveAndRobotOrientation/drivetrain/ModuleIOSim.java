@@ -13,24 +13,24 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.M
 public class ModuleIOSim implements ModuleIO {
   private final DCMotorSim driveSim =
       new DCMotorSim(DCMotor.getKrakenX60Foc(1), DriveConstants.moduleGainsAndRatios.driveReduction(), 0.025);
-  private final DCMotorSim turnSim =
-      new DCMotorSim(DCMotor.getKrakenX60Foc(1), DriveConstants.moduleGainsAndRatios.turnReduction(), 0.004);
+  private final DCMotorSim steerSim =
+      new DCMotorSim(DCMotor.getKrakenX60Foc(1), DriveConstants.moduleGainsAndRatios.steerReduction(), 0.004);
 
   private final PIDController driveFeedback =
       new PIDController(0.1, 0.0, 0.0, CatzConstants.LOOP_TIME);
-  private final PIDController turnFeedback =
+  private final PIDController steerFeedback =
       new PIDController(10.0, 0.0, 0.0, CatzConstants.LOOP_TIME);
 
   private double driveAppliedVolts = 0.0;
-  private double turnAppliedVolts = 0.0;
-  private final Rotation2d turnAbsoluteInitPosition;
+  private double steerAppliedVolts = 0.0;
+  private final Rotation2d steerAbsoluteInitPosition;
 
   private boolean driveCoast = false;
   private SlewRateLimiter driveVoltsLimiter = new SlewRateLimiter(2.5);
 
   public ModuleIOSim(ModuleConfig config) {
-    turnAbsoluteInitPosition = Rotation2d.fromRadians(Units.rotationsToRadians(config.absoluteEncoderOffset()));
-    turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
+    steerAbsoluteInitPosition = Rotation2d.fromRadians(Units.rotationsToRadians(config.absoluteEncoderOffset()));
+    steerFeedback.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -43,24 +43,24 @@ public class ModuleIOSim implements ModuleIO {
     }
 
     driveSim.update(CatzConstants.LOOP_TIME);
-    turnSim.update(CatzConstants.LOOP_TIME);
+    steerSim.update(CatzConstants.LOOP_TIME);
 
     inputs.driveVelocityRPS =   driveSim.getAngularVelocityRPM()/60; //Convert to RPS
     inputs.drivePositionUnits = driveSim.getAngularPositionRad()/(2*Math.PI);
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.driveSupplyCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
 
-    inputs.turnAbsolutePosition =
-        new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
-    inputs.turnPosition = Rotation2d.fromRadians(turnSim.getAngularPositionRad());
-    inputs.turnVelocityRadsPerSec = turnSim.getAngularVelocityRadPerSec();
-    inputs.turnBussVolts = turnAppliedVolts;
-    inputs.turnSupplyCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
+    inputs.steerAbsolutePosition =
+        new Rotation2d(steerSim.getAngularPositionRad()).plus(steerAbsoluteInitPosition);
+    inputs.steerPosition = Rotation2d.fromRadians(steerSim.getAngularPositionRad());
+    inputs.steerVelocityRadsPerSec = steerSim.getAngularVelocityRadPerSec();
+    inputs.steerSupplyCurrentAmps = steerAppliedVolts;
+    inputs.steerSupplyCurrentAmps = Math.abs(steerSim.getCurrentDrawAmps());
 
     inputs.odometryDrivePositionsMeters =
         new double[] {driveSim.getAngularPositionRad() * DriveConstants.driveConfig.wheelRadius()};
-    inputs.odometryTurnPositions =
-        new Rotation2d[] {Rotation2d.fromRadians(turnSim.getAngularPositionRad())};
+    inputs.odometrysteerPositions =
+        new Rotation2d[] {Rotation2d.fromRadians(steerSim.getAngularPositionRad())};
 
   }
 
@@ -69,9 +69,9 @@ public class ModuleIOSim implements ModuleIO {
     driveSim.setInputVoltage(driveAppliedVolts);
   }
 
-  private void runTurnVolts(double volts) {
-    turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-    turnSim.setInputVoltage(turnAppliedVolts);
+  private void runsteerVolts(double volts) {
+    steerAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    steerSim.setInputVoltage(steerAppliedVolts);
   }
 
   @Override
@@ -89,7 +89,7 @@ public class ModuleIOSim implements ModuleIO {
 
   @Override
   public void runSteerPositionSetpoint(double currentAngleRad, double angleRads) {
-    runTurnVolts(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
+    runsteerVolts(steerFeedback.calculate(steerSim.getAngularPositionRad(), angleRads));
   }
 
   @Override
@@ -98,8 +98,8 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setTurnPID(double kP, double kI, double kD) {
-    turnFeedback.setPID(kP, kI, kD);
+  public void setsteerPID(double kP, double kI, double kD) {
+    steerFeedback.setPID(kP, kI, kD);
   }
 
   @Override

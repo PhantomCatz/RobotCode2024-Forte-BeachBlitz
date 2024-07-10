@@ -9,6 +9,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.CatzConstants;
+import frc.robot.util.LoggedTunableNumber;
 import lombok.Builder;
 
 public class DriveConstants {
@@ -42,7 +43,6 @@ public class DriveConstants {
               29.89);
     };
 
-
     public static final ModuleGainsAndRatios moduleGainsAndRatios =
         switch (CatzConstants.getRobotType()) {
             case SN1 ->
@@ -55,7 +55,7 @@ public class DriveConstants {
                     4000.0,
                     50.0,
                     Mk4iReductions.L2_PLUS.reduction,
-                    Mk4iReductions.TURN.reduction);
+                    Mk4iReductions.steer.reduction);
             case SN2 ->
                 new ModuleGainsAndRatios(
                     0.1,
@@ -66,7 +66,7 @@ public class DriveConstants {
                     10.0,
                     0.0,
                     Mk4iReductions.L2_PLUS.reduction,
-                    Mk4iReductions.TURN.reduction);
+                    Mk4iReductions.steer.reduction);
             case SN_TEST ->
                 new ModuleGainsAndRatios(
                     0.014,
@@ -77,8 +77,22 @@ public class DriveConstants {
                     10.0,
                     0.0,
                     Mk4iReductions.L2_PLUS.reduction,
-                    Mk4iReductions.TURN.reduction);
+                    Mk4iReductions.steer.reduction);
         };
+
+    // Logged Tunable PIDF values for swerve modules
+    public static final LoggedTunableNumber drivekP =
+        new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
+    public static final LoggedTunableNumber drivekD =
+        new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
+    public static final LoggedTunableNumber drivekS =
+        new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.ffkS());
+    public static final LoggedTunableNumber drivekV =
+        new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.ffkV());
+    public static final LoggedTunableNumber steerkP =
+        new LoggedTunableNumber("Drive/Module/steerkP", moduleGainsAndRatios.steerkP());
+    public static final LoggedTunableNumber steerkD =
+        new LoggedTunableNumber("Drive/Module/steerkD", moduleGainsAndRatios.steerkD());
 
     public static final ModuleConfig[] moduleConfigs = 
         switch (CatzConstants.getRobotType()) {
@@ -104,6 +118,7 @@ public class DriveConstants {
                     new ModuleConfig(7, 8, 6, 0.0, true)
                 };
         };
+
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
             new Translation2d( driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0), //Lt FRONT
@@ -117,15 +132,13 @@ public class DriveConstants {
     public static final SwerveDriveKinematics swerveDriveKinematics =
         new SwerveDriveKinematics(moduleTranslations);
 
-    
-
-    private static ProfiledPIDController autoTurnPIDController = new ProfiledPIDController(5, 0, 0,
+    public static ProfiledPIDController autosteerPIDController = new ProfiledPIDController(5, 0, 0,
         new TrapezoidProfile.Constraints(4.8, 3));// 6
 
     public static final HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
         new PIDController(3.0, 0, 0.015),
         new PIDController(3.0, 0, 0.015),
-        autoTurnPIDController);
+        autosteerPIDController);
     
     /****************************************************************************************
      * 
@@ -137,7 +150,7 @@ public class DriveConstants {
         int steerID,
         int absoluteEncoderChannel,
         double absoluteEncoderOffset,
-        boolean turnMotorInverted) {}
+        boolean steerMotorInverted) {}
 
     public record ModuleGainsAndRatios(
         double ffkS,
@@ -145,10 +158,10 @@ public class DriveConstants {
         double ffkT,
         double drivekP,
         double drivekD,
-        double turnkP,
-        double turnkD,
+        double steerkP,
+        double steerkD,
         double driveReduction,
-        double turnReduction) {}
+        double steerReduction) {}
 
     @Builder
     public record DriveConfig(
@@ -166,11 +179,11 @@ public class DriveConstants {
         }
     }
 
-    private enum Mk4iReductions {
+    public enum Mk4iReductions {
         L2((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
         L3((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
         L2_PLUS(6.75 * (14.0 / 16.0)), // SDS mk4i L2 ratio reduction plus 16 tooth pinion
-        TURN((150.0 / 7.0));
+        steer((150.0 / 7.0));
     
         final double reduction;
     

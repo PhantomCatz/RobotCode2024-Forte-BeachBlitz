@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.CatzConstants.AllianceColor;
-import frc.robot.CatzConstants.RobotEnviroment;
+import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.commands.CatzAutoFactory;
 import frc.robot.commands.AutomatedSequenceCmds;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
@@ -46,9 +46,8 @@ public class RobotContainer {
   private static CatzVision       vision       = new CatzVision(new VisionIO[] {
                                                               new VisionIOLimeLight("limelight-udon"),    //index 0 left
                                                               new VisionIOLimeLight("limelight-soba"),    //index 1 right
-                                                              new VisionIOLimeLight("limelight-ramen") 
-                                                              });   //index 2 turret)
-
+                                                              new VisionIOLimeLight("limelight-ramen")    //index 2 turret)
+                                                              });
   // Drive Controller Declaration
   private CommandXboxController xboxDrv = new CommandXboxController(0);
   private CommandXboxController xboxAux = new CommandXboxController(1);
@@ -73,28 +72,28 @@ public class RobotContainer {
 
     // Endgame alert triggers
     new Trigger(
-            () ->
-                DriverStation.isTeleopEnabled()
-                    && DriverStation.getMatchTime() > 0
-                    && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
-        .onTrue(
-            controllerRumbleCommand()
-                .withTimeout(0.5)
-                .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
-                .finallyDo(() -> CatzLED.getInstance().endgameAlert = false));
+            () -> DriverStation.isTeleopEnabled()
+                  && DriverStation.getMatchTime() > 0
+                  && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get())
+    ).onTrue(
+        controllerRumbleCommand()
+            .withTimeout(0.5)
+            .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
+            .finallyDo(() -> CatzLED.getInstance().endgameAlert = false)
+    );
     new Trigger(
-            () ->
-                DriverStation.isTeleopEnabled()
+            () -> DriverStation.isTeleopEnabled()
                     && DriverStation.getMatchTime() > 0
-                    && DriverStation.getMatchTime() <= Math.round(endgameAlert2.get()))
-        .onTrue(
-            controllerRumbleCommand()
-                .withTimeout(0.2)
-                .andThen(Commands.waitSeconds(0.1))
-                .repeatedly()
-                .withTimeout(0.9) // Rumble three times
-                .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
-                .finallyDo(() -> CatzLED.getInstance().endgameAlert = false));
+                    && DriverStation.getMatchTime() <= Math.round(endgameAlert2.get())
+    ).onTrue(
+        controllerRumbleCommand()
+            .withTimeout(0.2)
+            .andThen(Commands.waitSeconds(0.1))
+            .repeatedly()
+            .withTimeout(0.9) // Rumble three times
+            .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
+            .finallyDo(() -> CatzLED.getInstance().endgameAlert = false)
+    );
   }
 
   private void configureBindings() {
@@ -118,10 +117,10 @@ public class RobotContainer {
   }
 
   private void defaultCommands() {
-    drive.setDefaultCommand(new TeleopDriveCmd(()->xboxDrv.getLeftX(), 
-                                               ()->xboxDrv.getLeftY(), 
-                                               ()->xboxDrv.getRightX(), 
-                                               ()->xboxDrv.a().getAsBoolean(), drive));
+    drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
+                                               () -> xboxDrv.getLeftY(), 
+                                               () -> xboxDrv.getRightX(), 
+                                               () -> xboxDrv.a().getAsBoolean(), drive));
   }
 
   /** Creates a controller rumble command with specified rumble and controllers */
@@ -151,16 +150,17 @@ public class RobotContainer {
   public void checkControllers() {
     driverDisconnected.set(
         !DriverStation.isJoystickConnected(xboxDrv.getHID().getPort())
-            || !DriverStation.getJoystickIsXbox(xboxDrv.getHID().getPort()));
+            || !DriverStation.getJoystickIsXbox(xboxDrv.getHID().getPort())
+    );
     operatorDisconnected.set(
         !DriverStation.isJoystickConnected(xboxAux.getHID().getPort())
-            || !DriverStation.getJoystickIsXbox(xboxAux.getHID().getPort()));
+            || !DriverStation.getJoystickIsXbox(xboxAux.getHID().getPort())
+    );
   }
 
   //---------------------------------------------------------------------------
   //      Subsystem getters
   //---------------------------------------------------------------------------
-
   public CatzDrivetrain getCatzDrivetrain() {
     return drive;
   }

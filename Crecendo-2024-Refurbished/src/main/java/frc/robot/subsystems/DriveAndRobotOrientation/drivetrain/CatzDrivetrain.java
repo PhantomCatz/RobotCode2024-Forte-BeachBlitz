@@ -2,15 +2,18 @@ package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
 import java.util.Arrays;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveWheelPositions;
@@ -18,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -139,7 +143,7 @@ public class CatzDrivetrain extends SubsystemBase {
         SwerveDriveWheelPositions wheelPositions = new SwerveDriveWheelPositions(getModulePositions());
         Rotation2d gyroAngle2d;
         // Grab latest gyro measurments
-        if(CatzConstants.hardwareMode == CatzConstants.HardwareMode.SIM) {
+        if(CatzConstants.hardwareMode == CatzConstants.RobotHardwareMode.SIM) {
             gyroAngle2d = null;
         } else {
             gyroAngle2d = getDriveRotation2d();
@@ -155,6 +159,15 @@ public class CatzDrivetrain extends SubsystemBase {
                                     gyroInputs.gyroAccelX, 
                                     gyroInputs.gyroAccelY)
                             );
+
+        // Update current velocities use gyro when possible
+        
+        Twist2d robotRelativeVelocity = getTwist2dSpeeds();
+        robotRelativeVelocity.dtheta =
+            gyroInputs.gyroConnected
+                ? Math.toRadians(gyroInputs.gyroAngleVel)
+                : robotRelativeVelocity.dtheta;
+        CatzRobotTracker.getInstance().addVelocityData(robotRelativeVelocity);
    
        
         // Logging
@@ -168,7 +181,6 @@ public class CatzDrivetrain extends SubsystemBase {
     //--------------------------------------------------------------------------------------------------------------------------
     //          Drivetrain Driving methods
     //--------------------------------------------------------------------------------------------------------------------------
-
     /** chassis speeds input w/ correction for drift */
     public void driveWithDiscretizeKinematics(ChassisSpeeds chassisSpeeds) {
         // Correct dynamics with wpilib internal "2nd order kinematics"
@@ -205,7 +217,6 @@ public class CatzDrivetrain extends SubsystemBase {
     //-----------------------------------------------------------------------------------------------------------
     //      Drivetrain Misc Methods
     //-----------------------------------------------------------------------------------------------------------
-
     /** Runs forwards at the commanded voltage or amps. */
     public void runCharacterization(double input) {
         drive(new ChassisSpeeds(0.0, 0.0, input));
@@ -303,14 +314,13 @@ public class CatzDrivetrain extends SubsystemBase {
     //-----------------------------------------------------------------------------------------------------------
     //      Drivetrain Getters
     //-----------------------------------------------------------------------------------------------------------
-
     /**
      * Dependant on the installation of the gyro, the value of this method may be negative
      * 
      * @return The Heading of the robot dependant on where it's been instantiated
      */
     private double getGyroHeading() {
-        return -gyroInputs.gyroYaw; //- for atlas //TODO need to verify on forte again
+        return -gyroInputs.gyroYawDegrees; //- for atlas //TODO need to verify on forte again
     }
 
     /** Get the Rotation2d object based on the gyro angle */
@@ -325,6 +335,12 @@ public class CatzDrivetrain extends SubsystemBase {
             moduleStates[i] = m_swerveModules[i].getModuleState();
         }
         return moduleStates;
+    }
+
+    /** Returns the measured speeds of the robot in the robot's frame of reference. */
+    @AutoLogOutput(key = "Drive/MeasuredSpeeds")
+    private Twist2d getTwist2dSpeeds() {
+        return DriveConstants.swerveDriveKinematics.toTwist2d(getModulePositions());
     }
 
     /**  Get an array of swerve module positions */

@@ -15,15 +15,16 @@ public interface ModuleIO {
    public double driveSupplyCurrentAmps;
    public double driveTorqueCurrentAmps;
    
-   public boolean isTurnMotorConnected;
-   public double turnAbsoluteInitPosition;
-   public Rotation2d turnPosition = new Rotation2d();
-   public double turnVelocityRadsPerSec;
-   public Rotation2d turnAbsolutePosition = new Rotation2d();
-   public double turnBussVolts;
-   public double turnSupplyCurrentAmps;
+   public boolean isSteerMotorConnected;
+   public double steerAbsoluteInitPosition;
+   public Rotation2d steerPosition = new Rotation2d();
+   public double steerVelocityRadsPerSec;
+   public Rotation2d steerAbsolutePosition = new Rotation2d();
+   public double steerTorqueCurrentAmps;
+   public double steerAppliedVolts;
+   public double steerSupplyCurrentAmps;
    public double[] odometryDrivePositionsMeters = new double[0];
-   public Rotation2d[] odometryTurnPositions = new Rotation2d[0];
+   public Rotation2d[] odometrysteerPositions = new Rotation2d[0];
 
 
  }
@@ -59,7 +60,7 @@ public interface ModuleIO {
 
  public default void setSteerSimPwrIO(double volts) {}
 
- public default void setTurnPID(double kP, double kI, double kD) {}
+ public default void setsteerPID(double kP, double kI, double kD) {}
 
  //---------------------------------------------------------------------------
  //   Mag Enc Access Methods

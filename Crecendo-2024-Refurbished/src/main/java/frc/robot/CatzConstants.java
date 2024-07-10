@@ -18,8 +18,8 @@ public final class CatzConstants {
   /**************************************************
    * Robot Modes
    *************************************************/
-  public static final RobotEnviroment robotEnviroment = RobotEnviroment.PRACTICE;
-  public static final HardwareMode hardwareMode = HardwareMode.REAL;
+  public static final RobotSenario robotSenario = RobotSenario.PRACTICE;
+  public static final RobotHardwareMode hardwareMode = RobotHardwareMode.REAL;
   private static RobotID robotType = RobotID.SN2;
   
   public static AllianceColor choosenAllianceColor = null;
@@ -27,13 +27,13 @@ public final class CatzConstants {
   public static final double LOOP_TIME = 0.02;
 
 
-  public static enum RobotEnviroment {
+  public static enum RobotSenario {
     TUNING, //In PID enviroment with logged tunable numbers
     PRACTICE, //Driver Practice + Testing
     COMPETITION //Competition Setting
   }
 
-  public static enum HardwareMode {
+  public static enum RobotHardwareMode {
     /** Running on a real robot. */
     REAL,
     /** Running a physics simulator. */
@@ -43,9 +43,7 @@ public final class CatzConstants {
   }
 
   public static RobotID getRobotType() {
-    // Checks to ensure that //TODO define modes and come back to finishing describing what is does
-    //Check if selected sim, nest if statment that checks if we are conected to a simulator
-    //Seperate from Robot.java
+    // Checks to ensure that the selected robot Hardware mode is not paired with an illegal Robot Id
     if (RobotBase.isReal() && robotType == RobotID.SN_TEST) {
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
           .set(true); //TODO have errors show up until fixed...Have a way to make it sticky for a user specified time

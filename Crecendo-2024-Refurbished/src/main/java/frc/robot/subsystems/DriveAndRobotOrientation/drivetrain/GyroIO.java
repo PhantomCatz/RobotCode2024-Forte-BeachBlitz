@@ -7,8 +7,8 @@ public interface GyroIO
     @AutoLog
     public static class GyroIOInputs {
     public double gyroAngle;
-    public double gyroYaw;
-    public double gyroRoll;
+    public double gyroYawDegrees;
+    public double gyroRollDegrees;
     public double gyroPitch;
     public boolean gyroConnected;
     public double gyroAngleVel;

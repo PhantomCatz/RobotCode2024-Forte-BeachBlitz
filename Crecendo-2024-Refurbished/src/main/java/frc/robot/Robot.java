@@ -36,28 +36,33 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
-import frc.robot.CatzConstants.RobotEnviroment;
+import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
-  //LED instantiation
-  CatzLED led = CatzLED.getInstance();
-
+  // Essential Robot.java object declaration
   private Command m_autonomousCommand;
-  private double autoStart;
-  private boolean autoMessagePrinted;
+  private RobotContainer m_robotContainer;
+  private Optional<Alliance> alliance = Optional.empty();
+
+  // Robot Mode Timers
   private final Timer disabledTimer = new Timer();
   private final Timer canInitialErrorTimer = new Timer();
   private final Timer canErrorTimer = new Timer();
   private final Timer canivoreErrorTimer = new Timer();
+  // Timer related variables
   private double teleStart;
+  private double autoStart;
+  private boolean autoMessagePrinted;
   private static double teleElapsedTime = 0.0;
-
-  private static final String batteryNameFile = "/home/lvuser/battery-name.txt";
+  // Can Error Detection variables
   private static final double canErrorTimeThreshold = 0.5; // Seconds to disable alert
   private static final double canivoreErrorTimeThreshold = 0.5;
+
+  // Battery Logging Variables
+  private static final String batteryNameFile = "/home/lvuser/battery-name.txt";
   private static final double lowBatteryVoltage = 11.8;
   private static final double lowBatteryDisabledTime = 1.5;
 
@@ -69,24 +74,30 @@ public class Robot extends LoggedRobot {
   private boolean batteryNameChecked = false;
   private boolean batteryNameWritten = false;
 
+  //--------------------------------------------------------------------------------------------------------
+  //        Alerts
+  //--------------------------------------------------------------------------------------------------------
   private final Alert canErrorAlert =
       new Alert("CAN errors detected, robot may not be controllable.", AlertType.ERROR);
+
+  // Battery Alerts
   private final Alert lowBatteryAlert =
       new Alert(
           "Battery voltage is very low, consider turning off the robot or replacing the battery.",
           AlertType.WARNING);
   private final Alert sameBatteryAlert =
       new Alert("The battery has not been changed since the last match.", AlertType.WARNING);
+
+  // Garbage Collection Alerts
   private final Alert gcAlert =
       new Alert("Please wait to enable, collecting garbage. 🗑️", AlertType.WARNING);
+
+  // DriverStation related alerts
   private final Alert driverStationDisconnectAlert =
       new Alert("Driverstation is not online, alliance selection will not work", AlertType.ERROR);
   private final Alert fmsDisconnectAlert =
       new Alert("fms is offline, robot cannot compete in match", AlertType.ERROR);
 
-  private RobotContainer m_robotContainer;
-
-  private Optional<Alliance> alliance = Optional.empty();
 
   @Override
   public void robotInit() {
@@ -170,10 +181,12 @@ public class Robot extends LoggedRobot {
 
     RobotController.setBrownoutVoltage(6.0);
 
-    System.out.println("Enviorment: " + CatzConstants.robotEnviroment.toString());
+    // Print out Catz Constant enums
+    System.out.println("Enviorment: " + CatzConstants.robotSenario.toString());
     System.out.println("Mode: " + CatzConstants.hardwareMode.toString());
     System.out.println("Type: " + CatzConstants.getRobotType().toString());
 
+    // Instantiate robotContainer
     m_robotContainer = new RobotContainer();
   }
 
@@ -181,6 +194,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 99);
     CommandScheduler.getInstance().run();
+    Threads.setCurrentThreadPriority(true, 10);
 
     // Print auto duration
     if (m_autonomousCommand != null) {
@@ -224,13 +238,13 @@ public class Robot extends LoggedRobot {
       CatzLED.getInstance().lowBatteryAlert = true;
     }
 
-    // GC alert
+    // Garbage Collection alert
     gcAlert.set(Timer.getFPGATimestamp() < 45.0);
 
-    // Update battery alert
+    // Update battery logging
     String batteryName = batteryNameSubscriber.get();
     Logger.recordOutput("BatteryName", batteryName);
-    if (CatzConstants.hardwareMode == CatzConstants.HardwareMode.REAL && !batteryName.equals(defaultBatteryName)) {
+    if (CatzConstants.hardwareMode == CatzConstants.RobotHardwareMode.REAL && !batteryName.equals(defaultBatteryName)) {
       // Check for battery alert
       if (!batteryNameChecked) {
         batteryNameChecked = true;
@@ -256,7 +270,7 @@ public class Robot extends LoggedRobot {
       }
 
       // Write battery name if in Competition Mode
-      if (!batteryNameWritten && CatzConstants.robotEnviroment == RobotEnviroment.COMPETITION) {
+      if (!batteryNameWritten && CatzConstants.robotSenario == RobotSenario.COMPETITION) {
         batteryNameWritten = true;
         try {
           FileWriter fileWriter = new FileWriter(batteryNameFile);
@@ -267,8 +281,6 @@ public class Robot extends LoggedRobot {
         }
       }
     }
-
-    Threads.setCurrentThreadPriority(true, 10);
   }
 
   @Override

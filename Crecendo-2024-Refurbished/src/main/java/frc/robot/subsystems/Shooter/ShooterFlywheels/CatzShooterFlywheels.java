@@ -232,7 +232,8 @@ public class CatzShooterFlywheels extends SubsystemBase {
   }
 
   public Command hoardCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.POOP), () -> setSpeed(TargetSpeed.IDLE)).withName("Flywheels Poop");
+    return startEnd(() -> setSpeed(TargetSpeed.POOP), () -> setSpeed(TargetSpeed.IDLE))
+          .withName("Flywheels Poop");
   }
 
   public Command autoHoardCommand() {

@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.CatzColorConstants;
-import frc.robot.CatzConstants.RobotEnviroment;
-import frc.robot.CatzConstants.HardwareMode;
+import frc.robot.CatzConstants.RobotSenario;
+import frc.robot.CatzConstants.RobotHardwareMode;
 
 public class CatzLED extends SubsystemBase {
     private static CatzLED instance = null;

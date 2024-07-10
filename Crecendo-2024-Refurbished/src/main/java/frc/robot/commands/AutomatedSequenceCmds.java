@@ -10,7 +10,6 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.SuperStateCmds.AUTO_AIM;
 import frc.robot.commands.SuperStateCmds.INTAKE_GROUND;
 import frc.robot.commands.SuperStateCmds.STOW;
-import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder.ShooterFeederState;
 
 /** Place where any sequencing/nonPosition Based robot state logic is held */
 public class AutomatedSequenceCmds {
