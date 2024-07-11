@@ -11,13 +11,11 @@ import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveCons
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
@@ -39,15 +37,15 @@ public class CatzSwerveModule {
     private SwerveModuleState m_swerveModuleState = null;
 
     // FeedFoward definment
-    private SimpleMotorFeedforward ff =
-      new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(), moduleGainsAndRatios.ffkV(), 0.0);
-
-    // Alerts
-    private final Alert driveMotorDisconnected;
+    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(),  //TBD Added feedforward
+                                                                   moduleGainsAndRatios.ffkV(), 
+                                                                   0.0);
+    // Alerts                                                                               
+    private final Alert driveMotorDisconnected; // TBD added alerts
     private final Alert steerMotorDisconnected;
 
-    public CatzSwerveModule(ModuleConfig config, int index) {
-        m_index = index;
+    public CatzSwerveModule(ModuleConfig config, int index) { // TODO instead of index pass in the string
+        this.m_index = index;
 
         // Run subsystem disconnect check
         if(DriveConstants.isDriveDisabled) { //TODO add extra robot enviroment //TODO have discussion on mode and states definement
@@ -94,7 +92,7 @@ public class CatzSwerveModule {
         LoggedTunableNumber.ifChanged(
             hashCode(), () -> io.setDrivePID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
         LoggedTunableNumber.ifChanged(
-            hashCode(), () -> io.setsteerPID(steerkP.get(), 0, steerkD.get()), steerkP, steerkD);
+            hashCode(), () -> io.setSteerPID(steerkP.get(), 0, steerkD.get()), steerkP, steerkD);
 
         // Display alerts
         driveMotorDisconnected.set(!inputs.isDriveMotorConnected);
@@ -105,11 +103,9 @@ public class CatzSwerveModule {
     } // -End of CatzSwerveModule Periodic 
 
     public void debugLogsSwerve(){
-        Logger.recordOutput("Module " + moduleNames[m_index] , getCurrentRotation().getDegrees());
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/drive applied volts", inputs.driveAppliedVolts);
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
         Logger.recordOutput("Module " + moduleNames[m_index] + "/drive mps", m_swerveModuleState.speedMetersPerSecond);
         Logger.recordOutput("Module " + moduleNames[m_index] + "/current state", getModuleState());
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
         Logger.recordOutput("Module " + moduleNames[m_index] + "/currentmoduleangle rad", getAbsEncRadians());
         Logger.recordOutput("Module " + moduleNames[m_index] + "/targetmoduleangle rad", m_swerveModuleState.angle.getRadians());
 
@@ -123,8 +119,8 @@ public class CatzSwerveModule {
      *
      * @param state Desired state with speed and angle.
      */
-    public void setDesiredState(SwerveModuleState state) {
-        this.m_swerveModuleState = state;
+    public void setModuleAngleAndVelocity(SwerveModuleState state) { //TODO log variables actually used in calculations
+        this.m_swerveModuleState       = state;
         double targetAngleRad          = state.angle.getRadians();
         double currentAngleRad         = getAbsEncRadians();
 

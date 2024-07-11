@@ -31,9 +31,8 @@ public class CatzAutoFactory {
     
         this.m_container = container;
         //-------------------------------------------------------------------------------------------------------------------
-        //   AUTON Priority LIST (It's in order - So Don't Mess it Up)
+        //   AUTON Priority LIST 
         //-------------------------------------------------------------------------------------------------------------------*/
-    
         autoPathChooser.addOption("Test Auto", testAuto(container));
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization(container));
     }

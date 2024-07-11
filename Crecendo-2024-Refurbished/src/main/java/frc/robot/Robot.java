@@ -182,7 +182,7 @@ public class Robot extends LoggedRobot {
     RobotController.setBrownoutVoltage(6.0);
 
     // Print out Catz Constant enums
-    System.out.println("Enviorment: " + CatzConstants.robotSenario.toString());
+    System.out.println("Enviroment: " + CatzConstants.robotSenario.toString());
     System.out.println("Mode: " + CatzConstants.hardwareMode.toString());
     System.out.println("Type: " + CatzConstants.getRobotType().toString());
 
@@ -192,9 +192,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);
     CommandScheduler.getInstance().run();
-    Threads.setCurrentThreadPriority(true, 10);
 
     // Print auto duration
     if (m_autonomousCommand != null) {

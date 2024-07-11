@@ -53,9 +53,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);
+    //Threads.setCurrentThreadPriority(true, 99); //TODO remove until deemed necessary...create a list
     CommandScheduler.getInstance().run();
-    Threads.setCurrentThreadPriority(true, 10);
+    //Threads.setCurrentThreadPriority(true, 10);
   }
 
   @Override
@@ -83,7 +83,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    autoStart = Timer.getFPGATimestamp();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -102,13 +101,10 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    teleStart = Timer.getFPGATimestamp();
   }
 
   @Override
   public void teleopPeriodic() {
-    teleElapsedTime = Timer.getFPGATimestamp() - teleStart;
   }
 
   @Override

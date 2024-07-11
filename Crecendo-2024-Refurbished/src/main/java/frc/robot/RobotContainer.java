@@ -22,6 +22,7 @@ import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.commands.CatzAutoFactory;
 import frc.robot.commands.AutomatedSequenceCmds;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
+import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
@@ -73,7 +74,7 @@ public class RobotContainer {
     // Endgame alert triggers
     new Trigger(
             () -> DriverStation.isTeleopEnabled()
-                  && DriverStation.getMatchTime() > 0
+                  && DriverStation.getMatchTime() > 0.0
                   && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get())
     ).onTrue(
         controllerRumbleCommand()
@@ -96,31 +97,12 @@ public class RobotContainer {
     );
   }
 
-  private void configureBindings() {
-    // Default commands
-    defaultCommands();
-    
-    // DriveCommands
-    commandsDrive();
-    
-    // AuxCommands
-    commandsAux();
-
-  }
-
-  private void commandsDrive() {
-    xboxDrv.leftStick().onTrue(AutomatedSequenceCmds.NoteDetectIntakeToShooter(this));
-  }
-
-  private void commandsAux() {
-
-  }
-
-  private void defaultCommands() {
+  private void configureBindings() { // TODO organize by function
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
                                                () -> xboxDrv.getLeftY(), 
                                                () -> xboxDrv.getRightX(), 
-                                               () -> xboxDrv.a().getAsBoolean(), drive));
+                                               () -> xboxDrv.a().getAsBoolean(), drive)); // TODO changes this to be in the subsystem rather than the cmd
+    //TODO add triggers to put default as priority    
   }
 
   /** Creates a controller rumble command with specified rumble and controllers */

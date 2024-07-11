@@ -59,7 +59,7 @@ public class ModuleIOSim implements ModuleIO {
 
     inputs.odometryDrivePositionsMeters =
         new double[] {driveSim.getAngularPositionRad() * DriveConstants.driveConfig.wheelRadius()};
-    inputs.odometrysteerPositions =
+    inputs.odometrySteerPositions =
         new Rotation2d[] {Rotation2d.fromRadians(steerSim.getAngularPositionRad())};
 
   }
@@ -98,12 +98,12 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setsteerPID(double kP, double kI, double kD) {
+  public void setSteerPID(double kP, double kI, double kD) {
     steerFeedback.setPID(kP, kI, kD);
   }
 
   @Override
-  public void setDriveBreakModeIO(boolean enable) {
+  public void setDriveBrakeModeIO(boolean enable) {
     driveCoast = !enable;
   }
 }

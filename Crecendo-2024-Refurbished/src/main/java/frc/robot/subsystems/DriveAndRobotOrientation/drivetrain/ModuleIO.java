@@ -24,7 +24,7 @@ public interface ModuleIO {
    public double steerAppliedVolts;
    public double steerSupplyCurrentAmps;
    public double[] odometryDrivePositionsMeters = new double[0];
-   public Rotation2d[] odometrysteerPositions = new Rotation2d[0];
+   public Rotation2d[] odometrySteerPositions = new Rotation2d[0];
 
 
  }
@@ -39,7 +39,7 @@ public interface ModuleIO {
 
  public default void runDriveVelocityRPSIO(double velocity, double feedForward) {}
 
- public default void setDriveBreakModeIO(boolean enable) {}
+ public default void setDriveBrakeModeIO(boolean enable) {}
 
  public default void setDrvSensorPositionIO(double sensorpos) {}
 
@@ -60,7 +60,7 @@ public interface ModuleIO {
 
  public default void setSteerSimPwrIO(double volts) {}
 
- public default void setsteerPID(double kP, double kI, double kD) {}
+ public default void setSteerPID(double kP, double kI, double kD) {}
 
  //---------------------------------------------------------------------------
  //   Mag Enc Access Methods
