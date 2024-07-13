@@ -30,50 +30,48 @@ public class CatzSwerveModule {
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
     // Module Strings for Logging
-    private static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
+    private final String m_moduleName;
 
     // Global swerve module variables
-    private int m_index;
     private SwerveModuleState m_swerveModuleState = null;
 
     // FeedFoward definment
-    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(),  //TBD Added feedforward
+    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(),
                                                                    moduleGainsAndRatios.ffkV(), 
                                                                    0.0);
     // Alerts                                                                               
-    private final Alert driveMotorDisconnected; // TBD added alerts
+    private final Alert driveMotorDisconnected;
     private final Alert steerMotorDisconnected;
 
-    public CatzSwerveModule(ModuleConfig config, int index) { // TODO instead of index pass in the string
-        this.m_index = index;
-
+    public CatzSwerveModule(ModuleConfig config, String moduleName) {
+        this.m_moduleName = moduleName;
         // Run subsystem disconnect check
-        if(DriveConstants.isDriveDisabled) { //TODO add extra robot enviroment //TODO have discussion on mode and states definement
+        if(DriveConstants.isDriveDisabled) { 
                 io = new ModuleIONull();
-                System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
+                System.out.println("Module " + m_moduleName + " Unconfigured");
         } else {
             // Run Robot Mode hardware assignment
             switch (CatzConstants.hardwareMode) {
                 case REAL: io = new ModuleIORealFoc(config);
-                            System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
+                            System.out.println("Module " + m_moduleName + " Configured for Real");
                 break;
                 case REPLAY : io = new ModuleIORealFoc(config) {};
-                            System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
+                            System.out.println("Module " + m_moduleName + " Configured for Replay simulation");
                 break;
                 case SIM: io = new ModuleIOSim(config);
-                            System.out.println("Module " + moduleNames[m_index] + " Configured for WPILIB simulation");
+                            System.out.println("Module " + m_moduleName + " Configured for WPILIB simulation");
                 break;
                 default : io = null;
-                            System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
+                            System.out.println("Module " + m_moduleName + " Unconfigured");
                 break;
             }
         }
 
         // Disconnected Alerts
         driveMotorDisconnected =
-            new Alert(moduleNames[index] + " drive motor disconnected!", Alert.AlertType.WARNING);
+            new Alert(m_moduleName + " drive motor disconnected!", Alert.AlertType.WARNING);
         steerMotorDisconnected =
-            new Alert(moduleNames[index] + " steer motor disconnected!", Alert.AlertType.WARNING);
+            new Alert(m_moduleName + " steer motor disconnected!", Alert.AlertType.WARNING);
 
         resetDriveEncs();
     } // -End of CatzSwerveModule Constructor
@@ -81,7 +79,7 @@ public class CatzSwerveModule {
     public void periodic() {
         // Process and Log Module Inputs
         io.updateInputs(inputs);
-        Logger.processInputs("Drive/M " + moduleNames[m_index], inputs); 
+        Logger.processInputs("Drive/M " + m_moduleName, inputs); 
 
         // Update ff and controllers
         LoggedTunableNumber.ifChanged(
@@ -103,15 +101,15 @@ public class CatzSwerveModule {
     } // -End of CatzSwerveModule Periodic 
 
     public void debugLogsSwerve(){
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/drive mps", m_swerveModuleState.speedMetersPerSecond);
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/current state", getModuleState());
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/currentmoduleangle rad", getAbsEncRadians());
-        Logger.recordOutput("Module " + moduleNames[m_index] + "/targetmoduleangle rad", m_swerveModuleState.angle.getRadians());
+        Logger.recordOutput("Module " + m_moduleName + "/drive mps", m_swerveModuleState.speedMetersPerSecond);
+        Logger.recordOutput("Module " + m_moduleName + "/current state", getModuleState());
+        Logger.recordOutput("Module " + m_moduleName + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
+        Logger.recordOutput("Module " + m_moduleName + "/currentmoduleangle rad", getAbsEncRadians());
+        Logger.recordOutput("Module " + m_moduleName + "/targetmoduleangle rad", m_swerveModuleState.angle.getRadians());
 
 
-        SmartDashboard.putNumber("absenctorad" + moduleNames[m_index] , getAbsEncRadians());
-        SmartDashboard.putNumber("angle" + moduleNames[m_index] , getCurrentRotation().getDegrees());
+        SmartDashboard.putNumber("absenctorad" + m_moduleName , getAbsEncRadians());
+        SmartDashboard.putNumber("angle" + m_moduleName , getCurrentRotation().getDegrees());
     }
 
     /**

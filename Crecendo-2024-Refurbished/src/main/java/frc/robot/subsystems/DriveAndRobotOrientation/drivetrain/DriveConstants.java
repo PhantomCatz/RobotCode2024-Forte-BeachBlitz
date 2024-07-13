@@ -16,6 +16,14 @@ public class DriveConstants {
     // Disabled flag for testing
     public static final boolean isDriveDisabled = false;
 
+    // Module organizations
+    public static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
+    public static final int INDEX_FL = 0;
+    public static final int INDEX_BL = 1;
+    public static final int INDEX_BR = 2;
+    public static final int INDEX_FR = 3;
+
+
     public static final DriveConfig driveConfig =
     switch (CatzConstants.getRobotType()) {
       case SN_TEST, SN2 ->

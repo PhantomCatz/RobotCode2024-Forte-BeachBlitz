@@ -212,8 +212,8 @@ public class ModuleIORealFoc implements ModuleIO {
 
   @Override
   public void runSteerPositionSetpoint(double currentAngleRad, double targetAngleRad) {
-        //calculate steer pwr
-        //negative steer power because of coordinate system
+      //calculate steer pwr
+      //negative steer power because of coordinate system
     double volts = -steerFeedback.calculate(currentAngleRad, targetAngleRad); 
     runSteerVolts(volts);
     Logger.recordOutput("Drive/steer Output Volts", volts);

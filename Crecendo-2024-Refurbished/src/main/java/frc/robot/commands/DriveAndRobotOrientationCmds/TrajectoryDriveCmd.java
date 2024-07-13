@@ -113,7 +113,7 @@ public class TrajectoryDriveCmd extends Command {
             ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
 
             //send to drivetrain
-            m_driveTrain.driveWithDiscretizeKinematics(adjustedSpeeds);
+            m_driveTrain.drive(adjustedSpeeds, true);
 
         }else{
             m_driveTrain.stopDriving();

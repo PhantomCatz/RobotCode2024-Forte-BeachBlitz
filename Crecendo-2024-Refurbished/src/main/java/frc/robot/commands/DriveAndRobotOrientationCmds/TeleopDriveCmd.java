@@ -81,7 +81,7 @@ public class TeleopDriveCmd extends Command {
     }
 
     //send new chassisspeeds object to the drivetrain
-    m_drivetrain.driveWithDiscretizeKinematics(chassisSpeeds);
+    m_drivetrain.drive(chassisSpeeds, true);
   }
 
   /*

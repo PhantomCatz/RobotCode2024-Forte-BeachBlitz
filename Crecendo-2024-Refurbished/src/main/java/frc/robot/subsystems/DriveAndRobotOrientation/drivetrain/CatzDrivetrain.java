@@ -1,5 +1,11 @@
 package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.INDEX_BL;
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.INDEX_BR;
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.INDEX_FL;
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.INDEX_FR;
+import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.moduleNames;
+
 import java.util.Arrays;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -90,10 +96,10 @@ public class CatzDrivetrain extends SubsystemBase {
         }
 
         // Create swerve modules for each corner of the robot
-        LT_FRNT_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[0], 0); // TODO Map index numebrs to constants
-        LT_BACK_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[1], 1);
-        RT_BACK_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[2], 2);
-        RT_FRNT_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[3], 3);
+        LT_FRNT_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[INDEX_FL], moduleNames[INDEX_FL]); // TODO Map index numbers to constants
+        LT_BACK_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[INDEX_BL], moduleNames[INDEX_BL]);
+        RT_BACK_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[INDEX_BR], moduleNames[INDEX_BR]);
+        RT_FRNT_MODULE = new CatzSwerveModule(DriveConstants.moduleConfigs[INDEX_FR], moduleNames[INDEX_FR]);
 
 
         // Assign swerve modules to the array for easier access
@@ -181,39 +187,27 @@ public class CatzDrivetrain extends SubsystemBase {
     //--------------------------------------------------------------------------------------------------------------------------
     //          Drivetrain Driving methods
     //--------------------------------------------------------------------------------------------------------------------------
-    /** chassis speeds input w/ correction for drift */
-    public void driveWithDiscretizeKinematics(ChassisSpeeds chassisSpeeds) {
-        // Correct dynamics with wpilib internal "2nd order kinematics" //TODO add boolean flag and consolidate methods
-        ChassisSpeeds descreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-        // Convert chassis speeds to individual module states and set module states
-        SwerveModuleState[] moduleStates = DriveConstants.swerveDriveKinematics.toSwerveModuleStates(descreteSpeeds);
-        setModuleStates(moduleStates);
-    }
 
-    /** chassis speeds input w/o any correction for drift */
-    private void drive(ChassisSpeeds chassisSpeeds) { //TODO is characteraization run w/o descritization?
+    /** chassis speeds input w/ or w/o any correction for drift */
+    public void drive(ChassisSpeeds chassisSpeeds, boolean isDiscretizeEnabled) { //TODO is characteraization run w/o descritization?
+        if(isDiscretizeEnabled) {
+            chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+        }
         // Convert chassis speeds to individual module states and set module states
         SwerveModuleState[] moduleStates = DriveConstants.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-        setModuleStates(moduleStates);
-    }
 
-    /** Set individual module states to each of the swerve modules */
-    private void setModuleStates(SwerveModuleState[] desiredStates) {
         // Scale down wheel speeds
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.driveConfig.maxLinearVelocity());
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, DriveConstants.driveConfig.maxLinearVelocity());
         
         // Optimize wheel angles
         SwerveModuleState[] optimizedDesiredStates = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {  
             // The module returns the optimized state, useful for logging
-            optimizedDesiredStates[i] = m_swerveModules[i].optimizeWheelAngles(desiredStates[i]);
-        }
+            optimizedDesiredStates[i] = m_swerveModules[i].optimizeWheelAngles(moduleStates[i]);
 
-        // Set module states to each of the swerve modules
-        LT_FRNT_MODULE.setModuleAngleAndVelocity(optimizedDesiredStates[0]);
-        LT_BACK_MODULE.setModuleAngleAndVelocity(optimizedDesiredStates[1]);
-        RT_BACK_MODULE.setModuleAngleAndVelocity(optimizedDesiredStates[2]);
-        RT_FRNT_MODULE.setModuleAngleAndVelocity(optimizedDesiredStates[3]);
+            // Set module states to each of the swerve modules
+            m_swerveModules[i].setModuleAngleAndVelocity(optimizedDesiredStates[i]);
+        }
     }
 
     //-----------------------------------------------------------------------------------------------------------
@@ -221,7 +215,7 @@ public class CatzDrivetrain extends SubsystemBase {
     //-----------------------------------------------------------------------------------------------------------
     /** Runs forwards at the commanded voltage or amps. */
     public void runCharacterization(double input) {
-        drive(new ChassisSpeeds(0.0, 0.0, input));
+        drive(new ChassisSpeeds(0.0, 0.0, input), false);
     }
 
     /** Get the position of all drive wheels in radians. */
@@ -240,7 +234,7 @@ public class CatzDrivetrain extends SubsystemBase {
 
     /** Runs in a circle at omega. */
     public void runWheelRadiusCharacterization(double omegaSpeed) {
-        drive(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
+        drive(new ChassisSpeeds(0.0, 0.0, omegaSpeed), false);
     }
 
     /** Disables the characterization mode. */
