@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
-import frc.robot.util.LoggedTunableNumber;
+import frc.robot.utilities.LoggedTunableNumber;
 
 import java.util.function.DoubleSupplier;
 import lombok.RequiredArgsConstructor;

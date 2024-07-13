@@ -38,8 +38,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.subsystems.LEDs.CatzLED;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
+import frc.robot.utilities.Alert;
+import frc.robot.utilities.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
   // Essential Robot.java object declaration

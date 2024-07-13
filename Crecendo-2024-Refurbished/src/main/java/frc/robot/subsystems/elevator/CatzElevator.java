@@ -15,8 +15,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
-import frc.robot.util.Alert;
-import frc.robot.util.LoggedTunableNumber;
+import frc.robot.utilities.Alert;
+import frc.robot.utilities.LoggedTunableNumber;
 import lombok.RequiredArgsConstructor;
 
 public class CatzElevator extends SubsystemBase {

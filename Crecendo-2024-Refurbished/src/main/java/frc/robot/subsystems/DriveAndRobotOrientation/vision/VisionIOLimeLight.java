@@ -6,8 +6,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.LimelightResults;
+import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.LimelightHelpers.LimelightResults;
 
 public class VisionIOLimeLight implements VisionIO {
     

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Shooter.ShooterFlywheels;
 
 import frc.robot.CatzConstants;
-import frc.robot.util.LoggedTunableNumber;
+import frc.robot.utilities.LoggedTunableNumber;
 
 public class FlywheelConstants {
   public final static boolean isShooterFlywheelsDisabled = false;

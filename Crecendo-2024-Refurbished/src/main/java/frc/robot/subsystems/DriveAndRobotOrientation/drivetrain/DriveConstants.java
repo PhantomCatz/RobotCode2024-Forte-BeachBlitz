@@ -9,7 +9,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.CatzConstants;
-import frc.robot.util.LoggedTunableNumber;
+import frc.robot.utilities.LoggedTunableNumber;
 import lombok.Builder;
 
 public class DriveConstants {

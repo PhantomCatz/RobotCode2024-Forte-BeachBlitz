@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
-import frc.robot.commands.CatzAutoFactory;
+import frc.robot.autonomous.CatzAutoFactory;
 import frc.robot.commands.AutomatedSequenceCmds;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
@@ -32,8 +32,8 @@ import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.subsystems.elevator.CatzElevator;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
+import frc.robot.utilities.Alert;
+import frc.robot.utilities.Alert.AlertType;
 
 public class RobotContainer {
 

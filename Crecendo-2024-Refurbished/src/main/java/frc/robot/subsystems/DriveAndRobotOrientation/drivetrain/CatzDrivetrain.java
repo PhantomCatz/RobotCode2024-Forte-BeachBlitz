@@ -38,11 +38,10 @@ import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker.OdometryObservation;
-import frc.robot.util.Alert;
-import frc.robot.util.EqualsUtil;
-import frc.robot.util.LocalADStarAK;
-import frc.robot.util.swerve.SwerveSetpoint;
-//import frc.robot.util.swerve.SwerveSetpointGenerator;
+import frc.robot.utilities.Alert;
+import frc.robot.utilities.EqualsUtil;
+import frc.robot.utilities.LocalADStarAK;
+import frc.robot.utilities.swerve.SwerveSetpoint;
 
 // Drive train subsystem for swerve drive implementation
 public class CatzDrivetrain extends SubsystemBase {

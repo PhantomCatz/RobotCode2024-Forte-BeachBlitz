@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.utilities;
 
 import lombok.Getter;
 import lombok.Setter;

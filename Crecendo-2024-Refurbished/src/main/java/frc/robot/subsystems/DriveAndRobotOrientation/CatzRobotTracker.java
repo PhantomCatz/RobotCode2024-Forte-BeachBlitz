@@ -36,9 +36,9 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzSwerveModule;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
-import frc.robot.util.CatzMathUtils;
-import frc.robot.util.FieldRelativeAccel;
-import frc.robot.util.FieldRelativeSpeed;
+import frc.robot.utilities.CatzMathUtils;
+import frc.robot.utilities.FieldRelativeAccel;
+import frc.robot.utilities.FieldRelativeSpeed;
 import lombok.Getter;
 import lombok.Setter;
 

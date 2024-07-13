@@ -19,10 +19,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
-import frc.robot.util.Alert;
-import frc.robot.util.CatzMathUtils;
-import frc.robot.util.CatzMathUtils.Conversions;
-import frc.robot.util.LoggedTunableNumber;
+import frc.robot.utilities.Alert;
+import frc.robot.utilities.CatzMathUtils;
+import frc.robot.utilities.LoggedTunableNumber;
+import frc.robot.utilities.CatzMathUtils.Conversions;
 
 public class CatzSwerveModule {
     //Module delcaration block
