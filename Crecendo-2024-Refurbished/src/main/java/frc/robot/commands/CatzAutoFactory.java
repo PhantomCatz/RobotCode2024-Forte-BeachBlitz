@@ -18,7 +18,6 @@ import frc.robot.commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
 import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 
 public class CatzAutoFactory {
     
@@ -56,9 +55,7 @@ public class CatzAutoFactory {
     //          Characteration Routines
     //---------------------------------------------------------------------------------------------------------
     public Command flywheelCharacterization(RobotContainer container) {
-        CatzShooterFlywheels flywheels = container.getCatzShooterFlywheels();
-        return new FeedForwardCharacterization(flywheels, flywheels::runCharacterization, flywheels::getCharacterizationVelocity)
-                        .withName("Flywheels characterization");
+        return new SequentialCommandGroup(null);
     }
     
 
@@ -87,6 +84,6 @@ public class CatzAutoFactory {
 
     /** Getter for final autonomous routine */
     public Command getCommand() { 
-        return AutomatedSequenceCmds.testSequence(m_container);
+        return new SequentialCommandGroup(null);
     }
 }

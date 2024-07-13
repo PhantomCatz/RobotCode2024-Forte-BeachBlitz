@@ -16,13 +16,15 @@ public class GyroIONavX implements GyroIO
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-      inputs.gyroAngle = navX.getAngle(); //Acumulated Yaw
-      inputs.gyroYawDegrees = (navX.getYaw());
-      inputs.gyroRollDegrees = navX.getRoll();
-      inputs.gyroConnected = navX.isConnected();
-      inputs.gyroAngleVel = navX.getRate();
-      inputs.gyroAccelX   = navX.getWorldLinearAccelX();
-      inputs.gyroAccelY   = navX.getWorldLinearAccelY();
+      inputs.gyroConnected    = navX.isConnected();
+
+      inputs.gyroAngle        = navX.getAngle(); //Acumulated Yaw no rollover
+      inputs.gyroYawDegrees   = navX.getYaw();
+      inputs.gyroRollDegrees  = navX.getRoll(); 
+           
+      inputs.gyroAngleVel     = navX.getRate();
+      inputs.gyroAccelX       = navX.getWorldLinearAccelX();
+      inputs.gyroAccelY       = navX.getWorldLinearAccelY();
     }
 
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.CatzConstants;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.util.Alert;
@@ -25,91 +26,95 @@ import frc.robot.util.CatzMathUtils.Conversions;
 import frc.robot.util.LoggedTunableNumber;
 
 public class CatzSwerveModule {
+
     //Module delcaration block
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
     // Module Strings for Logging
-    private final String m_moduleName;
+    private static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
 
     // Global swerve module variables
+    private int m_index;
     private SwerveModuleState m_swerveModuleState = null;
 
     // FeedFoward definment
-    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.driveFFkS(),
-                                                                   moduleGainsAndRatios.driveFFkV(), 
+    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(),  //TBD Added feedforward
+                                                                   moduleGainsAndRatios.ffkV(), 
                                                                    0.0);
     // Alerts                                                                               
-    private final Alert driveMotorDisconnected;
+    private final Alert driveMotorDisconnected; // TBD added alerts
     private final Alert steerMotorDisconnected;
 
-    public CatzSwerveModule(ModuleConfig config, String moduleName) {
-        this.m_moduleName = moduleName;
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //  CatzServeModule() - Constructor
+    //
+    //----------------------------------------------------------------------------------------------
+    public CatzSwerveModule(ModuleConfig config, int index) { // TODO instead of index pass in the string
+        this.m_index = index;
+
         // Run subsystem disconnect check
-        if(DriveConstants.isDriveDisabled) { 
+        if(DriveConstants.isDriveDisabled) { //TODO add extra robot enviroment //TODO have discussion on mode and states definement
                 io = new ModuleIONull();
-                System.out.println("Module " + m_moduleName + " Unconfigured");
+                System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
         } else {
             // Run Robot Mode hardware assignment
             switch (CatzConstants.hardwareMode) {
-                case REAL: io = new ModuleIORealFoc(config);
-                            System.out.println("Module " + m_moduleName + " Configured for Real");
+                case REAL  : io = new ModuleIORealFoc(config);
+                             System.out.println("Module " + moduleNames[m_index] + " Configured for Real");
                 break;
-                case REPLAY : io = new ModuleIORealFoc(config) {};
-                            System.out.println("Module " + m_moduleName + " Configured for Replay simulation");
+
+                case REPLAY: io = new ModuleIORealFoc(config) {};
+                             System.out.println("Module " + moduleNames[m_index] + " Configured for Replay simulation");
                 break;
+                
                 case SIM: io = new ModuleIOSim(config);
-                            System.out.println("Module " + m_moduleName + " Configured for WPILIB simulation");
+                            System.out.println("Module " + moduleNames[m_index] + " Configured for WPILIB simulation");
                 break;
-                default : io = null;
-                            System.out.println("Module " + m_moduleName + " Unconfigured");
+                
+                default : io = null;                                                                    //TBD - how is this diff from ModuleIONull()?
+                          System.out.println("Module " + moduleNames[m_index] + " Unconfigured");
                 break;
             }
         }
 
         // Disconnected Alerts
-        driveMotorDisconnected =
-            new Alert(m_moduleName + " drive motor disconnected!", Alert.AlertType.WARNING);
-        steerMotorDisconnected =
-            new Alert(m_moduleName + " steer motor disconnected!", Alert.AlertType.WARNING);
+        driveMotorDisconnected = new Alert(moduleNames[index] + " drive motor disconnected!", Alert.AlertType.WARNING);
+        steerMotorDisconnected = new Alert(moduleNames[index] + " steer motor disconnected!", Alert.AlertType.WARNING);
 
-        resetDriveEncs();
+        resetDriveEncs();   //TBD - why here vs module constructor where all of the other encoder init is being done?
+    
     } // -End of CatzSwerveModule Constructor
 
+
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //  periodic()          //TBD - if this is only called by Drivetrain subsys periodic should it go in module periodic?  
+    //
+    //----------------------------------------------------------------------------------------------
     public void periodic() {
-        // Process and Log Module Inputs
-        io.updateInputs(inputs);
-        Logger.processInputs("Drive/M " + m_moduleName, inputs); 
+    
+        io.updateInputs(inputs);               // Process and Log Module Inputs
+    
+        Logger.processInputs("Drive/M " + moduleNames[m_index], inputs); 
 
-        // Update ff and controllers
-        LoggedTunableNumber.ifChanged(
-            hashCode(),
-            () -> ff = new SimpleMotorFeedforward(drivekS.get(), drivekV.get(), 0),
-            drivekS,
-            drivekV);
-        LoggedTunableNumber.ifChanged(
-            hashCode(), () -> io.setDrivePID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
-        LoggedTunableNumber.ifChanged(
-            hashCode(), () -> io.setSteerPID(steerkP.get(), 0, steerkD.get()), steerkP, steerkD);
-
-        // Display alerts
-        driveMotorDisconnected.set(!inputs.isDriveMotorConnected);
-        steerMotorDisconnected.set(!inputs.isSteerMotorConnected);
-
-        // Logging
-        debugLogsSwerve();
     } // -End of CatzSwerveModule Periodic 
 
+
+
     public void debugLogsSwerve(){
-        Logger.recordOutput("Module " + m_moduleName + "/drive mps", m_swerveModuleState.speedMetersPerSecond);
-        Logger.recordOutput("Module " + m_moduleName + "/current state", getModuleState());
-        Logger.recordOutput("Module " + m_moduleName + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
-        Logger.recordOutput("Module " + m_moduleName + "/currentmoduleangle rad", getAbsEncRadians());
-        Logger.recordOutput("Module " + m_moduleName + "/targetmoduleangle rad", m_swerveModuleState.angle.getRadians());
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/drive mps",              m_swerveModuleState.speedMetersPerSecond);
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/current state",          getModuleState());
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/angle error deg",        Math.toDegrees(m_swerveModuleState.angle.getRadians() - getAbsEncRadians()));
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/currentmoduleangle rad", getAbsEncRadians());
+        Logger.recordOutput("Module " + moduleNames[m_index] + "/targetmoduleangle rad",  m_swerveModuleState.angle.getRadians());
 
 
-        SmartDashboard.putNumber("absenctorad" + m_moduleName , getAbsEncRadians());
-        SmartDashboard.putNumber("angle" + m_moduleName , getCurrentRotation().getDegrees());
+        SmartDashboard.putNumber("absenctorad" + moduleNames[m_index] , getAbsEncRadians());
+        SmartDashboard.putNumber("angle"       + moduleNames[m_index] , getCurrentRotation().getDegrees());
     }
 
     /**
@@ -118,22 +123,22 @@ public class CatzSwerveModule {
      * @param state Desired state with speed and angle.
      */
     public void setModuleAngleAndVelocity(SwerveModuleState state) { //TODO log variables actually used in calculations
+    
         this.m_swerveModuleState       = state;
         double targetAngleRad          = state.angle.getRadians();
-        double currentAngleRad         = getAbsEncRadians();
-
+        double currentAngleRad         = getAbsEncRadians();            
+        
         // Run closed loop drive control
-        io.runDriveVelocityRPSIO(
-            Conversions.MPSToRPS(state.speedMetersPerSecond),
-            ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
+        io.runDriveVelocityRPSIO(Conversions.MPSToRPS(state.speedMetersPerSecond),
+                                 ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
         );
-        // Run Closed Loop Steer Control
-        io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);
+
+        io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);           // Run Closed Loop Steer Control
     }
 
-    //--------------------------------------------------------------------------------------------------------------------
-    //          Drivetrain Power Setting methods
-    //--------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
+    //  Drivetrain Power Setting methods
+    //----------------------------------------------------------------------------------------------
     public void setSteerPower(double pwr) {
         io.runSteerPercentOutputIO(pwr);
     }
@@ -146,9 +151,9 @@ public class CatzSwerveModule {
         io.runDrivePwrPercentIO(0.0);
     }
 
-    //--------------------------------------------------------------------------------------------------------------------
-    //          Module Util Methods
-    //--------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
+    //  Module Util Methods
+    //----------------------------------------------------------------------------------------------
     public void setBreakMode(boolean enable) {
         io.setSteerBrakeModeIO(enable);
     }
@@ -158,14 +163,17 @@ public class CatzSwerveModule {
     }
 
     /** optimze wheel angles before sending to setdesiredstate method for logging */
-    public SwerveModuleState optimizeWheelAngles(SwerveModuleState unoptimizedState) {
+    public SwerveModuleState optimizeWheelAngles(SwerveModuleState unoptimizedState) 
+    {
         SwerveModuleState optimizedState = CatzMathUtils.optimize(unoptimizedState, getCurrentRotation()); 
+    
         return optimizedState;
     }
 
-    //--------------------------------------------------------------------------------------------------------------------
-    //          Module getters
-    //--------------------------------------------------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------------------------
+    //  Module getters
+    //----------------------------------------------------------------------------------------------
     public SwerveModuleState getModuleState() {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);
         

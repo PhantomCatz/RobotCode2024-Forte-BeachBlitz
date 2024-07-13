@@ -16,27 +16,20 @@ public class DriveConstants {
     // Disabled flag for testing
     public static final boolean isDriveDisabled = false;
 
-    // Module organizations
-    public static final String[] moduleNames = new String[] {"FL", "BL", "BR", "FR"};
-    public static final int INDEX_FL = 0;
-    public static final int INDEX_BL = 1;
-    public static final int INDEX_BR = 2;
-    public static final int INDEX_FR = 3;
-
-
     public static final DriveConfig driveConfig =
     switch (CatzConstants.getRobotType()) {
       case SN_TEST, SN2 ->
-          DriveConfig.builder()
-              .wheelRadius(Units.inchesToMeters(1.891))
-              .robotLengthX(Units.inchesToMeters(24.0))
-              .robotWidthY(Units.inchesToMeters(23.5))
-              .bumperWidthX(Units.inchesToMeters(37))
-              .bumperWidthY(Units.inchesToMeters(33))
-              .maxLinearVelocity(Units.feetToMeters(17.0))
-              .maxLinearAcceleration(Units.feetToMeters(75.0))
-              .maxAngularVelocity(12.0)
-              .maxAngularAcceleration(6.0)
+          DriveConfig.builder()                                             //TBD Builder vs non-builder??
+              .wheelRadius          (Units.inchesToMeters( 1.891))          //TBD Does this make sense?
+              .robotLengthX         (Units.inchesToMeters(24.0  ))          //TBD What does this represent?
+              .robotWidthY          (Units.inchesToMeters(23.5  ))
+              .bumperWidthX         (Units.inchesToMeters(37    ))
+              .bumperWidthY         (Units.inchesToMeters(33    ))
+
+              .maxLinearVelocity     (Units.feetToMeters(17.0))
+              .maxLinearAcceleration (Units.feetToMeters(75.0))
+              .maxAngularVelocity    (                   12.0 )
+              .maxAngularAcceleration(                    6.0 )
               .build();
       case SN1 ->
           new DriveConfig(
@@ -89,27 +82,24 @@ public class DriveConstants {
         };
 
     // Logged Tunable PIDF values for swerve modules
-    public static final LoggedTunableNumber drivekP =
-        new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
-    public static final LoggedTunableNumber drivekD =
-        new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
-    public static final LoggedTunableNumber drivekS =
-        new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.driveFFkS());
-    public static final LoggedTunableNumber drivekV =
-        new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.driveFFkV());
-    public static final LoggedTunableNumber steerkP =
-        new LoggedTunableNumber("Drive/Module/steerkP", moduleGainsAndRatios.steerkP());
-    public static final LoggedTunableNumber steerkD =
-        new LoggedTunableNumber("Drive/Module/steerkD", moduleGainsAndRatios.steerkD());
+    public static final LoggedTunableNumber drivekP =        new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
+    public static final LoggedTunableNumber drivekD =        new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
+    public static final LoggedTunableNumber drivekS =        new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.ffkS());
+    public static final LoggedTunableNumber drivekV =        new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.ffkV());
+
+    public static final LoggedTunableNumber steerkP =        new LoggedTunableNumber("Drive/Module/steerkP", moduleGainsAndRatios.steerkP());
+    public static final LoggedTunableNumber steerkD =        new LoggedTunableNumber("Drive/Module/steerkD", moduleGainsAndRatios.steerkD());
+
+
 
     public static final ModuleConfig[] moduleConfigs = 
         switch (CatzConstants.getRobotType()) {
             case SN2 ->
                 new ModuleConfig[] {
-                    new ModuleConfig(1, 2, 9, 0.228031255+0.5, true),
-                    new ModuleConfig(3, 4, 8, 0.733477518+0.5, true),
-                    new ModuleConfig(5, 6, 7, 1.1043222, true),
-                    new ModuleConfig(7, 8, 6, 0.3417887, true)
+                    new ModuleConfig(1, 2, 9, 0.228031255 + 0.5, true),     //TBD - what is the 0.5 for?  Why is steering motor inverted
+                    new ModuleConfig(3, 4, 8, 0.733477518 + 0.5, true),
+                    new ModuleConfig(5, 6, 7, 1.1043222,         true),
+                    new ModuleConfig(7, 8, 6, 0.3417887,         true)
                 };
             case SN1 ->
                 new ModuleConfig[] {
@@ -127,6 +117,7 @@ public class DriveConstants {
                 };
         };
 
+
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
             new Translation2d( driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0), //Lt FRONT
@@ -137,37 +128,43 @@ public class DriveConstants {
 
     // calculates the orientation and speed of individual swerve modules when given
     // the motion of the whole robot
-    public static final SwerveDriveKinematics swerveDriveKinematics =
-        new SwerveDriveKinematics(moduleTranslations);
+    public static final SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(moduleTranslations);
 
-    public static ProfiledPIDController autosteerPIDController = new ProfiledPIDController(5, 0, 0,
-        new TrapezoidProfile.Constraints(4.8, 3));// 6
 
-    public static final HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-        new PIDController(3.0, 0, 0.015),
-        new PIDController(3.0, 0, 0.015),
-        autosteerPIDController);
+    public static       ProfiledPIDController autosteerPIDController = 
+                                                 new ProfiledPIDController(5, 0, 0,
+                                                                           new TrapezoidProfile.Constraints(4.8, 3) );  // 6
+
+
+    public static final HolonomicDriveController holonomicDriveController = 
+                                                    new HolonomicDriveController(new PIDController(3.0, 0, 0.015),
+                                                                                 new PIDController(3.0, 0, 0.015),
+                                                                                 autosteerPIDController             );
     
+
+
     /****************************************************************************************
      * 
      * Drive Constants Abstractions
      * 
      *******************************************************************************************/
     public record ModuleConfig(
-        int driveID,
-        int steerID,
-        int absoluteEncoderChannel,
-        double absoluteEncoderOffset,
+        int     driveID,
+        int     steerID,
+        int     absoluteEncoderChannel,
+        double  absoluteEncoderOffset,
         boolean steerMotorInverted) {}
 
     public record ModuleGainsAndRatios(
-        double driveFFkS,
-        double driveFFkV,
-        double driveFFkT,
+        double ffkS,        //TBD - Is this Drive or Steer?
+        double ffkV,
+        double ffkT,
         double drivekP,
         double drivekD,
+
         double steerkP,
         double steerkD,
+    
         double driveReduction,
         double steerReduction) {}
 
@@ -183,14 +180,18 @@ public class DriveConstants {
         double maxAngularVelocity,
         double maxAngularAcceleration) {
         public double driveBaseRadius() {
-            return Math.hypot(robotLengthX / 2.0, robotWidthY / 2.0);
+        return Math.hypot(robotLengthX / 2.0, robotWidthY / 2.0);
         }
     }
 
-    public enum Mk4iReductions {
-        L2((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
-        L3((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
-        L2_PLUS(6.75 * (14.0 / 16.0)), // SDS mk4i L2 ratio reduction plus 16 tooth pinion
+    public enum Mk4iReductions 
+    {
+        L2     ((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
+        L2_16t ((50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0)),
+        L3     ((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
+
+        L2_PLUS(6.75 * (14.0 / 16.0)),                      // SDS mk4i L2 ratio reduction plus 16 tooth pinion   
+                                        //TBD - it's not plus 16t pinion, 'with' would be better e.g L2_16t also don't do 6.75 could just change the pinion value
         steer((150.0 / 7.0));
     
         final double reduction;
@@ -198,6 +199,6 @@ public class DriveConstants {
         Mk4iReductions(double reduction) {
           this.reduction = reduction;
         }
-      }
+    }
 
 }

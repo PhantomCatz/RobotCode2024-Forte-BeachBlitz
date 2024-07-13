@@ -28,10 +28,6 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
-import frc.robot.subsystems.LEDs.CatzLED;
-import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
-import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
-import frc.robot.subsystems.elevator.CatzElevator;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
@@ -39,17 +35,8 @@ public class RobotContainer {
 
   // Subsystem Declaration
   private static CatzDrivetrain   drive        = new CatzDrivetrain();
-  private static CatzElevator     elevator     = new CatzElevator();
-  private static CatzShooterFeeder shooterFeeder = new CatzShooterFeeder();
-  private static CatzShooterFlywheels shooterFlywheels = new CatzShooterFlywheels();
-  private static CatzLED          led = CatzLED.getInstance();
-  private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
-  private static CatzVision       vision       = new CatzVision(new VisionIO[] {
-                                                              new VisionIOLimeLight("limelight-udon"),    //index 0 left
-                                                              new VisionIOLimeLight("limelight-soba"),    //index 1 right
-                                                              new VisionIOLimeLight("limelight-ramen")    //index 2 turret)
-                                                              });
-  // Drive Controller Declaration
+  
+  //xbox declaration
   private CommandXboxController xboxDrv = new CommandXboxController(0);
   private CommandXboxController xboxAux = new CommandXboxController(1);
 
@@ -70,31 +57,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Drive And Aux Command Mapping
     configureBindings();
-
-    // Endgame alert triggers
-    new Trigger(
-            () -> DriverStation.isTeleopEnabled()
-                  && DriverStation.getMatchTime() > 0.0
-                  && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get())
-    ).onTrue(
-        controllerRumbleCommand()
-            .withTimeout(0.5)
-            .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
-            .finallyDo(() -> CatzLED.getInstance().endgameAlert = false)
-    );
-    new Trigger(
-            () -> DriverStation.isTeleopEnabled()
-                    && DriverStation.getMatchTime() > 0
-                    && DriverStation.getMatchTime() <= Math.round(endgameAlert2.get())
-    ).onTrue(
-        controllerRumbleCommand()
-            .withTimeout(0.2)
-            .andThen(Commands.waitSeconds(0.1))
-            .repeatedly()
-            .withTimeout(0.9) // Rumble three times
-            .beforeStarting(() -> CatzLED.getInstance().endgameAlert = true)
-            .finallyDo(() -> CatzLED.getInstance().endgameAlert = false)
-    );
   }
 
   private void configureBindings() { // TODO organize by function
@@ -146,20 +108,6 @@ public class RobotContainer {
   public CatzDrivetrain getCatzDrivetrain() {
     return drive;
   }
-
-  public CatzElevator getCatzElevator() {
-    return elevator;
-  }
-
-  public CatzShooterFeeder getCatzShooterFeeder() {
-    return shooterFeeder;
-  }
-
-  public CatzShooterFlywheels getCatzShooterFlywheels() {
-    return shooterFlywheels;
-  }
-
-
 
   public Command getAutonomousCommand() {
     return auto.getCommand();
