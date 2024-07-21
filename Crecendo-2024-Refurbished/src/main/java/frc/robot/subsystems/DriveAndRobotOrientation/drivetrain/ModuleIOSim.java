@@ -102,8 +102,4 @@ public class ModuleIOSim implements ModuleIO {
     steerFeedback.setPID(kP, kI, kD);
   }
 
-  @Override
-  public void setDriveBrakeModeIO(boolean enable) {
-    driveCoast = !enable;
-  }
 }

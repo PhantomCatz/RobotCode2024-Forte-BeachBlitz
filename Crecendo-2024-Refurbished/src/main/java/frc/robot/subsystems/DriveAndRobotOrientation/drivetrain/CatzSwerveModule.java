@@ -6,8 +6,6 @@
 package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
 import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.driveConfig;
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.moduleGainsAndRatios;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -22,9 +20,11 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.M
 import frc.robot.util.Alert;
 import frc.robot.util.CatzMathUtils;
 import frc.robot.util.CatzMathUtils.Conversions;
+import frc.robot.util.MotorUtil.NeutralMode;
 import frc.robot.util.LoggedTunableNumber;
 
 public class CatzSwerveModule {
+
     //Module delcaration block
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -43,6 +43,11 @@ public class CatzSwerveModule {
     private final Alert driveMotorDisconnected;
     private final Alert steerMotorDisconnected;
 
+    //----------------------------------------------------------------------------------------------
+    //
+    //  CatzServeModule() - Constructor
+    //
+    //----------------------------------------------------------------------------------------------
     public CatzSwerveModule(ModuleConfig config, String moduleName) {
         this.m_moduleName = moduleName;
         // Run subsystem disconnect check
@@ -118,6 +123,7 @@ public class CatzSwerveModule {
      * @param state Desired state with speed and angle.
      */
     public void setModuleAngleAndVelocity(SwerveModuleState state) { //TODO log variables actually used in calculations
+
         this.m_swerveModuleState       = state;
         double targetAngleRad          = state.angle.getRadians();
         double currentAngleRad         = getAbsEncRadians();
@@ -128,11 +134,12 @@ public class CatzSwerveModule {
             ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
         );
         // Run Closed Loop Steer Control
+
         io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //          Drivetrain Power Setting methods
+    //  Drivetrain Power Setting methods
     //--------------------------------------------------------------------------------------------------------------------
     public void setSteerPower(double pwr) {
         io.runSteerPercentOutputIO(pwr);
@@ -147,10 +154,14 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //          Module Util Methods
+    //  Module Util Methods
     //--------------------------------------------------------------------------------------------------------------------
-    public void setBreakMode(boolean enable) {
-        io.setSteerBrakeModeIO(enable);
+    public void setDriveNeturalMode(NeutralMode type) {
+        io.setDriveNeutralModeIO(type);
+    }
+
+    public void setSteerNeturalMode(NeutralMode type) {
+        io.setSteerNeutralModeIO(type);
     }
 
     public void resetDriveEncs() {
@@ -164,7 +175,7 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //          Module getters
+    //  Module getters
     //--------------------------------------------------------------------------------------------------------------------
     public SwerveModuleState getModuleState() {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);

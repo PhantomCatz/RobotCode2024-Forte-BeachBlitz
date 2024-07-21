@@ -28,6 +28,15 @@ public class Alert {
   private double activeStartTime = 0.0;
   private String text;
 
+  // Alert Looping
+  private boolean isAlertOnLoop;
+  private double alertLoopDuration;
+  private double alertLoopInterval;
+  
+  private double activeTime; 
+  private double activeIntervalTime;
+
+
   /**
    * Creates a new Alert in the default group - "Alerts". If this is the first to be instantiated,
    * the appropriate entries will be added to NetworkTables.
@@ -63,20 +72,47 @@ public class Alert {
    * be sent to the console.
    */
   public void set(boolean active) {
-    if (active && !this.active) {
-      activeStartTime = Timer.getFPGATimestamp();
-      switch (type) {
-        case ERROR:
-          DriverStation.reportError(text, false);
-          break;
-        case WARNING:
-          DriverStation.reportWarning(text, false);
-          break;
-        case INFO:
-          System.out.println(text);
-          break;
+    if(active) {
+      // Init Alert set when alert was previously unset
+      if (!this.active) {
+        activeStartTime = Timer.getFPGATimestamp();
+        activeIntervalTime = 0.0;
+        switch (type) {
+          case ERROR:
+            DriverStation.reportError(text, false);
+            break;
+          case WARNING:
+            DriverStation.reportWarning(text, false);
+            break;
+          case INFO:
+            System.out.println(text);
+            break;
+        }
       }
+
+      // Periodic alert if applicable
+      if(isAlertOnLoop) {
+        activeTime = activeStartTime - Timer.getFPGATimestamp();
+        activeIntervalTime = activeIntervalTime + 0.02;
+        if(activeTime <= alertLoopDuration) {
+          if(activeIntervalTime > alertLoopInterval) {
+            switch (type) {
+              case ERROR:
+                DriverStation.reportError(text, false);
+                break;
+              case WARNING:
+                DriverStation.reportWarning(text, false);
+                break;
+              case INFO:
+                System.out.println(text);
+                break;
+            }
+            activeIntervalTime = 0.0;
+          }
+        }
+      }  
     }
+
     this.active = active;
   }
 
@@ -119,6 +155,12 @@ public class Alert {
       builder.addStringArrayProperty("warnings", () -> getStrings(AlertType.WARNING), null);
       builder.addStringArrayProperty("infos", () -> getStrings(AlertType.INFO), null);
     }
+  }
+
+  public void setAlertOnloop(boolean set, double interval, double duration) {
+    this.isAlertOnLoop     = set;
+    this.alertLoopInterval = interval;
+    this.alertLoopDuration = duration;
   }
 
   /** Represents an alert's level of urgency. */

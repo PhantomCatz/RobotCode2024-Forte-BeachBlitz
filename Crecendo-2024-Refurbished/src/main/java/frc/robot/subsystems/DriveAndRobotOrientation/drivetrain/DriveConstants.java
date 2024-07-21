@@ -129,10 +129,10 @@ public class DriveConstants {
 
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
-            new Translation2d( driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0), //Lt FRONT
-            new Translation2d(-driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0),  //LT BACK
-            new Translation2d(-driveConfig.robotLengthX(), -driveConfig.robotWidthY()).div(2.0),  //RT BACK
-            new Translation2d( driveConfig.robotLengthX(), -driveConfig.robotWidthY()).div(2.0)  //RT FRONT
+            new Translation2d( driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0),    //LT FRONT
+            new Translation2d(-driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0),    //LT BACK
+            new Translation2d(-driveConfig.robotLengthX(), -driveConfig.robotWidthY()).div(2.0),    //RT BACK
+            new Translation2d( driveConfig.robotLengthX(), -driveConfig.robotWidthY()).div(2.0)     //RT FRONT
         };    
 
     // calculates the orientation and speed of individual swerve modules when given
@@ -140,14 +140,17 @@ public class DriveConstants {
     public static final SwerveDriveKinematics swerveDriveKinematics =
         new SwerveDriveKinematics(moduleTranslations);
 
-    public static ProfiledPIDController autosteerPIDController = new ProfiledPIDController(5, 0, 0,
-        new TrapezoidProfile.Constraints(4.8, 3));// 6
+    public static ProfiledPIDController autosteerPIDController = 
+                                                new ProfiledPIDController(5, 0, 0,
+                                                                          new TrapezoidProfile.Constraints(4.8, 3)
+                                                );
 
-    public static final HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-        new PIDController(3.0, 0, 0.015),
-        new PIDController(3.0, 0, 0.015),
-        autosteerPIDController);
-    
+    public static final HolonomicDriveController holonomicDriveController = 
+                                                    new HolonomicDriveController(new PIDController(3.0, 0, 0.015),
+                                                                                    new PIDController(3.0, 0, 0.015),
+                                                                                    autosteerPIDController
+                                                    );
+                                                                            
     /****************************************************************************************
      * 
      * Drive Constants Abstractions
@@ -188,9 +191,12 @@ public class DriveConstants {
     }
 
     public enum Mk4iReductions {
-        L2((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
-        L3((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
-        L2_PLUS(6.75 * (14.0 / 16.0)), // SDS mk4i L2 ratio reduction plus 16 tooth pinion
+        L2     ((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
+        L2_16t ((50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0)), // SDS mk4i L2 ratio reduction plus 16 tooth pinion 
+        L3     ((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
+
+        L2_PLUS(6.75 * (14.0 / 16.0)),                        
+                                        
         steer((150.0 / 7.0));
     
         final double reduction;
@@ -198,6 +204,6 @@ public class DriveConstants {
         Mk4iReductions(double reduction) {
           this.reduction = reduction;
         }
-      }
+    }
 
 }

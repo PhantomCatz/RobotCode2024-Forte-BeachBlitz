@@ -14,32 +14,44 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
 public class TeleopDriveCmd extends Command {
+  // Subsystem 
   private CatzDrivetrain m_drivetrain;
 
-
-  private Supplier<Double> m_supplierLeftJoyX;
-  private Supplier<Double> m_supplierLeftJoyY;
-  private Supplier<Double> m_supplierRightJoyX;
-  private Supplier<Boolean> m_isFieldOrientedDisabled;
+  //
+  private Supplier<Double> m_headingPctOutput_X;
+  private Supplier<Double> m_headingPctOutput_Y;
+  private Supplier<Double> m_angVelocityPctOutput;
+  private Supplier<Boolean> m_orientation;
 
   //drive variables
-  private double xVelocity;
-  private double yVelocity;
+  private double m_headingAndVelocity_X;
+  private double m_headingAndVelocity_Y;
   private double turningVelocity;
 
   private ChassisSpeeds chassisSpeeds;
 
 
+  //--------------------------------------------------------------------------------------
+  //
+  //  Teleop Drive Command Constructor
+  // 
+  //--------------------------------------------------------------------------------------
   public TeleopDriveCmd(Supplier<Double> supplierLeftJoyX,
                         Supplier<Double> supplierLeftJoyY,
-                        Supplier<Double> supplierRightJoyX,
-                        Supplier<Boolean> supplierFieldOriented,
+                        Supplier<Double> angVelocityPctOutput,
+                        Supplier<Boolean> orientation,
                         CatzDrivetrain drivetrain) {
-    this.m_supplierLeftJoyX        = supplierLeftJoyX;
-    this.m_supplierLeftJoyY        = supplierLeftJoyY;
-    this.m_supplierRightJoyX       = supplierRightJoyX;
-    this.m_isFieldOrientedDisabled = supplierFieldOriented;
-    this.m_drivetrain = drivetrain;
+
+    // Chassis magnatude and direction control
+    this.m_headingPctOutput_X         = supplierLeftJoyX;
+    this.m_headingPctOutput_Y         = supplierLeftJoyY;
+    this.m_angVelocityPctOutput       = angVelocityPctOutput;
+
+    // feild orientation disabling
+    this.m_orientation                = orientation;
+
+    // subsystem assignment
+    this.m_drivetrain                 = drivetrain;
 
     addRequirements(m_drivetrain);
   }
@@ -50,44 +62,43 @@ public class TeleopDriveCmd extends Command {
   @Override
   public void execute() {
     // obtain realtime joystick inputs with supplier methods
-    xVelocity =       -m_supplierLeftJoyY.get(); 
-    yVelocity =       -m_supplierLeftJoyX.get(); 
-    turningVelocity =  m_supplierRightJoyX.get(); //alliance flip shouldn't change for turing speed when switching alliances
+    m_headingAndVelocity_X =       -m_headingPctOutput_Y.get(); 
+    m_headingAndVelocity_Y =       -m_headingPctOutput_X.get(); 
+    turningVelocity =  m_angVelocityPctOutput.get(); //alliance flip shouldn't change for turing speed when switching alliances
 
     // Flip Directions for left joystick if alliance is red
     if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
-      xVelocity = -xVelocity;
-      yVelocity = -yVelocity;
+      m_headingAndVelocity_X = -m_headingAndVelocity_X;
+      m_headingAndVelocity_Y = -m_headingAndVelocity_Y;
     }
 
-    // Apply deadbands to prevent modules from receiving unintentional pwr
-    xVelocity =       Math.abs(xVelocity) > XboxInterfaceConstants.kDeadband ? xVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    yVelocity =       Math.abs(yVelocity) > XboxInterfaceConstants.kDeadband ? yVelocity * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
-    turningVelocity = Math.abs(turningVelocity) > XboxInterfaceConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
+    // Apply deadbands to prevent modules from receiving unintentional pwr due to joysticks having offset
+    m_headingAndVelocity_X =       Math.abs(m_headingAndVelocity_X) > XboxInterfaceConstants.kDeadband ? m_headingAndVelocity_X * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    m_headingAndVelocity_Y =       Math.abs(m_headingAndVelocity_Y) > XboxInterfaceConstants.kDeadband ? m_headingAndVelocity_Y * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
+    turningVelocity =              Math.abs(turningVelocity) > XboxInterfaceConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
 
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", xVelocity);
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", yVelocity);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", m_headingAndVelocity_X);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", m_headingAndVelocity_Y);
 
 
     // Construct desired chassis speeds
-    if (m_isFieldOrientedDisabled.get()) {
+    if (m_orientation.get()) {
         // Relative to robot
-        chassisSpeeds = new ChassisSpeeds(xVelocity, yVelocity, turningVelocity);
+        chassisSpeeds = new ChassisSpeeds(m_headingAndVelocity_X, m_headingAndVelocity_Y, turningVelocity);
     } else {
         // Relative to field
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                            xVelocity, yVelocity, turningVelocity, CatzRobotTracker.getInstance().getRobotRotation()
-                                                              );
+        chassisSpeeds = ChassisSpeeds
+                            .fromFieldRelativeSpeeds(m_headingAndVelocity_X, 
+                                                     m_headingAndVelocity_Y, 
+                                                     turningVelocity, 
+                                                     CatzRobotTracker.getInstance().getRobotRotation()
+                            );
     }
 
-    //send new chassisspeeds object to the drivetrain
+    // Send new chassisspeeds object to the drivetrain
     m_drivetrain.drive(chassisSpeeds, true);
   }
 
-  /*
-  * For Debugging Purposes 
-  * Keep them commmented ALWAYS if you are not using it 
-  */
   public void debugLogsDrive(){
     //DEBUG
       // Logger.recordOutput("robot xspeed", xSpeed);

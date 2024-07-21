@@ -41,6 +41,7 @@ import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker.OdometryOb
 import frc.robot.util.Alert;
 import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.MotorUtil.NeutralMode;
 import frc.robot.util.swerve.SwerveSetpoint;
 //import frc.robot.util.swerve.SwerveSetpointGenerator;
 
@@ -274,17 +275,17 @@ public class CatzDrivetrain extends SubsystemBase {
             .withName("Orient Modules");
     }
     
-    /**  Set brake mode for all swerve modules */
-    public void setBrakeMode() {
+    /**  Set Neutral mode for all swerve modules */
+    public void setDriveNeutralMode(NeutralMode type) {
         for (CatzSwerveModule module : m_swerveModules) {
-            module.setBreakMode(true);
+            module.setSteerNeturalMode(type);
         }
     }
 
     /**  Set coast mode for all swerve modules */
-    public void setCoastMode() {
+    public void setSteerNeutralMode(NeutralMode type) {
         for (CatzSwerveModule module : m_swerveModules) {
-            module.setBreakMode(false);
+            module.setSteerNeturalMode(type);
         }
     }
 

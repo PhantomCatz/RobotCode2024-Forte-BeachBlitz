@@ -3,6 +3,7 @@ package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.util.MotorUtil.NeutralMode;
 
 
 public interface ModuleIO {
@@ -21,7 +22,7 @@ public interface ModuleIO {
    public double steerVelocityRadsPerSec;
    public Rotation2d steerAbsolutePosition = new Rotation2d();
    public double steerTorqueCurrentAmps;
-   public double steerAppliedVolts;
+   public double steerBusVoltage;
    public double steerSupplyCurrentAmps;
    public double[] odometryDrivePositionsMeters = new double[0];
    public Rotation2d[] odometrySteerPositions = new Rotation2d[0];
@@ -39,7 +40,7 @@ public interface ModuleIO {
 
  public default void runDriveVelocityRPSIO(double velocity, double feedForward) {}
 
- public default void setDriveBrakeModeIO(boolean enable) {}
+ public default void setDriveNeutralModeIO(NeutralMode type) {}
 
  public default void setDrvSensorPositionIO(double sensorpos) {}
 
@@ -52,11 +53,11 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  //   Steer Access Methods
  //---------------------------------------------------------------------------
- public default void runSteerPercentOutputIO(double SteerPwr) {}
+ public default void runSteerPercentOutputIO(double steerPwr) {}
 
  public default void runSteerPositionSetpoint(double currentAngleRad, double currentAngleRads) {}
 
- public default void setSteerBrakeModeIO(boolean enable) {}
+ public default void setSteerNeutralModeIO(NeutralMode type) {}
 
  public default void setSteerSimPwrIO(double volts) {}
 
