@@ -5,38 +5,13 @@
 package frc.robot.subsystems.Intake.IntakePivot;
 
 /** Add your docs here. */
-public class IntakeConstants
-{
+public class IntakePivotConstants {
+    public final static boolean isIntakePivotDisabled = false;
+
     // -----------------------------------------------------------------------------------------------
     // Motor IDs
     // -----------------------------------------------------------------------------------------------
-    public final static int PIVOT_MTR_ID = 12;
-    public final static int ROLLER_MTR_ID = 10;
-
-    // -----------------------------------------------------------------------------------------------
-    // Kraken Configuration Constants
-    // -----------------------------------------------------------------------------------------------
-    public static final int     KRAKEN_CURRENT_LIMIT_AMPS            = 55;
-    public static final int     KRAKEN_CURRENT_LIMIT_TRIGGER_AMPS    = 55;
-    public static final double  KRAKEN_CURRENT_LIMIT_TIMEOUT_SECONDS = 0.5;
-    public static final boolean KRAKEN_ENABLE_CURRENT_LIMIT          = true;
-
-    // -----------------------------------------------------------------------------------------------
-    // Rollers
-    // -----------------------------------------------------------------------------------------------
-    private final double ROLLERS_MTR_PWR_IN_GROUND = 0.8; //TBD - need to handle carpet and non-carpet value or code
-                                                       // issue
-    private final double ROLLERS_MTR_PWR_IN_SOURCE = 0.25;
-    private final double ROLLERS_MTR_PWR_OUT_EJECT = -0.2; //0.2 // TBD fix top rooler before testing
-    private final double ROLLERS_MTR_PWR_OUT_AMP_SCORE = 0.6;
-    private final double ROLLERS_MTR_PWR_OUT_HANDOFF = -0.5;//-0.2;//-0.3;
-    
-    private static final boolean BEAM_IS_BROKEN     = true;
-    private static final boolean BEAM_IS_NOT_BROKEN = false;
-  
-    private final double ROLLER_ADJUST_BACK    = -0.1;
-    private final double ROLLER_ADJUST_FORWARD =  0.4;
-    
+    public final static int PIVOT_MTR_ID = 12;    
     // -----------------------------------------------------------------------------------------------
     //
     // Pivot Definitions & Variables

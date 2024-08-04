@@ -6,38 +6,46 @@ package frc.robot.subsystems.Intake.IntakePivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
-public interface IntakeIO
-{
-    @AutoLog
-    public static class IntakeIOInputs
-    {
-        public double pivotMtrRev;
-        public double closedLoopPivotMtr;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-        public boolean AdjustBeamBrkState;
-        public boolean LoadBeamBrkState;
+/** Add your docs here. */
+public interface IntakeIO{
+    @AutoLog
+    public static class IntakeIOInputs {
+        public boolean isPivotMotorConnected = true;
+
+        public double pivotMotorRev;
+        public double closedLoopPivotMtr;
+        public double appliedVolts;
+        public double supplyCurrentAmps;
+        public double torqueCurrentAmps;
+        public double tempCelcius;
     }
     public default void updateInputs(IntakeIOInputs inputs) {}
 
-    public default void rollerEnable(boolean enable) {}
+    /** Run to setpoint enc in degrees */
+    public default void runSetpoint(double setpointDegrees, double feedforward) {}
 
-    public default void setRollerPercentOutput(double speed) {}
+    /** Run motors at volts */
+    public default void runVolts(double volts) {}
 
-    public default void rollerIn() {}
+    /** Run motors at current */
+    default void runCurrent(double amps) {}
 
-    public default void rollerOut() {}
+    /** Set Neutral Mode */
+    public default void setNeutralMode(NeutralMode type) {}
 
-    public default void rollerDisable() {}
+    /** Set PID values */
+    default void setPID(double p, double i, double d) {}
 
-    public default void setSquishyMode(boolean enable) {} 
+    /** Set Motion Magic values */
+    default void setMotionMagicParameters(double cruiseVelocity, double acceleration, double jerk) {}
 
-    public default void resetPivotEncPos(double defaultEncoderPosition) {}
+    /** Stops motors */
+    default void stop() {}
 
-    public default void setIntakePivotVoltage(double volts) {}
 
-    public default void setIntakePivotPercentOutput(double percentOutput) {}
 
-    public default void setIntakePivotPostionRev(double pivotEncOuput, double ffVoltage) {}
+
 
 }

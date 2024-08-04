@@ -32,7 +32,7 @@ public class CatzElevator extends SubsystemBase {
   @RequiredArgsConstructor
   public static enum ElevatorState {
       SCORE_AMP(new LoggedTunableNumber("Elevator/ScoreAmpSetpoint",90.0)),
-      SCORE_SOURCE(new LoggedTunableNumber("Elevator/ScoreSourceSetpoint",100.0)),
+      PICKUP_SOURCE(new LoggedTunableNumber("Elevator/ScoreSourceSetpoint",100.0)),
       STOW(() -> 0.0),
       WAIT(() -> targetElevatorRotations);
 
