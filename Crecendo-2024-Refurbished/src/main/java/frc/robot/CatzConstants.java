@@ -2,8 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.utilities.Alert;
-import frc.robot.utilities.Alert.AlertType;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.Alert.AlertType;
 
 /***
  * CatzConstants

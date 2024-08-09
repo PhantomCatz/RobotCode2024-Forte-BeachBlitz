@@ -1,24 +1,22 @@
-// Copyright (c) 2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file at
-// the root directory of this project.
-
-package frc.robot.subsystems.elevator;
+package frc.robot.Subsystems.Elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.util.Units;
+
+import static frc.robot.Subsystems.Elevator.ElevatorConstants.*;
+
 import java.util.List;
 
 public class ElevatorIOReal implements ElevatorIO {
+
   // Hardware
   private final TalonFX leaderTalon;
   private final TalonFX followerTalon;
@@ -32,44 +30,46 @@ public class ElevatorIOReal implements ElevatorIO {
   private final List<StatusSignal<Double>> tempCelsius;
 
   // Control
-  private final VoltageOut voltageControl =
-      new VoltageOut(0.0).withEnableFOC(true).withUpdateFreqHz(0.0);
+  private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true).withUpdateFreqHz(0.0);
   private final TorqueCurrentFOC currentControl = new TorqueCurrentFOC(0.0).withUpdateFreqHz(0.0);
-  private final MotionMagicVoltage positionControl =
-      new MotionMagicVoltage(0.0).withUpdateFreqHz(0.0);
-
-  // Config
+  private final MotionMagicVoltage positionControl = new MotionMagicVoltage(0.0).withUpdateFreqHz(0.0);
   private final TalonFXConfiguration config = new TalonFXConfiguration();
 
   public ElevatorIOReal() {
-    leaderTalon = new TalonFX(ElevatorConstants.leaderID);
-    followerTalon = new TalonFX(ElevatorConstants.followerID);
-    followerTalon.setControl(new Follower(ElevatorConstants.leaderID, true));
+    leaderTalon = new TalonFX(leaderID);
+    followerTalon = new TalonFX(ID_FOLLOWER);
+    followerTalon.setControl(new Follower(leaderID, true));
 
-
-    // Elevator motor configs
-    config.Slot0.kP = ElevatorConstants.gains.kP();
-    config.Slot0.kI = ElevatorConstants.gains.kI();
-    config.Slot0.kD = ElevatorConstants.gains.kD();
-    config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
-    config.MotionMagic.MotionMagicAcceleration   = ElevatorConstants.motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
-    config.MotionMagic.MotionMagicJerk           = ElevatorConstants.motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+    // General Talon Config
     config.TorqueCurrent.PeakForwardTorqueCurrent = 80.0;
     config.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
     config.MotorOutput.Inverted =
-        ElevatorConstants.leaderInverted
+        IS_LEADER_INVERTED
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    // PIDF Talon config
+    config.Slot0.kP = gains.kP();
+    config.Slot0.kI = gains.kI();
+    config.Slot0.kD = gains.kD();
+    config.MotionMagic.MotionMagicCruiseVelocity = motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
+    config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
+    config.MotionMagic.MotionMagicJerk           = motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+    
+    // Apply Talon Configs
     leaderTalon.getConfigurator().apply(config, 1.0);
 
-    // Status signals
+    // Assign leader signals
     internalPositionRotations = leaderTalon.getPosition();
     velocityRps = leaderTalon.getVelocity();
+
+    // Assign leader and Follower signals
     appliedVoltage = List.of(leaderTalon.getMotorVoltage(), followerTalon.getMotorVoltage());
     supplyCurrent = List.of(leaderTalon.getSupplyCurrent(), followerTalon.getSupplyCurrent());
     torqueCurrent = List.of(leaderTalon.getTorqueCurrent(), followerTalon.getTorqueCurrent());
     tempCelsius = List.of(leaderTalon.getDeviceTemp(), followerTalon.getDeviceTemp());
+
     BaseStatusSignal.setUpdateFrequencyForAll(
         100,
         internalPositionRotations,
@@ -83,7 +83,6 @@ public class ElevatorIOReal implements ElevatorIO {
         tempCelsius.get(0),
         tempCelsius.get(1));
 
-    // Optimize bus utilization
     leaderTalon.optimizeBusUtilization(0, 1.0);
   }
 
@@ -106,23 +105,26 @@ public class ElevatorIOReal implements ElevatorIO {
                 tempCelsius.get(1))
             .isOK();
 
-    inputs.positionRotations = Units.rotationsToRadians(internalPositionRotations.getValueAsDouble());
-    inputs.velocityRotPerSec = velocityRps.getValue();
-    inputs.appliedVolts =
-        appliedVoltage.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.supplyCurrentAmps =
-        supplyCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.torqueCurrentAmps =
-        torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.tempCelcius = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+    inputs.leaderPositionRads = Units.rotationsToRadians(internalPositionRotations.getValueAsDouble());
+    inputs.velocityRps        = velocityRps.getValue();
+    inputs.appliedVolts      = appliedVoltage.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+    inputs.supplyCurrentAmps = supplyCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+    inputs.torqueCurrentAmps = torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+    inputs.tempCelcius       = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Elevator Power Output
+  //
+  //-----------------------------------------------------------------------------------------
   @Override
   public void runSetpoint(double setpointRads, double feedforward) {
     leaderTalon.setControl(
         positionControl
             .withPosition(Units.radiansToRotations(setpointRads))
-            .withFeedForward(feedforward));
+            .withFeedForward(feedforward)
+    );
   }
 
   @Override
@@ -135,6 +137,16 @@ public class ElevatorIOReal implements ElevatorIO {
     leaderTalon.setControl(currentControl.withOutput(amps));
   }
 
+  @Override
+  public void stop() {
+    leaderTalon.setControl(new NeutralOut());
+  }
+
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Elevator Misc
+  //
+  //-----------------------------------------------------------------------------------------
   @Override
   public void setBrakeMode(boolean enabled) {
     leaderTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);
@@ -156,10 +168,5 @@ public class ElevatorIOReal implements ElevatorIO {
     config.MotionMagic.MotionMagicAcceleration   = acceleration;
     config.MotionMagic.MotionMagicJerk           = jerk;
     leaderTalon.getConfigurator().apply(config, 0.01);
-  }
-
-  @Override
-  public void stop() {
-    leaderTalon.setControl(new NeutralOut());
   }
 }

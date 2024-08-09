@@ -1,4 +1,4 @@
-package frc.robot.subsystems.DriveAndRobotOrientation.vision;
+package frc.robot.Subsystems.DriveAndRobotOrientation.vision;
     
 import java.util.ArrayList;
 import java.util.List;
@@ -9,26 +9,22 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
+import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOInputsAutoLogged;
 
- 
-/*
-    Assume the Limelight is the front of the robot
-*/
 public class CatzVision extends SubsystemBase {
 
-    // Implementation instantiation
+    // Hardware IO declaration
     private final VisionIO[] cameras;
     public final VisionIOInputsAutoLogged[] inputs;
 
+    // MISC variables
     private double targetID;
     private int acceptableTagID;
     private boolean useSingleTag = false;
-
     public static final double LOWEST_DISTANCE = Units.feetToMeters(10.0);
 
-    //constructor for vision subsystem that creates new vision input objects for each camera set in the singleton implementation
     public CatzVision(VisionIO[] cameras) {
         this.cameras = cameras;
         inputs = new VisionIOInputsAutoLogged[cameras.length];
@@ -67,7 +63,8 @@ public class CatzVision extends SubsystemBase {
         // create a new pose based off the new inputs[cameraNum
         Pose2d currentPose = new Pose2d(inputs[cameraNum].x, 
                                         inputs[cameraNum].y, 
-                                        new Rotation2d(inputs[cameraNum].rotation));
+                                        new Rotation2d(inputs[cameraNum].rotation)
+                             );
 
         // A vision updates to robot tracker
         CatzRobotTracker.getInstance()
@@ -78,14 +75,17 @@ public class CatzVision extends SubsystemBase {
                                                                   inputs[cameraNum].hasTarget,
                                                                   0.0, 
                                                                   inputs[cameraNum].ta, 
-                                                                  cameras[cameraNum].getName()));
+                                                                  cameras[cameraNum].getName())
+                            );
 
         camNum = cameraNum;
     }
 
 
     //------------------------------------------------------------------------
-    // Util
+    //
+    //      Vision util methods 
+    //
     //------------------------------------------------------------------------
     public void setUseSingleTag(boolean useSingleTag, int acceptableTagID) {
         this.useSingleTag = useSingleTag;

@@ -2,13 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.SuperStateCmds;
+package frc.robot.Commands.PositionStateCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class INTAKE_SOURCE extends Command {
-  /** Creates a new INTAKE_SOURCE. */
-  public INTAKE_SOURCE() {
+public class INTAKE_GROUND extends Command {
+  /** Creates a new INTAKE_GROUND. */
+  public INTAKE_GROUND() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

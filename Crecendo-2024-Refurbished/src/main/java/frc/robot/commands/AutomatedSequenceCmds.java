@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import java.util.function.Supplier;
 
@@ -7,9 +7,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.SuperStateCmds.AUTO_AIM;
-import frc.robot.commands.SuperStateCmds.INTAKE_GROUND;
-import frc.robot.commands.SuperStateCmds.STOW;
+import frc.robot.Commands.PositionStateCmds.AUTO_AIM;
+import frc.robot.Commands.PositionStateCmds.INTAKE_GROUND;
+import frc.robot.Commands.PositionStateCmds.STOW;
+import frc.robot.Subsystems.Intake.IntakeRollers.CatzIntakeRollers;
 
 /** Place where any sequencing/nonPosition Based robot state logic is held */
 public class AutomatedSequenceCmds {
@@ -17,10 +18,11 @@ public class AutomatedSequenceCmds {
      * Runs the Auto Note detect in telop to feed note into shooter
      */
     public static Command NoteDetectIntakeToShooter(RobotContainer container) {
+        CatzIntakeRollers rollers = container.getCatzIntakeRollers();
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 new INTAKE_GROUND(), // Until Intake has made it to final ground pos
-                Commands.print("Run Rollers")
+                rollers.setRollersIn()
             ).until(()->true), // Until Intake Rollers have detected note,
             TransferNoteToShooter(container) //Stow is already called in method
         );

@@ -2,35 +2,108 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Intake.IntakeRollers;
+package frc.robot.Subsystems.Intake.IntakeRollers;
+
+import static frc.robot.Subsystems.Intake.IntakeRollers.IntakeRollersConstants.*;
+
+import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CatzConstants;
+import frc.robot.subsystems.Intake.IntakeRollers.IntakeRollersIOInputsAutoLogged;
+import lombok.RequiredArgsConstructor;
 
 public class CatzIntakeRollers extends SubsystemBase {
+
+  // Hardware IO declaration
+  private final IntakeRollersIO io;
+  private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
+
+  // MISC variables
+
+  // State Machine Variables
+  @RequiredArgsConstructor
+  public enum TargetSpeed {
+    IDLE(() ->  0.0),
+    INTAKE(intakeSpeed),
+    EJECT(() -> 0.0),
+    HANDOFF_IN(() -> 0.0),
+    HANDOFF_OUT(() -> 0.0);
+
+    private final DoubleSupplier requestedRollerSpeed;
+    private double getRollerSpeed() {
+      return requestedRollerSpeed.getAsDouble();
+    }
+  }
+
   /** Creates a new CatzIntakeRollers. */
-  public CatzIntakeRollers() {}
+  public CatzIntakeRollers() {
+    if(isIntakeRollersDisabled) {
+      io = new IntakeRollersIONull();
+      System.out.println("Intake Rollers Unconfigured");
+    } else {
+      switch (CatzConstants.hardwareMode) {
+        case REAL:
+          io = new IntakeRollersIOReal();
+          System.out.println("IntakeRollers Configured for Real");
+        break;
+        case REPLAY:
+          io = new IntakeRollersIOReal() {};
+          System.out.println("IntakeRollers Configured for Replayed simulation");
+        break;
+        case SIM:
+          io = new IntakeRollersIOSim();
+          System.out.println("IntakeRollers Configured for WPILIB simulation");
+        break;
+        default:
+          io = null;
+          System.out.println("IntakeRollers Unconfigured");
+        break;
+      }
+    }
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Intake/IntakeRollers/inputs", inputs);
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Command Roller State Access methods
+  //
+  //-----------------------------------------------------------------------------------------
+  private void setTargetRollerSpeed(TargetSpeed targetSpeed) {
+    io.runDutycycle(targetSpeed.getRollerSpeed());
+  }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Intake Roller commands
+  //
+  //-----------------------------------------------------------------------------------------
   public Command setRollersIn() {
-    return new InstantCommand();
+    return startEnd(() -> setTargetRollerSpeed(TargetSpeed.INTAKE), () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+              .withName("Rollers Intake");
   }
   
   public Command setRollersOut() {
-    return new InstantCommand();
+    return startEnd(() -> setTargetRollerSpeed(TargetSpeed.EJECT), () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+              .withName("Rollers Eject");
   }
 
   public Command setRollersHandoffIn() {
-    return new InstantCommand();
+    return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_IN), () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+              .withName("Rollers HandoffIn");
   }
   
   public Command setRollersHandoffOut() {
-    return new InstantCommand();
+    return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_OUT), () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+              .withName("Rollers HandoffOut");
   }
 }

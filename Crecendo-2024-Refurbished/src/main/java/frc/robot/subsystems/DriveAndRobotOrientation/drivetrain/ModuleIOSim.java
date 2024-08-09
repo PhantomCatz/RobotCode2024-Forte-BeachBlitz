@@ -1,4 +1,4 @@
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 public class ModuleIOSim implements ModuleIO {
   private final DCMotorSim driveSim =
       new DCMotorSim(DCMotor.getKrakenX60Foc(1), DriveConstants.moduleGainsAndRatios.driveReduction(), 0.025);

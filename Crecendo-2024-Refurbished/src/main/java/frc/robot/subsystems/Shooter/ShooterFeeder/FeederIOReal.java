@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter.ShooterFeeder;
+package frc.robot.Subsystems.Shooter.ShooterFeeder;
 
 import com.revrobotics.CANSparkMax;
 
@@ -9,8 +9,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 public class FeederIOReal implements FeederIO {
+    //  Hardware IO declaration
     private final CANSparkMax feederNeo;
 
+    // Sensor declaration
     private final DigitalInput beamBreakAdjust;
     private final DigitalInput beamBreakLoad;
 
@@ -25,7 +27,7 @@ public class FeederIOReal implements FeederIO {
         feederNeo.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
         feederNeo.burnFlash(); //save configs so if pwr lost to be reapplied
 
-        // Beam Break hardware instantiation
+        // Sensor hardware instantiation
         beamBreakAdjust = new DigitalInput(0);
         beamBreakLoad = new DigitalInput(1);
 

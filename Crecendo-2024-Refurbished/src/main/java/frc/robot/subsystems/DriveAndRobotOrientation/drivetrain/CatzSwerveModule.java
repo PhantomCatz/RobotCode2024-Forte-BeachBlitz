@@ -3,11 +3,9 @@
  * 
  * 
  */
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.driveConfig;
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.moduleGainsAndRatios;
+import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -18,11 +16,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
-import frc.robot.utilities.Alert;
-import frc.robot.utilities.CatzMathUtils;
-import frc.robot.utilities.LoggedTunableNumber;
-import frc.robot.utilities.CatzMathUtils.Conversions;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.CatzMathUtils;
+import frc.robot.Utilities.LoggedTunableNumber;
+import frc.robot.Utilities.CatzMathUtils.Conversions;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.ModuleIOInputsAutoLogged;
 
 public class CatzSwerveModule {
     //Module delcaration block

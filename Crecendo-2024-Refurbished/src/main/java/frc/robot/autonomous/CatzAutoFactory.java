@@ -1,4 +1,4 @@
-package frc.robot.autonomous;
+package frc.robot.Autonomous;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AutomatedSequenceCmds;
-import frc.robot.commands.CharacterizationCmds.FeedForwardCharacterization;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
+import frc.robot.Commands.AutomatedSequenceCmds;
+import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.Subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 
 public class CatzAutoFactory {
     
@@ -34,8 +34,8 @@ public class CatzAutoFactory {
         //-------------------------------------------------------------------------------------------------------------------
         //   AUTON Priority LIST 
         //-------------------------------------------------------------------------------------------------------------------*/
-        autoPathChooser.addOption("Test Auto", testAuto(container));
-        autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization(container));
+        autoPathChooser.addOption("Test Auto", testAuto());
+        autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
     }
 
     private PathPlannerPath US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
@@ -43,21 +43,21 @@ public class CatzAutoFactory {
     private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
     private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("DriveStraightMid");
 
-    private Command testAuto(RobotContainer container) {
+    private Command testAuto() {
         preloadTrajectoryClass(US_W1_3_1);
         setAutonStartPose(testPath);
 
         return new SequentialCommandGroup(
 
-            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, container.getCatzDrivetrain()))
+            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
         );
     }
 
     //---------------------------------------------------------------------------------------------------------
     //          Characteration Routines
     //---------------------------------------------------------------------------------------------------------
-    public Command flywheelCharacterization(RobotContainer container) {
-        CatzShooterFlywheels flywheels = container.getCatzShooterFlywheels();
+    public Command flywheelCharacterization() {
+        CatzShooterFlywheels flywheels = m_container.getCatzShooterFlywheels();
         return new FeedForwardCharacterization(flywheels, flywheels::runCharacterization, flywheels::getCharacterizationVelocity)
                         .withName("Flywheels characterization");
     }

@@ -1,12 +1,12 @@
-package frc.robot.subsystems.Shooter.ShooterFlywheels;
+package frc.robot.Subsystems.Shooter.ShooterFlywheels;
 
 import org.littletonrobotics.junction.AutoLog;
 
 public interface FlywheelsIO {
   @AutoLog
   class FlywheelsIOInputs {
-    public boolean leftMotorConnected = true;
-    public boolean rightMotorConnected = true;
+    public boolean isLeftMotorConnected = true;
+    public boolean isRightMotorConnected = true;
 
     public double leftPositionRads = 0.0;
     public double leftVelocityRpm = 0.0;
@@ -24,27 +24,29 @@ public interface FlywheelsIO {
   }
 
   /** Update inputs */
-  default void updateInputs(FlywheelsIOInputs inputs) {}
+  public default void updateInputs(FlywheelsIOInputs inputs) {}
 
   /** Run both motors at voltage */
-  default void runVolts(double leftVolts, double rightVolts) {}
+  public default void runVolts(double leftVolts, double rightVolts) {}
 
   /** Stop both flywheels */
-  default void stop() {}
+  public default void stop() {}
 
   /** Run left and right flywheels at velocity in rpm */
-  default void runVelocity(
-      double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {}
+  public default void runVelocity(double leftRpm, 
+                           double rightRpm, 
+                           double leftFeedforward, 
+                           double rightFeedforward) {}
 
   /** Config PID values for both motors */
-  default void setPID(double kP, double kI, double kD) {}
+  public default void setPID(double kP, double kI, double kD) {}
 
   /** Config FF values for both motors */
-  default void setFF(double kS, double kV, double kA) {}
+  public default void setFF(double kS, double kV, double kA) {}
 
   /** Run left flywheels at voltage */
-  default void runCharacterizationLeft(double input) {}
+  public default void runCharacterizationLeft(double input) {}
 
   /** Run right flywheels at voltage */
-  default void runCharacterizationRight(double input) {}
+  public default void runCharacterizationRight(double input) {}
 }

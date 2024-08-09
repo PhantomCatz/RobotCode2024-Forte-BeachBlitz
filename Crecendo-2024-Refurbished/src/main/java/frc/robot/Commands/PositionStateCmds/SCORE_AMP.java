@@ -2,12 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.SuperStateCmds;
+package frc.robot.Commands.PositionStateCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.SuperStateCmds.SuperStateCommandLogger.SuperStateCommand;
-import frc.robot.subsystems.elevator.CatzElevator;
-import frc.robot.subsystems.elevator.CatzElevator.ElevatorState;
+import frc.robot.Commands.PositionStateCmds.PositionStateLogging.PositionStateCommand;
+import frc.robot.Subsystems.Elevator.CatzElevator;
+import frc.robot.Subsystems.Elevator.CatzElevator.ElevatorPosition;
 
 public class SCORE_AMP extends Command {
 
@@ -26,11 +26,11 @@ public class SCORE_AMP extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    switch(SuperStateCommandLogger.previousSuperStateCommand) {
+    switch(PositionStateLogging.previousPositionStateCommand) {
       case SCORE_AMP:
       case INTAKE_SOURCE:
       case AUTO_AIM:
-        m_elevator.setElevatorState(ElevatorState.SCORE_AMP);
+        m_elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
         isIntakeInDanger = false;
         //Move Intake to final position
         isIntakeSetpointedToFinalPos = true;
@@ -39,7 +39,7 @@ public class SCORE_AMP extends Command {
       case INTAKE_GROUND:
       case STOW:
         // Intake Move to upright position
-        m_elevator.setElevatorState(ElevatorState.WAIT);
+        m_elevator.setTargetPosition(ElevatorPosition.WAIT);
         isIntakeInDanger = true;
       break;
     }
@@ -54,7 +54,7 @@ public class SCORE_AMP extends Command {
     // Run Intake Danger Checks if Applicable
     if(isIntakeInDanger == true) {
       if(true) { // Intake has passed into Upright position
-        m_elevator.setElevatorState(ElevatorState.SCORE_AMP);
+        m_elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
         isIntakeInDanger = false;
       } 
     }
@@ -70,7 +70,7 @@ public class SCORE_AMP extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SuperStateCommandLogger.previousSuperStateCommand = SuperStateCommand.SCORE_AMP;
+    PositionStateLogging.previousPositionStateCommand = PositionStateCommand.SCORE_AMP;
   }
 
   // Returns true when the command should end.

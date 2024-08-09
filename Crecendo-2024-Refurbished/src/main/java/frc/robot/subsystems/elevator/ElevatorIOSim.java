@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.Subsystems.Elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.Subsystems.Elevator.ElevatorConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,12 +19,12 @@ public class ElevatorIOSim implements ElevatorIO{
   private static final double autoStartAngle = Units.degreesToRadians(80.0);
 
   private final ElevatorSim sim = 
-    new ElevatorSim(gains.ffkV(), gains.ffkA(), DCMotor.getKrakenX60(2), 0.0, 2, true, 0.0); //TODO fix min and max height
+    new ElevatorSim(gains.kV(), gains.kA(), DCMotor.getKrakenX60(2), 0.0, 2, true, 0.0); //TODO fix min and max height
 
 
   private final PIDController controller;
   private double appliedVoltage = 0.0;
-  private double positionOffset = 0.0;
+  private double positionOset = 0.0;
 
   private boolean controllerNeedsReset = false;
   private boolean closedLoop = true;
@@ -51,8 +51,8 @@ public class ElevatorIOSim implements ElevatorIO{
 
     sim.update(CatzConstants.LOOP_TIME);
 
-    inputs.positionRotations = sim.getPositionMeters();
-    inputs.velocityRotPerSec = sim.getVelocityMetersPerSecond();// TODO fix
+    inputs.leaderPositionRads = sim.getPositionMeters();
+    inputs.velocityRps = sim.getVelocityMetersPerSecond();// TODO fix
     inputs.appliedVolts = new double[] {appliedVoltage};
     inputs.supplyCurrentAmps = new double[] {sim.getCurrentDrawAmps()};
     inputs.torqueCurrentAmps = new double[] {sim.getCurrentDrawAmps()};

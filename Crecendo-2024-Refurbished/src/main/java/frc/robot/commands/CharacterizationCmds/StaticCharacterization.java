@@ -5,12 +5,12 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc.robot.commands.CharacterizationCmds;
+package frc.robot.Commands.CharacterizationCmds;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.utilities.LoggedTunableNumber;
+import frc.robot.Utilities.LoggedTunableNumber;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;

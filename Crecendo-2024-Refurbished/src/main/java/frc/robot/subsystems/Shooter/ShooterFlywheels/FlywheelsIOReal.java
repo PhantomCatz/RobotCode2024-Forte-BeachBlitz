@@ -1,6 +1,6 @@
-package frc.robot.subsystems.Shooter.ShooterFlywheels;
+package frc.robot.Subsystems.Shooter.ShooterFlywheels;
 
-import static frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
+import static frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 
 public class FlywheelsIOReal implements FlywheelsIO {
+
   // Hardware
   private final TalonFX leftTalon;
   private final TalonFX rightTalon;
@@ -32,42 +33,39 @@ public class FlywheelsIOReal implements FlywheelsIO {
   private final StatusSignal<Double> rightTempCelsius;
 
   // Control
-  private final Slot0Configs controllerConfig = new Slot0Configs();
   private final VoltageOut voltageControl = new VoltageOut(0).withUpdateFreqHz(0.0);
   private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0.0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0.0);
+  private final TalonFXConfiguration config = new TalonFXConfiguration();
 
   public FlywheelsIOReal() {
     leftTalon = new TalonFX(flywheelConfig.leftID());
     rightTalon = new TalonFX(flywheelConfig.rightID());
 
-    // General config
-    TalonFXConfiguration config = new TalonFXConfiguration();
+    // General Talon Config
     config.CurrentLimits.SupplyCurrentLimit = 60.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.Feedback.SensorToMechanismRatio = flywheelConfig.reduction();
 
-    // Controller config;
-    controllerConfig.kP = gains.kP();
-    controllerConfig.kI = gains.kI();
-    controllerConfig.kD = gains.kD();
-    controllerConfig.kS = gains.kS();
-    controllerConfig.kV = gains.kV();
-    controllerConfig.kA = gains.kA();
+    // PIDF Talon config
+    config.Slot0.kP = gains.kP();
+    config.Slot0.kI = gains.kI();
+    config.Slot0.kD = gains.kD();
+    config.Slot0.kS = gains.kS();
+    config.Slot0.kV = gains.kV();
+    config.Slot0.kA = gains.kA();
 
     // Apply configs
     leftTalon.getConfigurator().apply(config, 1.0);
     rightTalon.getConfigurator().apply(config, 1.0);
-    leftTalon.getConfigurator().apply(controllerConfig, 1.0);
-    rightTalon.getConfigurator().apply(controllerConfig, 1.0);
 
     // Set inverts
     leftTalon.setInverted(true);
     rightTalon.setInverted(false);
 
-    // Set signals
+    // Assign signals
     leftPosition = leftTalon.getPosition();
     leftVelocity = leftTalon.getVelocity();
     leftAppliedVolts = leftTalon.getMotorVoltage();
@@ -95,12 +93,16 @@ public class FlywheelsIOReal implements FlywheelsIO {
         rightAppliedVolts,
         rightSupplyCurrent,
         rightTorqueCurrent,
-        rightTempCelsius);
+        rightTempCelsius
+      );
+
+    leftTalon.optimizeBusUtilization(0, 1.0);
+    rightTalon.optimizeBusUtilization(0, 1.0);
   }
 
   @Override
   public void updateInputs(FlywheelsIOInputs inputs) {
-    inputs.leftMotorConnected =
+    inputs.isLeftMotorConnected =
         BaseStatusSignal.refreshAll(
                 leftPosition,
                 leftVelocity,
@@ -109,7 +111,7 @@ public class FlywheelsIOReal implements FlywheelsIO {
                 leftTorqueCurrent,
                 leftTempCelsius)
             .isOK();
-    inputs.rightMotorConnected =
+    inputs.isRightMotorConnected =
         BaseStatusSignal.refreshAll(
                 rightPosition,
                 rightVelocity,
@@ -134,6 +136,11 @@ public class FlywheelsIOReal implements FlywheelsIO {
     inputs.rightTempCelsius = rightTempCelsius.getValueAsDouble();
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Flywheel Power Output
+  //
+  //-----------------------------------------------------------------------------------------
   @Override
   public void runVolts(double leftVolts, double rightVolts) {
     leftTalon.setControl(voltageControl.withOutput(leftVolts));
@@ -147,21 +154,31 @@ public class FlywheelsIOReal implements FlywheelsIO {
   }
 
   @Override
-  public void runVelocity(
-      double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {
+  public void runVelocity(double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {
     leftTalon.setControl(
-        velocityControl.withVelocity(leftRpm / 60.0).withFeedForward(leftFeedforward));
+        velocityControl
+            .withVelocity(leftRpm / 60.0)
+            .withFeedForward(leftFeedforward)
+    );
     rightTalon.setControl(
-        velocityControl.withVelocity(rightRpm / 60.0).withFeedForward(rightFeedforward));
+          velocityControl
+              .withVelocity(rightRpm / 60.0)
+              .withFeedForward(rightFeedforward)
+    );
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Flywheel Misc
+  //
+  //-----------------------------------------------------------------------------------------
   @Override
   public void setPID(double kP, double kI, double kD) {
-    controllerConfig.kP = kP;
-    controllerConfig.kI = kI;
-    controllerConfig.kD = kD;
-    leftTalon.getConfigurator().apply(controllerConfig);
-    rightTalon.getConfigurator().apply(controllerConfig);
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    leftTalon.getConfigurator().apply(config);
+    rightTalon.getConfigurator().apply(config);
   }
 
   @Override

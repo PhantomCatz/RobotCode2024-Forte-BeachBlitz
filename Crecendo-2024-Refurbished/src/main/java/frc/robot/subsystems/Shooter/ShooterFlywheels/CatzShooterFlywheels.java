@@ -1,25 +1,19 @@
-// Copyright (c) 2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file at
-// the root directory of this project.
+package frc.robot.Subsystems.Shooter.ShooterFlywheels;
 
-package frc.robot.subsystems.Shooter.ShooterFlywheels;
-
-import static frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
-
-import frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants;
-import frc.robot.utilities.Alert;
-import frc.robot.utilities.LinearProfile;
-import frc.robot.utilities.LoggedTunableNumber;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.LinearProfile;
+import frc.robot.Utilities.LoggedTunableNumber;
+import frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelsIOInputsAutoLogged;
+
+import static frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
 
 import java.lang.annotation.Target;
 import java.util.function.BooleanSupplier;
@@ -36,31 +30,29 @@ public class CatzShooterFlywheels extends SubsystemBase {
   private final FlywheelsIO io;
   private final FlywheelsIOInputsAutoLogged inputs = new FlywheelsIOInputsAutoLogged();
 
-  // Motion Control Declaration
+  // Closed Loop Variable Declaration
   private final LinearProfile leftProfile;
   private final LinearProfile rightProfile;
   private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS.get(), kV.get(), kA.get());
 
   // MISC variables
   private boolean wasClosedLoop = false;
-  private boolean closedLoop = false;
-  @Setter private BooleanSupplier prepareShootSupplier = () -> false;
-
+  private boolean isFlywheelClosedLoop = false;
+  @Setter 
+  private BooleanSupplier prepareShootSupplier = () -> false;
   @AutoLogOutput(key = "Flywheels/Goal")
-  private TargetSpeed speed = TargetSpeed.IDLE;
+  private ShooterSpeed targetSpeed = ShooterSpeed.IDLE;
 
-  // Disconnected alerts
-  private final Alert leftDisconnected =
-      new Alert("Left flywheel disconnected!", Alert.AlertType.WARNING);
-  private final Alert rightDisconnected =
-      new Alert("Right flywheel disconnected!", Alert.AlertType.WARNING);
+  // Motor Console Alerts
+  private final Alert disconnectedAlertLT = new Alert("Left flywheel disconnected!", Alert.AlertType.WARNING);
+  private final Alert disconnectedAlertRT = new Alert("Right flywheel disconnected!", Alert.AlertType.WARNING);
   
 
   // Flywheel State machine
   @RequiredArgsConstructor
-  public enum TargetSpeed {
+  public enum ShooterSpeed {
     IDLE(() -> 0.0, () -> 0.0),
-    SHOOT(shootingLeftRpm, shootingRightRpm),
+    SHOOT(shootingRpmLT, shootingRpmRT),
     INTAKE(intakingRpm, intakingRpm),
     EJECT(ejectingRpm, ejectingRpm),
     POOP(poopingRpm, poopingRpm),
@@ -73,18 +65,13 @@ public class CatzShooterFlywheels extends SubsystemBase {
     private final DoubleSupplier leftGoal;
     private final DoubleSupplier rightGoal;
 
-    private double getLeftTargetSpeed() {
+    private double getTargetSpeedLT() {
       return leftGoal.getAsDouble();
     }
 
-    private double getRightTargetSpeed() {
+    private double getTargetSpeedRT() {
       return rightGoal.getAsDouble();
     }
-  }
-
-  public enum IdleMode {
-    TELEOP,
-    AUTO
   }
 
   public CatzShooterFlywheels() {
@@ -115,7 +102,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
     leftProfile = new LinearProfile(maxAcceleration.get(), CatzConstants.LOOP_TIME);
     rightProfile = new LinearProfile(maxAcceleration.get(), CatzConstants.LOOP_TIME);
 
-    setDefaultCommand(runOnce(() -> setSpeed(TargetSpeed.IDLE)).withName("Flywheels Idle"));
+    setDefaultCommand(runOnce(() -> setTargetSpeed(ShooterSpeed.IDLE)).withName("Flywheels Idle"));
   }
 
   @Override
@@ -124,37 +111,44 @@ public class CatzShooterFlywheels extends SubsystemBase {
     Logger.processInputs("Flywheels", inputs);
 
     // Set alerts
-    leftDisconnected.set(!inputs.leftMotorConnected);
-    rightDisconnected.set(!inputs.rightMotorConnected);
+    disconnectedAlertLT.set(!inputs.isLeftMotorConnected);
+    disconnectedAlertRT.set(!inputs.isRightMotorConnected);
 
-    // Check controllers
+    // Update controllers when user specifies
     LoggedTunableNumber.ifChanged(hashCode(), pid -> io.setPID(pid[0], pid[1], pid[2]), kP, kI, kD);
     LoggedTunableNumber.ifChanged(
-        hashCode(), kSVA -> ff = new SimpleMotorFeedforward(kSVA[0], kSVA[1], kSVA[2]), kS, kV, kA);
+        hashCode(), 
+        kSVA -> ff = new SimpleMotorFeedforward(kSVA[0], kSVA[1], kSVA[2]), 
+        kS, 
+        kV, 
+        kA
+    );
 
     // Stop when disabled
     if (DriverStation.isDisabled()) {
-      setSpeed(TargetSpeed.IDLE);
+      setTargetSpeed(ShooterSpeed.IDLE);
     }
 
     // Get goal
-    double leftGoal = speed.getLeftTargetSpeed();
-    double rightGoal = speed.getRightTargetSpeed();
-    boolean idlePrepareShoot = speed == TargetSpeed.IDLE && prepareShootSupplier.getAsBoolean();
+    double leftGoal = targetSpeed.getTargetSpeedLT();
+    double rightGoal = targetSpeed.getTargetSpeedRT();
+    boolean idlePrepareShoot = targetSpeed == ShooterSpeed.IDLE && prepareShootSupplier.getAsBoolean();
     if (idlePrepareShoot) {
-      leftGoal = TargetSpeed.SHOOT.getLeftTargetSpeed() * prepareShootMultiplier.get();
-      rightGoal = TargetSpeed.SHOOT.getRightTargetSpeed() * prepareShootMultiplier.get();
+      leftGoal = ShooterSpeed.SHOOT.getTargetSpeedLT() * prepareShootMultiplier.get();
+      rightGoal = ShooterSpeed.SHOOT.getTargetSpeedRT() * prepareShootMultiplier.get();
     }
 
     // Run to setpoint
-    if (closedLoop || idlePrepareShoot) {
-      // Update goals
+    if (isFlywheelClosedLoop || idlePrepareShoot) {
       double leftSetpoint =  leftProfile.calculateSetpoint();
       double rightSetpoint = rightProfile.calculateSetpoint();
-      io.runVelocity(
-          leftSetpoint, rightSetpoint, ff.calculate(leftSetpoint), ff.calculate(rightSetpoint));
+      io.runVelocity(leftSetpoint, 
+                     rightSetpoint, 
+                     ff.calculate(leftSetpoint), 
+                     ff.calculate(rightSetpoint)
+      );
       CatzRobotTracker.getInstance().setFlywheelAccelerating(!atGoal() || isDrawingHighCurrent());
-    } else if (speed == TargetSpeed.IDLE) {
+    } else if (targetSpeed == ShooterSpeed.IDLE) {
       CatzRobotTracker.getInstance().setFlywheelAccelerating(false);
       io.stop();
     }
@@ -166,11 +160,13 @@ public class CatzShooterFlywheels extends SubsystemBase {
   }
 
   //-----------------------------------------------------------------------------------------
+  //
   //    Flywheel Misc Methods
+  //
   //-----------------------------------------------------------------------------------------
   /** Runs flywheels at the commanded voltage or amps. */
   public void runCharacterization(double input) {
-    setSpeed(TargetSpeed.CHARACTERIZING);
+    setTargetSpeed(ShooterSpeed.CHARACTERIZING);
     io.runCharacterizationLeft(input);
     io.runCharacterizationRight(input);
   }
@@ -183,9 +179,9 @@ public class CatzShooterFlywheels extends SubsystemBase {
   /** Get if velocity profile has ended */
   @AutoLogOutput(key = "Flywheels/AtGoal")
   public boolean atGoal() {
-    return speed == TargetSpeed.IDLE
-        || (leftProfile.getCurrentSetpoint() == speed.getLeftTargetSpeed()
-            && rightProfile.getCurrentSetpoint() == speed.getRightTargetSpeed());
+    return targetSpeed == ShooterSpeed.IDLE
+        || (leftProfile.getCurrentSetpoint() == targetSpeed.getTargetSpeedLT()
+            && rightProfile.getCurrentSetpoint() == targetSpeed.getTargetSpeedRT());
   }
 
   private boolean isDrawingHighCurrent() {
@@ -194,50 +190,61 @@ public class CatzShooterFlywheels extends SubsystemBase {
   }
 
   //-----------------------------------------------------------------------------------------
+  //
   //    Command Flywheel State Access methods
+  //
   //-----------------------------------------------------------------------------------------
   /** Set the current goal of the flywheel */
-  private void setSpeed(TargetSpeed goal) {
-    if (goal ==TargetSpeed.CHARACTERIZING || goal == TargetSpeed.IDLE) {
-      wasClosedLoop = closedLoop;
-      closedLoop = false;
-      this.speed = goal;
-      return; // Don't set a goal
+  private void setTargetSpeed(ShooterSpeed targetSpeed) {
+    // Characterizing and idle flag
+    if (targetSpeed == ShooterSpeed.CHARACTERIZING || targetSpeed == ShooterSpeed.IDLE) {
+      wasClosedLoop = isFlywheelClosedLoop;
+      isFlywheelClosedLoop = false;
+      this.targetSpeed = targetSpeed;
+      return; //don't set a goal
     }
-    // If not already controlling to requested goal
-    // set closed loop false
-    closedLoop = this.speed == goal;
+
+    // Closed loop setting check
+    if(this.targetSpeed == targetSpeed) {
+      isFlywheelClosedLoop = true;
+    }
+
     // Enable close loop
-    if (!closedLoop) {
-      leftProfile.setGoal(goal.getLeftTargetSpeed(), inputs.leftVelocityRpm);
-      rightProfile.setGoal(goal.getRightTargetSpeed(), inputs.rightVelocityRpm);
-      closedLoop = true;
+    if (!isFlywheelClosedLoop) {
+      leftProfile.setGoal(targetSpeed.getTargetSpeedLT(), inputs.leftVelocityRpm);
+      rightProfile.setGoal(targetSpeed.getTargetSpeedRT(), inputs.rightVelocityRpm);
+      isFlywheelClosedLoop = true;
     }
-    this.speed = goal;
+    this.targetSpeed = targetSpeed;
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Flywheel commands
+  //
+  //-----------------------------------------------------------------------------------------
   public Command shootCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.SHOOT), () -> setSpeed(TargetSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.SHOOT), () -> setTargetSpeed(ShooterSpeed.IDLE))
         .withName("Flywheels Shoot");
   }
 
   public Command intakeCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.INTAKE), () -> setSpeed(TargetSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.INTAKE), () -> setTargetSpeed(ShooterSpeed.IDLE))
         .withName("Flywheels Intake");
   }
 
   public Command ejectCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.EJECT), () -> setSpeed(TargetSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.EJECT), () -> setTargetSpeed(ShooterSpeed.IDLE))
         .withName("Flywheels Eject");
   }
 
   public Command hoardCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.POOP), () -> setSpeed(TargetSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.POOP), () -> setTargetSpeed(ShooterSpeed.IDLE))
           .withName("Flywheels Poop");
   }
 
   public Command autoHoardCommand() {
-    return startEnd(() -> setSpeed(TargetSpeed.HOARD), () -> setSpeed(TargetSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.HOARD), () -> setTargetSpeed(ShooterSpeed.IDLE))
         .withName("Flywheels Super Poop");
   }
 }

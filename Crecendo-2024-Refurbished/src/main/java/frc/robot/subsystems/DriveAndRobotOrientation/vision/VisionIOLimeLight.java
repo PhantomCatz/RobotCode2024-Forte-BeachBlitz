@@ -1,4 +1,4 @@
-package frc.robot.subsystems.DriveAndRobotOrientation.vision;
+package frc.robot.Subsystems.DriveAndRobotOrientation.vision;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -6,8 +6,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.utilities.LimelightHelpers;
-import frc.robot.utilities.LimelightHelpers.LimelightResults;
+import frc.robot.Utilities.LimelightHelpers;
+import frc.robot.Utilities.LimelightHelpers.LimelightResults;
 
 public class VisionIOLimeLight implements VisionIO {
     
@@ -16,6 +16,9 @@ public class VisionIOLimeLight implements VisionIO {
     private double[] lastData = new double[6];
 
     private int primaryTrackingApriltag;
+    private Pose2d prevVisionPos = null;
+    private Pose2d visionPose2d = null;
+    private boolean badData = false;
 
      /**
      * Implements Limelight camera
@@ -28,10 +31,6 @@ public class VisionIOLimeLight implements VisionIO {
         System.out.println("Limeilight " + name + " instantiated");
         
     }
-
-    private Pose2d prevVisionPos = null;
-    private Pose2d visionPose2d = null;
-    private boolean badData = false;
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {

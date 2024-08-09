@@ -2,35 +2,46 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.Subsystems.Elevator;
+
+import static frc.robot.Subsystems.Elevator.ElevatorConstants.*;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
-import frc.robot.utilities.Alert;
-import frc.robot.utilities.LoggedTunableNumber;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.LoggedTunableNumber;
+import frc.robot.subsystems.elevator.ElevatorIOInputsAutoLogged;
 import lombok.RequiredArgsConstructor;
 
 public class CatzElevator extends SubsystemBase {
 
-  // Hardware Implementations
+  // Hardware IO declaration
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-  // Elevator Statemachine variables
-  private ElevatorState m_elevatorState;
+  // Closed Loop Variable Declaration
+  private ElevatorFeedforward ff;
 
+  // MISC variables
+  private ElevatorPosition m_targetPosition;
+  private static double targetElevatorRotations = 0.0;
+  private boolean isCharacterizing = false;
+  private BooleanSupplier coastSupplier = () -> false;
+  private boolean brakeModeEnabled = true;
+
+  // Motor Console alerts
+  private final Alert disconnectedAlertLeader   = new Alert("Elevator leader motor disconnected!", Alert.AlertType.WARNING);
+  private final Alert disconnectedAlertFollower = new Alert("Elevator follower motor disconnected!", Alert.AlertType.WARNING);
 
   @RequiredArgsConstructor
-  public static enum ElevatorState {
+  public static enum ElevatorPosition {
       SCORE_AMP(new LoggedTunableNumber("Elevator/ScoreAmpSetpoint",90.0)),
       PICKUP_SOURCE(new LoggedTunableNumber("Elevator/ScoreSourceSetpoint",100.0)),
       STOW(() -> 0.0),
@@ -43,22 +54,8 @@ public class CatzElevator extends SubsystemBase {
     }
   }
 
-  private final Alert leaderMotorDisconnected =
-      new Alert("Elevator leader motor disconnected!", Alert.AlertType.WARNING);
-  private final Alert followerMotorDisconnected =
-      new Alert("Elevator follower motor disconnected!", Alert.AlertType.WARNING);
-
-
-  // Elevator Class Variables
-  private ElevatorFeedforward ff;
-
-  private static double targetElevatorRotations = 0.0;
-  private boolean isCharacterizing = false;
-  private BooleanSupplier coastSupplier = () -> false;
-  private boolean brakeModeEnabled = true;
-
   public CatzElevator() {
-    if(ElevatorConstants.isElevatorDisabled) {
+    if(isElevatorDisabled) {
       io = new ElevatorIONull();
       System.out.println("Elevator Unconfigured");
     } else {
@@ -92,57 +89,59 @@ public class CatzElevator extends SubsystemBase {
     Logger.processInputs("Elevator/inputs ", inputs); 
 
     // Set alerts
-    leaderMotorDisconnected.set(!inputs.isLeaderMotorConnected);
-    followerMotorDisconnected.set(!inputs.isFollowerMotorConnected);
+    disconnectedAlertLeader.set(!inputs.isLeaderMotorConnected);
+    disconnectedAlertFollower.set(!inputs.isFollowerMotorConnected);
 
-    // Update controllers
+    // Update controllers when user specifies
     LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setPID(kP.get(), kI.get(), kD.get()), ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
+        hashCode(), () -> io.setPID(kP.get(), kI.get(), kD.get()), kP, kI, kD);
     LoggedTunableNumber.ifChanged(
         hashCode(),
         () -> ff = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get()),
-        ElevatorConstants.kS,
-        ElevatorConstants.kG,
-        ElevatorConstants.kV,
-        ElevatorConstants.kA);
-    LoggedTunableNumber.ifChanged(hashCode(), ()-> io.setMotionMagicParameters(mmCruiseVelocity.get(), mmAcceleration.get(), mmJerk.get()), 
-        ElevatorConstants.mmCruiseVelocity,
-        ElevatorConstants.mmAcceleration,
-        ElevatorConstants.mmJerk);
+        kS,
+        kG,
+        kV,
+        kA);
+    LoggedTunableNumber.ifChanged(hashCode(), 
+        ()-> io.setMotionMagicParameters(mmCruiseVelocity.get(), mmAcceleration.get(), mmJerk.get()), 
+        mmCruiseVelocity,
+        mmAcceleration,
+        mmJerk);
 
 
     // Run Setpoint Control
-    if(DriverStation.isDisabled() || m_elevatorState == null) {
+    if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
     } else {
       // Run Softlimit check
-      if(getElevatorPosition() > maxRotations) {
+      if(getElevatorPosition() > MAX_ROTATIONS) {
         io.stop();
       } else {
         // Run state check
-        if(m_elevatorState == ElevatorState.STOW) {
+        if(m_targetPosition == ElevatorPosition.STOW) {
           // Run Crossbar hit check
           if(getElevatorPosition() < 5.0) {
             io.stop();
           } else {
             // Run Setpoint Motion Magic    
-            io.runSetpoint(m_elevatorState.getTargetPositionRotations(), ff.calculate(inputs.velocityRotPerSec));
+            io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
           }
         } else {
           // Run Setpoint Motion Magic    
-          io.runSetpoint(m_elevatorState.getTargetPositionRotations(), ff.calculate(inputs.velocityRotPerSec));
+          io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
         }
       }
     }
 
   }
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Flywheel Misc Methods
+  //
+  //-----------------------------------------------------------------------------------------
   public double getElevatorPosition() {
-    return inputs.positionRotations;
-  }
-
-  public void setElevatorState(ElevatorState wantedstate) {
-    m_elevatorState = wantedstate;
+    return inputs.leaderPositionRads;
   }
 
   public void setBrakeMode(boolean enabled) {
@@ -157,10 +156,19 @@ public class CatzElevator extends SubsystemBase {
   }
 
   public double getCharacterizationVelocity() {
-    return inputs.velocityRotPerSec;
+    return inputs.velocityRps;
   }
 
   public void endCharacterization() {
     isCharacterizing = false;
+  }
+
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Command Flywheel State Access methods
+  //
+  //-----------------------------------------------------------------------------------------
+  public void setTargetPosition(ElevatorPosition targetPosition) {
+    m_targetPosition = targetPosition;
   }
 }

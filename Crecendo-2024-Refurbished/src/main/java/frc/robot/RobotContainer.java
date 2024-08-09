@@ -17,31 +17,41 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Autonomous.CatzAutoFactory;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
-import frc.robot.autonomous.CatzAutoFactory;
-import frc.robot.commands.AutomatedSequenceCmds;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
-import frc.robot.subsystems.LEDs.CatzLED;
-import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
-import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
-import frc.robot.subsystems.elevator.CatzElevator;
-import frc.robot.utilities.Alert;
-import frc.robot.utilities.Alert.AlertType;
+import frc.robot.Commands.AutomatedSequenceCmds;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.Subsystems.DriveAndRobotOrientation.vision.CatzVision;
+import frc.robot.Subsystems.DriveAndRobotOrientation.vision.VisionIO;
+import frc.robot.Subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
+import frc.robot.Subsystems.Elevator.CatzElevator;
+import frc.robot.Subsystems.Intake.IntakePivot.CatzIntakePivot;
+import frc.robot.Subsystems.Intake.IntakeRollers.CatzIntakeRollers;
+import frc.robot.Subsystems.LEDs.CatzLED;
+import frc.robot.Subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
+import frc.robot.Subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
+import frc.robot.Subsystems.Shooter.ShooterPivot.CatzShooterPivot;
+import frc.robot.Subsystems.Shooter.ShooterTurret.CatzShooterTurret;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.Alert.AlertType;
 
 public class RobotContainer {
 
   // Subsystem Declaration
-  private static CatzDrivetrain   drive        = new CatzDrivetrain();
-  private static CatzElevator     elevator     = new CatzElevator();
-  private static CatzShooterFeeder shooterFeeder = new CatzShooterFeeder();
+  private static CatzDrivetrain   drive                = new CatzDrivetrain();
+  private static CatzElevator     elevator             = new CatzElevator();
+  private static CatzShooterFeeder shooterFeeder       = new CatzShooterFeeder();
   private static CatzShooterFlywheels shooterFlywheels = new CatzShooterFlywheels();
+  private static CatzShooterTurret turret              = new CatzShooterTurret();
+  private static CatzShooterPivot  shooterPivot        = new CatzShooterPivot();
+  private static CatzIntakeRollers rollers             = new CatzIntakeRollers();
+  private static CatzIntakePivot   intkaePivot         = new CatzIntakePivot();
+
+
   private static CatzLED          led = CatzLED.getInstance();
   private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
   private static CatzVision       vision       = new CatzVision(new VisionIO[] {
@@ -54,14 +64,10 @@ public class RobotContainer {
   private CommandXboxController xboxAux = new CommandXboxController(1);
 
   // Alert Declaration
-  private final Alert driverDisconnected =
-      new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
-  private final Alert operatorDisconnected =
-      new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
-  private final LoggedDashboardNumber endgameAlert1 =
-      new LoggedDashboardNumber("Endgame Alert #1", 30.0);
-  private final LoggedDashboardNumber endgameAlert2 =
-      new LoggedDashboardNumber("Endgame Alert #2", 15.0);
+  private final Alert driverDisconnected = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
+  private final Alert operatorDisconnected = new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
+  private final LoggedDashboardNumber endgameAlert1 = new LoggedDashboardNumber("Endgame Alert #1", 30.0);
+  private final LoggedDashboardNumber endgameAlert2 = new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
   // Auto Declaration
   private CatzAutoFactory auto = new CatzAutoFactory(this);
@@ -98,6 +104,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() { // TODO organize by function
+    
+
+
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
                                                () -> xboxDrv.getLeftY(), 
                                                () -> xboxDrv.getRightX(), 
@@ -157,6 +166,10 @@ public class RobotContainer {
 
   public CatzShooterFlywheels getCatzShooterFlywheels() {
     return shooterFlywheels;
+  }
+
+  public CatzIntakeRollers getCatzIntakeRollers() {
+    return rollers;
   }
 
 

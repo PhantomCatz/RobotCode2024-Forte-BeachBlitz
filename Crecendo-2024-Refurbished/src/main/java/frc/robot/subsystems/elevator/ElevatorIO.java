@@ -2,19 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.Subsystems.Elevator;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface ElevatorIO {
     @AutoLog
     public static class ElevatorIOInputs{
         public boolean isLeaderMotorConnected = true;
         public boolean isFollowerMotorConnected = true;
 
-        public double positionRotations = 0.0;
-        public double velocityRotPerSec = 0.0;
+        public double leaderPositionRads = 0.0;
+        public double velocityRps = 0.0;
         public double[] appliedVolts = new double[] {};
         public double[] supplyCurrentAmps = new double[] {};
         public double[] torqueCurrentAmps = new double[] {};
@@ -22,25 +21,18 @@ public interface ElevatorIO {
     }
     public default void updateInputs(ElevatorIOInputs inputs) {}
 
-    /** Run to setpoint enc in rotations */
-    default void runSetpoint(double setpointRotations, double feedforward) {}
+    public default void runVolts(double volts) {}
 
-    /** Run motors at volts */
-    default void runVolts(double volts) {}
+    public default void runCurrent(double amps) {}
 
-    /** Run motors at current */
-    default void runCurrent(double amps) {}
+    public default void stop() {}
 
-    /** Set brake mode enabled */
-    default void setBrakeMode(boolean enabled) {}
+    public default void runSetpoint(double setpointRotations, double feedforward) {}
 
-    /** Set PID values */
-    default void setPID(double p, double i, double d) {}
+    public default void setPID(double p, double i, double d) {}
 
-    /** Set Motion Magic values */
-    default void setMotionMagicParameters(double cruiseVelocity, double acceleration, double jerk) {}
+    public default void setBrakeMode(boolean enabled) {}
 
-    /** Stops motors */
-    default void stop() {}
+    public default void setMotionMagicParameters(double cruiseVelocity, double acceleration, double jerk) {}
 
 }

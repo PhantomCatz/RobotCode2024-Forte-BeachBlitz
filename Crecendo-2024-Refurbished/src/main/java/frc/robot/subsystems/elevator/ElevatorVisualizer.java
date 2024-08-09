@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.Subsystems.Elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.Subsystems.Elevator.ElevatorConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 

@@ -1,9 +1,7 @@
 // 2637
 // https://github.com/PhantomCatz/
 
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
-
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -25,7 +23,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+
+import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
 import java.util.Queue;
 import java.util.concurrent.Executor;

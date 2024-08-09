@@ -1,4 +1,4 @@
-package frc.robot.utilities;
+package frc.robot.Utilities;
 
 public class FieldRelativeAccel {
     public double ax;
