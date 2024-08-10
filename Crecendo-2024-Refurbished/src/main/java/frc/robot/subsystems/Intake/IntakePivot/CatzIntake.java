@@ -5,7 +5,7 @@
 package frc.robot.subsystems.Intake.IntakePivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.CatzConstants;
@@ -109,23 +109,22 @@ public class CatzIntake extends SubsystemBase {
     return runOnce(() -> setRollerOut());
   }
 
-  // public Command cmdRollerEnable()         trying to incorporate beam break logic now
-  // {
-    
-  // }
-
   public Command cmdRollerOff()
   {
     return runOnce(() -> setRollerOff());
   }
 
-
   public Command cmdStopRollersAfterTimeOut()
   {
-    return new SequentialCommandGroup(
-      cmdRollerIn(),
-      new WaitCommand(2),
-      cmdRollerOff()
-    );
+    return new ParallelDeadlineGroup(new WaitCommand(2), cmdRollerIn());
   }
+
+  // public Command cmdStopRollersAfterTimeOut()
+  // {
+  //   return new SequentialCommandGroup(
+  //     cmdRollerIn(),
+  //     new WaitCommand(2),
+  //     cmdRollerOff()
+  //   );
+  // }
 }
