@@ -1,4 +1,4 @@
-package frc.robot.commands.DriveAndRobotOrientationCmds;
+package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -13,9 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 import frc.robot.CatzConstants;
 
 import java.util.List;

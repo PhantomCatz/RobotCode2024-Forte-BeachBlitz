@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.CharacterizationCmds.FeedForwardCharacterization;
-import frc.robot.commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 
 public class CatzAutoFactory {
     

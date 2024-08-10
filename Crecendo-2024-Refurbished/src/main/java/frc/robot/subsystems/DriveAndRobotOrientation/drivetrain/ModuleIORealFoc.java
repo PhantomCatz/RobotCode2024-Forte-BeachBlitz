@@ -1,9 +1,9 @@
 // 2637
 // https://github.com/PhantomCatz/
 
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
+import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.util.MotorUtil.NeutralMode;
 
 import java.util.Queue;
@@ -83,9 +83,19 @@ public class ModuleIORealFoc implements ModuleIO {
     driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
     driveTalonConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.02;
     driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
     // Conversions affect getPosition()/setPosition() and getVelocity()
     driveTalonConfig.Feedback.SensorToMechanismRatio = moduleGainsAndRatios.driveReduction();
+
+    // Gain Setting
+    driveTalonConfig.Slot0.kP = moduleGainsAndRatios.drivekP();
+    driveTalonConfig.Slot0.kD = moduleGainsAndRatios.drivekD();
+
+    //check if drive motor is initialized correctly
+    for(int i=0;i<5;i++){
+      initializationStatus = driveTalon.getConfigurator().apply(driveTalonConfig);
+      if(!initializationStatus.isOK())
+          System.out.println("Failed to Configure CAN ID" + config.driveID());
+    }
 
 
     // Init Steer controllers and steer encoder from config constants
@@ -95,13 +105,6 @@ public class ModuleIORealFoc implements ModuleIO {
     steerSparkMax = new CANSparkMax(config.steerID(), MotorType.kBrushless);
 
     steerFeedback.enableContinuousInput(-Math.PI, Math.PI);
-
-    //check if drive motor is initialized correctly
-    for(int i=0;i<5;i++){
-      initializationStatus = driveTalon.getConfigurator().apply(driveTalonConfig);
-      if(!initializationStatus.isOK())
-          System.out.println("Failed to Configure CAN ID" + config.driveID());
-    }
 
     // Assign 100hz Signals
     drivePosition = driveTalon.getPosition();

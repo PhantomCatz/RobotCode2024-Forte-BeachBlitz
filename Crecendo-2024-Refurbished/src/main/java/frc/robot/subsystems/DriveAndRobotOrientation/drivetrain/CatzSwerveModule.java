@@ -3,9 +3,9 @@
  * 
  * 
  */
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
-import static frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
+import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -16,7 +16,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.ModuleIOInputsAutoLogged;
 import frc.robot.util.Alert;
 import frc.robot.util.CatzMathUtils;
 import frc.robot.util.CatzMathUtils.Conversions;
@@ -50,7 +51,7 @@ public class CatzSwerveModule {
     //----------------------------------------------------------------------------------------------
     public CatzSwerveModule(ModuleConfig config, String moduleName) {
         this.m_moduleName = moduleName;
-        // Run subsystem disconnect check
+        // Run Subsystem disconnect check
         if(DriveConstants.isDriveDisabled) { 
                 io = new ModuleIONull();
                 System.out.println("Module " + m_moduleName + " Unconfigured");
