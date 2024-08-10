@@ -12,9 +12,7 @@ import frc.robot.CatzConstants;
 
 public class CatzIntake extends SubsystemBase {
   // -----------------------------------------------------------------------------------------------
-  // 
   // Intake IO Block
-  // 
   // -----------------------------------------------------------------------------------------------
   private final IntakeIO io;
   

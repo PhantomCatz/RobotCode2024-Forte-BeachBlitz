@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CatzConstants.OIConstants;
 import frc.robot.subsystems.Intake.IntakePivot.CatzIntake;
