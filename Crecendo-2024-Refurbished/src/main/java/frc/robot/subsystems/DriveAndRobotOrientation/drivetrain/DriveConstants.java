@@ -89,18 +89,12 @@ public class DriveConstants {
         };
 
     // Logged Tunable PIDF values for swerve modules
-    public static final LoggedTunableNumber drivekP =
-        new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
-    public static final LoggedTunableNumber drivekD =
-        new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
-    public static final LoggedTunableNumber drivekS =
-        new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.driveFFkS());
-    public static final LoggedTunableNumber drivekV =
-        new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.driveFFkV());
-    public static final LoggedTunableNumber steerkP =
-        new LoggedTunableNumber("Drive/Module/steerkP", moduleGainsAndRatios.steerkP());
-    public static final LoggedTunableNumber steerkD =
-        new LoggedTunableNumber("Drive/Module/steerkD", moduleGainsAndRatios.steerkD());
+    public static final LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/Module/DrivekP", moduleGainsAndRatios.drivekP());
+    public static final LoggedTunableNumber drivekD = new LoggedTunableNumber("Drive/Module/DrivekD", moduleGainsAndRatios.drivekD());
+    public static final LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/Module/DrivekS", moduleGainsAndRatios.driveFFkS());
+    public static final LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/Module/DrivekV", moduleGainsAndRatios.driveFFkV());
+    public static final LoggedTunableNumber steerkP = new LoggedTunableNumber("Drive/Module/steerkP", moduleGainsAndRatios.steerkP());
+    public static final LoggedTunableNumber steerkD = new LoggedTunableNumber("Drive/Module/steerkD", moduleGainsAndRatios.steerkD());
 
     public static final ModuleConfig[] moduleConfigs = 
         switch (CatzConstants.getRobotType()) {
@@ -153,7 +147,7 @@ public class DriveConstants {
                                                                             
     /****************************************************************************************
      * 
-     * Drive Constants Abstractions
+     * Record and Enum tupes
      * 
      *******************************************************************************************/
     public record ModuleConfig(

@@ -9,6 +9,9 @@ import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveCons
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -157,11 +160,11 @@ public class CatzSwerveModule {
     //--------------------------------------------------------------------------------------------------------------------
     //  Module Util Methods
     //--------------------------------------------------------------------------------------------------------------------
-    public void setDriveNeturalMode(NeutralMode type) {
+    public void setNeutralModeDrive(NeutralModeValue type) {
         io.setDriveNeutralModeIO(type);
     }
 
-    public void setSteerNeturalMode(NeutralMode type) {
+    public void setNeutralModeSteer(IdleMode type) {
         io.setSteerNeutralModeIO(type);
     }
 

@@ -55,18 +55,12 @@ public class ModuleIORealFoc implements ModuleIO {
   private final TalonFXConfiguration driveTalonConfig = new TalonFXConfiguration();
 
   // Control
-  private final VoltageOut voltageControl = 
-      new VoltageOut(0).withUpdateFreqHz(0);
-  private final TorqueCurrentFOC currentControl = 
-      new TorqueCurrentFOC(0).withUpdateFreqHz(0);
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC =
-      new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0);
-  private final PositionTorqueCurrentFOC positionControl =
-      new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
-  private final NeutralOut neutralControl = 
-      new NeutralOut().withUpdateFreqHz(0);
-  private final PIDController steerFeedback =
-      new PIDController(0.4, 0.1, 0.0, CatzConstants.LOOP_TIME);
+  private final VoltageOut voltageControl = new VoltageOut(0).withUpdateFreqHz(0);
+  private final TorqueCurrentFOC currentControl = new TorqueCurrentFOC(0).withUpdateFreqHz(0);
+  private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0);
+  private final PositionTorqueCurrentFOC positionControl = new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
+  private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
+  private final PIDController steerFeedback = new PIDController(0.4, 0.1, 0.0, CatzConstants.LOOP_TIME);
 
   // Status Code Initialization
   private StatusCode initializationStatus = StatusCode.StatusCodeNotInitialized;
@@ -83,9 +77,6 @@ public class ModuleIORealFoc implements ModuleIO {
     driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
     driveTalonConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.02;
     driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // Conversions affect getPosition()/setPosition() and getVelocity()
-    driveTalonConfig.Feedback.SensorToMechanismRatio = moduleGainsAndRatios.driveReduction();
-
     // Gain Setting
     driveTalonConfig.Slot0.kP = moduleGainsAndRatios.drivekP();
     driveTalonConfig.Slot0.kD = moduleGainsAndRatios.drivekD();
@@ -153,7 +144,7 @@ public class ModuleIORealFoc implements ModuleIO {
     inputs.steerAbsolutePosition   = Rotation2d.fromRotations(steerAbsoluteMagEnc.getAbsolutePosition() - absoluteEncoderOffset.getRotations());
     inputs.steerPosition           = Rotation2d.fromRotations(steerSparkMax.getEncoder().getPosition());
     inputs.steerVelocityRadsPerSec = Units.rotationsToRadians(steerSparkMax.getEncoder().getVelocity());
-    inputs.steerBusVoltage       = steerSparkMax.getBusVoltage();
+    inputs.steerBusVoltage         = steerSparkMax.getBusVoltage();
 
 
     inputs.odometryDrivePositionsMeters = new double[] {drivePosition.getValueAsDouble() * driveConfig.wheelRadius()};
@@ -174,7 +165,7 @@ public class ModuleIORealFoc implements ModuleIO {
   }
 
   @Override
-  public void runDriveVelocityRPSIO(double velocityMetersPerSec, double feedForward) { //TODO
+  public void runDriveVelocityRPSIO(double velocityMetersPerSec, double feedForward) {
     driveTalon.setControl(velocityTorqueCurrentFOC.withVelocity(velocityMetersPerSec)
                                                   .withFeedForward(feedForward) //In Amps
     );
@@ -207,22 +198,14 @@ public class ModuleIORealFoc implements ModuleIO {
   }
 
   @Override
-  public void setDriveNeutralModeIO(NeutralMode type) {
-    if(type == NeutralMode.BREAK) {
-      driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-  } else {
-      driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-  }
-  driveTalon.getConfigurator().apply(driveTalonConfig);
+  public void setDriveNeutralModeIO(NeutralModeValue type) {
+    driveTalonConfig.MotorOutput.NeutralMode = type;
+    driveTalon.getConfigurator().apply(driveTalonConfig);
   }
 
   @Override
-  public void setSteerNeutralModeIO(NeutralMode type) {
-    if(type == NeutralMode.BREAK) {
-      steerSparkMax.setIdleMode(IdleMode.kBrake);
-    } else {
-      steerSparkMax.setIdleMode(IdleMode.kCoast);
-    }
+  public void setSteerNeutralModeIO(IdleMode type) {
+      steerSparkMax.setIdleMode(type);
   }
 
 }

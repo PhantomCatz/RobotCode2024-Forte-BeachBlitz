@@ -2,6 +2,9 @@ package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.util.MotorUtil.NeutralMode;
 
@@ -40,7 +43,7 @@ public interface ModuleIO {
 
  public default void runDriveVelocityRPSIO(double velocity, double feedForward) {}
 
- public default void setDriveNeutralModeIO(NeutralMode type) {}
+ public default void setDriveNeutralModeIO(NeutralModeValue type) {}
 
  public default void setDrvSensorPositionIO(double sensorpos) {}
 
@@ -57,7 +60,7 @@ public interface ModuleIO {
 
  public default void runSteerPositionSetpoint(double currentAngleRad, double currentAngleRads) {}
 
- public default void setSteerNeutralModeIO(NeutralMode type) {}
+ public default void setSteerNeutralModeIO(IdleMode type) {}
 
  public default void setSteerSimPwrIO(double volts) {}
 

@@ -92,10 +92,10 @@ public class Alert {
 
       // Periodic alert if applicable
       if(isAlertOnLoop) {
-        activeTime = activeStartTime - Timer.getFPGATimestamp();
+        activeTime = Timer.getFPGATimestamp() - activeStartTime;
         activeIntervalTime = activeIntervalTime + 0.02;
-        if(activeTime <= alertLoopDuration) {
-          if(activeIntervalTime > alertLoopInterval) {
+        if(activeTime <= alertLoopDuration) { // alert not timed out check
+          if(activeIntervalTime > alertLoopInterval) { // alert not in cooldown check
             switch (type) {
               case ERROR:
                 DriverStation.reportError(text, false);
@@ -107,7 +107,7 @@ public class Alert {
                 System.out.println(text);
                 break;
             }
-            activeIntervalTime = 0.0;
+            activeIntervalTime = 0.0; // Reset cooldown
           }
         }
       }  

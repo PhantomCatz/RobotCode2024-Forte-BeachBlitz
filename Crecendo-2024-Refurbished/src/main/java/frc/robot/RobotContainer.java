@@ -41,14 +41,10 @@ public class RobotContainer {
   private CommandXboxController xboxAux = new CommandXboxController(1);
 
   // Alert Declaration
-  private final Alert driverDisconnected =
-      new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
-  private final Alert operatorDisconnected =
-      new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
-  private final LoggedDashboardNumber endgameAlert1 =
-      new LoggedDashboardNumber("Endgame Alert #1", 30.0);
-  private final LoggedDashboardNumber endgameAlert2 =
-      new LoggedDashboardNumber("Endgame Alert #2", 15.0);
+  private final Alert disconnectedAlertDrive = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
+  private final Alert disconnectedAlertAux = new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
+  private final LoggedDashboardNumber endgameAlert1 = new LoggedDashboardNumber("Endgame Alert #1", 30.0);
+  private final LoggedDashboardNumber endgameAlert2 = new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
   // Auto Declaration
   private CatzAutoFactory auto = new CatzAutoFactory(this);
@@ -92,14 +88,15 @@ public class RobotContainer {
 
   /** Updates the alerts for disconnected controllers. */
   public void checkControllers() {
-    driverDisconnected.set(
+    disconnectedAlertDrive.set(
         !DriverStation.isJoystickConnected(xboxDrv.getHID().getPort())
             || !DriverStation.getJoystickIsXbox(xboxDrv.getHID().getPort())
     );
-    operatorDisconnected.set(
+    disconnectedAlertAux.set(
         !DriverStation.isJoystickConnected(xboxAux.getHID().getPort())
             || !DriverStation.getJoystickIsXbox(xboxAux.getHID().getPort())
     );
+    disconnectedAlertAux.setAlertOnloop(true, 1.0, 10.0);
   }
 
   //---------------------------------------------------------------------------
