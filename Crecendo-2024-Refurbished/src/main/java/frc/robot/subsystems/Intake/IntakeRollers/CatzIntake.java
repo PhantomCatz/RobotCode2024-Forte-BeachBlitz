@@ -2,10 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Intake.IntakePivot;
+package frc.robot.subsystems.Intake.IntakeRollers;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.CatzConstants;
@@ -16,7 +16,7 @@ public class CatzIntake extends SubsystemBase {
   // -----------------------------------------------------------------------------------------------
   private final IntakeIO io;
   
-  // private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged(); //TODO since related to io.update, delete?
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged(); //TODO since related to io.update, delete?
 
   // -----------------------------------------------------------------------------------------------
   // 
@@ -68,7 +68,7 @@ public class CatzIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // io.updateInputs(inputs);
+    io.updateInputs(inputs);
     // Logger.processInputs("intake/inputs", inputs);
   }
 
@@ -87,9 +87,14 @@ public class CatzIntake extends SubsystemBase {
     io.setRollerPercentOutput(IntakeConstants.ROLLERS_MTR_PWR_OUT_EJECT);
   }
 
-  public void setRollerOff ()
+  public void setRollerOff()
   {
     io.setRollerPercentOutput(0.0);
+  }
+
+  public boolean getBeamBrkState()
+  {
+    return inputs.LoadBeamBrkState;
   }
 
   // -------------------------------------------------------------------------------------
@@ -97,7 +102,7 @@ public class CatzIntake extends SubsystemBase {
   // Intake Roller Commands
   // 
   // -------------------------------------------------------------------------------------
-  public Command cmdRollerIn ()
+  public Command cmdRollerIn()
   {
     return runOnce(() -> setRollerIn());
   }
@@ -114,15 +119,7 @@ public class CatzIntake extends SubsystemBase {
 
   public Command cmdStopRollersAfterTimeOut()
   {
-    return new ParallelDeadlineGroup(new WaitCommand(2), cmdRollerIn());
+    return new ParallelRaceGroup(new WaitCommand(2), startEnd(() -> setRollerIn(), () -> setRollerOff()));
   }
 
-  // public Command cmdStopRollersAfterTimeOut()
-  // {
-  //   return new SequentialCommandGroup(
-  //     cmdRollerIn(),
-  //     new WaitCommand(2),
-  //     cmdRollerOff()
-  //   );
-  // }
 }

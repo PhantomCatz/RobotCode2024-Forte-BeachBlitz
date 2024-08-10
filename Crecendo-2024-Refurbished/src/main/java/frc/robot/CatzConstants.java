@@ -66,11 +66,6 @@ public final class CatzConstants {
     public static final int XBOX_DRV_PORT = 0;
     public static final int XBOX_AUX_PORT = 1;
 
-    public static final int kDriverYAxis = 1;
-    public static final int kDriverXAxis = 0;
-    public static final int kDriverRotAxis = 4;
-    public static final int kDriverFieldOrientedButtonIdx = 1;
-
     public static final double kDeadband = 0.1;
     public static final double kOffPwr = 0.1;
   }

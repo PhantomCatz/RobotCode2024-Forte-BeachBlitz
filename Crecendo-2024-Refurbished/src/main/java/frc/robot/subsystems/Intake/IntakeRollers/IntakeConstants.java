@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Intake.IntakePivot;
+package frc.robot.subsystems.Intake.IntakeRollers;
 
 public class IntakeConstants
 {
@@ -31,7 +31,7 @@ public class IntakeConstants
   public final static double ROLLERS_MTR_PWR_IN_GROUND = 0.8; //TBD - need to handle carpet and non-carpet value or code
                                                               // issue
 
-  public static final double ROLLERS_MTR_PWR_OUT_EJECT     = -0.2; //0.2 // TBD fix top rooler before testing
+  public static final double ROLLERS_MTR_PWR_OUT_EJECT     = -0.2; //0.2 // TBD fix top roller before testing
   public static final double ROLLERS_MTR_PWR_OUT_AMP_SCORE = 0.6;
   public static final double ROLLERS_MTR_PWR_OUT_HANDOFF   = -0.5;//-0.2;//-0.3;
 

@@ -6,7 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.CatzConstants.OIConstants;
-import frc.robot.subsystems.Intake.IntakePivot.CatzIntake;
+import frc.robot.commands.CmdRollerIn;
+import frc.robot.subsystems.Intake.IntakeRollers.CatzIntake;
+import frc.robot.subsystems.Intake.IntakeRollers.IntakeIO.IntakeIOInputs;
 
 public class RobotContainer {
 
@@ -26,9 +28,10 @@ public class RobotContainer {
 
   private void commandsDrive() {
     //Intake Rollers
-    xboxDrv.leftBumper().onTrue(intake.cmdRollerIn());
-    xboxDrv.rightBumper().onTrue(intake.cmdRollerOut());
-    xboxDrv.leftBumper().and(xboxDrv.rightBumper()).onTrue(intake.cmdRollerOff());
+    xboxDrv.leftBumper().whileTrue(intake.cmdRollerIn());
+    xboxDrv.rightBumper().whileTrue(intake.cmdRollerOut());
     xboxDrv.a().onTrue(intake.cmdStopRollersAfterTimeOut());
+
+    xboxDrv.b().onTrue(new CmdRollerIn(intake));
   }
 }
