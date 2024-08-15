@@ -93,7 +93,7 @@ public class Robot extends LoggedRobot {
     }
 
     // Start AdvantageKit logger
-    Logger.start();
+    //Logger.start(); //TODO test on saturday for can bus benchmark
 
 
 
