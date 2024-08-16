@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.DriveAndRobotOrientation.vision;
+package frc.robot.subsystems.DriveAndRobotOrientation.vision;
     
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOInputsAutoLogged;
 
 public class CatzVision extends SubsystemBase {

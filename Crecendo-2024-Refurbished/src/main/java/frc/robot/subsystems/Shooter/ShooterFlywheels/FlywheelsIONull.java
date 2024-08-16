@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Shooter.ShooterFlywheels;
+package frc.robot.subsystems.Shooter.ShooterFlywheels;
 
 public class FlywheelsIONull implements FlywheelsIO {
     

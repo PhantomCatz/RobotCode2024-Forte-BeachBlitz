@@ -2,18 +2,48 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems.Shooter.ShooterTurret;
+package frc.robot.subsystems.Shooter.ShooterTurret;
 
+import static frc.robot.subsystems.Shooter.ShooterTurret.TurretConstants.*;
+
+import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
+import frc.robot.subsystems.Shooter.ShooterTurret.TurretIO.TurretIOInputs;
+import lombok.RequiredArgsConstructor;
 
 
 public class CatzShooterTurret extends SubsystemBase {
 
   // Hardware IO declaration
   private final TurretIO io;
-  private final TurretIOinput
+  private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
+  // Misc variables
+  private TurretMotionType currentMotionType;
+  private static double targetTurretPosition = 0.0;
+  private static double manualPwr = 0.0;
+
+
+  // State amchine
+  @RequiredArgsConstructor
+  public enum TurretMotionType {
+    AUTO_AIM(()->0.0), //TODO add auto aim parameters
+    HOME(()->0.0),
+    IDLE(()->targetTurretPosition),
+    MANUAL(()->manualPwr);
+
+    private final DoubleSupplier motionType;
+
+    private double getTargetMotionPosition() {
+      return motionType.getAsDouble();
+    }
+  }
   
   /** Creates a new CatzShooterTurret. */
   public CatzShooterTurret() {
@@ -42,8 +72,56 @@ public class CatzShooterTurret extends SubsystemBase {
     }
   }
 
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Turret/", inputs);
+
+    if(DriverStation.isDisabled()) {
+      io.runPercentOutput(0.0);
+    } else {
+      io.runSetpointDegrees(inputs.positionDegrees, currentMotionType.getTargetMotionPosition());
+    }
+
+  }
+
+
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Turret Misc Methods
+  //
+  //-----------------------------------------------------------------------------------------
+
+  public double getTurretPosition() {
+    return inputs.positionDegrees;
+  }
+
+
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Command Turret Access methods
+  //
+  //-----------------------------------------------------------------------------------------
+  
+  private void setTargetMotionMethod(TurretMotionType type) {
+    currentMotionType = type;
+  }
+
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Flywheel commands
+  //
+  //-----------------------------------------------------------------------------------------
+  public Command autoAimCommand() {
+    return startEnd(() -> setTargetMotionMethod(TurretMotionType.AUTO_AIM), 
+                    () -> setTargetMotionMethod(TurretMotionType.IDLE))
+            .withName("Turret Auto Aim");
+  }
+
+  public Command homeTurretCommand() {
+    return startEnd(() -> setTargetMotionMethod(TurretMotionType.HOME), 
+                    () -> setTargetMotionMethod(TurretMotionType.IDLE))
+            .withName("Turret Home");
   }
 }

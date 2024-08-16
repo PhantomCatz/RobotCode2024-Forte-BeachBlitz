@@ -1,6 +1,6 @@
-package frc.robot.Subsystems.Shooter.ShooterFlywheels;
+package frc.robot.subsystems.Shooter.ShooterFlywheels;
 
-import static frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
+import static frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;

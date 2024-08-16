@@ -4,13 +4,14 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.PositionStateCmds.AUTO_AIM;
 import frc.robot.Commands.PositionStateCmds.INTAKE_GROUND;
 import frc.robot.Commands.PositionStateCmds.STOW;
-import frc.robot.Subsystems.Intake.IntakeRollers.CatzIntakeRollers;
+import frc.robot.subsystems.Intake.IntakeRollers.CatzIntakeRollers;
 
 /** Place where any sequencing/nonPosition Based robot state logic is held */
 public class AutomatedSequenceCmds {
@@ -91,6 +92,7 @@ public class AutomatedSequenceCmds {
                                  Commands.waitSeconds(3),
                                  container.getCatzShooterFeeder().commandShootNote());
     }
+
 
     
 }

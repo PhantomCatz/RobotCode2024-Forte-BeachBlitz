@@ -1,11 +1,13 @@
-package frc.robot.Subsystems.Shooter.ShooterTurret;
+package frc.robot.subsystems.Shooter.ShooterTurret;
 
 import org.littletonrobotics.junction.AutoLog;
 
 public interface TurretIO {
     
     @AutoLog
-    public static class TurretIOInputs {
+    class TurretIOInputs {
+        public boolean isTurretMotorConnected;
+
         public double velocityRps;
         public double positionDegrees;
         public double appliedVolts;
@@ -16,7 +18,7 @@ public interface TurretIO {
 
     public default void runVolts(double volts) {}
 
-    public default void runPercentOuput(double percentOutput) {}
+    public default void runPercentOutput(double percentOutput) {}
 
     public default void runSetpointDegrees(double currentAngleDegrees, double setpointAngleDegrees) {}
 

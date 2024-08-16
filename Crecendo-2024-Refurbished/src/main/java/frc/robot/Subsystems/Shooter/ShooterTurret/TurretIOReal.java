@@ -1,8 +1,12 @@
-package frc.robot.Subsystems.Shooter.ShooterTurret;
+package frc.robot.subsystems.Shooter.ShooterTurret;
+
+import static frc.robot.subsystems.Shooter.ShooterTurret.TurretConstants.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.CatzConstants;
@@ -22,7 +26,7 @@ public class TurretIOReal implements TurretIO{
         turretNeo.setSmartCurrentLimit(30);
         turretNeo.setIdleMode(IdleMode.kBrake);
         turretNeo.enableVoltageCompensation(12.0);
-        turretNeo.getEncoder().setPositionConversionFactor(1.0/); //TODO
+        turretNeo.getEncoder().setPositionConversionFactor(1.0/TURRET_GEAR_REDUCTION); //TODO
         turretNeo.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
 
         turretNeo.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -50,14 +54,14 @@ public class TurretIOReal implements TurretIO{
     }
 
     @Override
-    public void runPercentOuput(double outputPwr) {
+    public void runPercentOutput(double outputPwr) {
         turretNeo.set(outputPwr);
     }
 
     @Override
     public void runSetpointDegrees(double currentAngleDegrees, double setpointAngleDegrees) {
-        double volts = turretFeedback.calculate(currentAngleDegrees, setpointAngleDegrees);
-        runVolts(volts);
+        double percentOutput = turretFeedback.calculate(currentAngleDegrees, setpointAngleDegrees);
+        runPercentOutput(percentOutput);
     }
 
     @Override 

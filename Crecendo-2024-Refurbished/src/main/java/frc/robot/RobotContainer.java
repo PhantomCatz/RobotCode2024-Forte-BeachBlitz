@@ -23,21 +23,21 @@ import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.Subsystems.DriveAndRobotOrientation.vision.CatzVision;
-import frc.robot.Subsystems.DriveAndRobotOrientation.vision.VisionIO;
-import frc.robot.Subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
-import frc.robot.Subsystems.Elevator.CatzElevator;
-import frc.robot.Subsystems.Intake.IntakePivot.CatzIntakePivot;
-import frc.robot.Subsystems.Intake.IntakeRollers.CatzIntakeRollers;
-import frc.robot.Subsystems.LEDs.CatzLED;
-import frc.robot.Subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
-import frc.robot.Subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
-import frc.robot.Subsystems.Shooter.ShooterPivot.CatzShooterPivot;
-import frc.robot.Subsystems.Shooter.ShooterTurret.CatzShooterTurret;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.Alert.AlertType;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
+import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
+import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
+import frc.robot.subsystems.Intake.IntakePivot.CatzIntakePivot;
+import frc.robot.subsystems.Intake.IntakeRollers.CatzIntakeRollers;
+import frc.robot.subsystems.LEDs.CatzLED;
+import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
+import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
+import frc.robot.subsystems.Shooter.ShooterPivot.CatzShooterPivot;
+import frc.robot.subsystems.Shooter.ShooterTurret.CatzShooterTurret;
+import frc.robot.subsystems.elevator.CatzElevator;
 
 public class RobotContainer {
 
@@ -49,7 +49,7 @@ public class RobotContainer {
   private static CatzShooterTurret turret              = new CatzShooterTurret();
   private static CatzShooterPivot  shooterPivot        = new CatzShooterPivot();
   private static CatzIntakeRollers rollers             = new CatzIntakeRollers();
-  private static CatzIntakePivot   intkaePivot         = new CatzIntakePivot();
+  private static CatzIntakePivot   intakePivot         = new CatzIntakePivot();
 
 
   private static CatzLED          led = CatzLED.getInstance();
@@ -170,6 +170,10 @@ public class RobotContainer {
 
   public CatzIntakeRollers getCatzIntakeRollers() {
     return rollers;
+  }
+
+  public CatzIntakePivot getCatzIntakePivot() {
+    return intakePivot;
   }
 
 

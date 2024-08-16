@@ -17,9 +17,9 @@ import frc.robot.RobotContainer;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.Subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 
 public class CatzAutoFactory {
     

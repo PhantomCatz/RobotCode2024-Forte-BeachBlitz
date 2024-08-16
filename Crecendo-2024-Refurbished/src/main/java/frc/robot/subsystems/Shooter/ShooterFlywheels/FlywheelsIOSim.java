@@ -1,6 +1,6 @@
-package frc.robot.Subsystems.Shooter.ShooterFlywheels;
+package frc.robot.subsystems.Shooter.ShooterFlywheels;
 
-import static frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
+import static frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;

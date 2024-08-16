@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.DriveAndRobotOrientation.vision;
+package frc.robot.subsystems.DriveAndRobotOrientation.vision;
 
 import org.littletonrobotics.junction.Logger;
 

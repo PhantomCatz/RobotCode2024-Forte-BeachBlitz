@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems.Intake.IntakePivot;
+package frc.robot.subsystems.Intake.IntakePivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -20,7 +20,7 @@ public interface IntakePivotIO{
         public double appliedVolts;
         public double supplyCurrentAmps;
         public double torqueCurrentAmps;
-        public double tempCelsius;
+        public double tempCelsius = 0.0;
     }
     
     public default void updateInputs(IntakePivotIOInputs inputs) {}

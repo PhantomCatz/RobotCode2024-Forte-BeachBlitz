@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 

@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Shooter.ShooterFeeder;
+package frc.robot.subsystems.Shooter.ShooterFeeder;
 
 public class FeederIONull implements FeederIO{
     

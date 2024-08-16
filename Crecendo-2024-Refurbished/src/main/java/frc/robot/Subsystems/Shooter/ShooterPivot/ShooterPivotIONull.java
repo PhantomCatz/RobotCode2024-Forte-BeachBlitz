@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Shooter.ShooterPivot;
+package frc.robot.subsystems.Shooter.ShooterPivot;
 
 public class ShooterPivotIONull {
     

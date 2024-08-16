@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems.Elevator;
+package frc.robot.subsystems.elevator;
 
-import static frc.robot.Subsystems.Elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -86,7 +86,7 @@ public class CatzElevator extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Elevator/inputs ", inputs); 
+    Logger.processInputs("inputs/Elevator ", inputs); 
 
     // Set alerts
     disconnectedAlertLeader.set(!inputs.isLeaderMotorConnected);
@@ -137,7 +137,7 @@ public class CatzElevator extends SubsystemBase {
 
   //-----------------------------------------------------------------------------------------
   //
-  //    Flywheel Misc Methods
+  //    Misc Methods
   //
   //-----------------------------------------------------------------------------------------
   public double getElevatorPosition() {

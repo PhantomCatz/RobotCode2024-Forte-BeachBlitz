@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Shooter.ShooterFlywheels;
+package frc.robot.subsystems.Shooter.ShooterFlywheels;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.LinearProfile;
 import frc.robot.Utilities.LoggedTunableNumber;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants;
 import frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelsIOInputsAutoLogged;
 
-import static frc.robot.Subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
+import static frc.robot.subsystems.Shooter.ShooterFlywheels.FlywheelConstants.*;
 
 import java.lang.annotation.Target;
 import java.util.function.BooleanSupplier;
@@ -224,7 +224,8 @@ public class CatzShooterFlywheels extends SubsystemBase {
   //
   //-----------------------------------------------------------------------------------------
   public Command shootCommand() {
-    return startEnd(() -> setTargetSpeed(ShooterSpeed.SHOOT), () -> setTargetSpeed(ShooterSpeed.IDLE))
+    return startEnd(() -> setTargetSpeed(ShooterSpeed.SHOOT), 
+                    () -> setTargetSpeed(ShooterSpeed.IDLE))
         .withName("Flywheels Shoot");
   }
 

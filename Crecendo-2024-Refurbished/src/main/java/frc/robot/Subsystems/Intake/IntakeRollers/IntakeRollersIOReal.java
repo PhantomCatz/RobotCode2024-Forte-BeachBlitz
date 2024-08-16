@@ -1,6 +1,6 @@
-package frc.robot.Subsystems.Intake.IntakeRollers;
+package frc.robot.subsystems.Intake.IntakeRollers;
 
-import static frc.robot.Subsystems.Intake.IntakeRollers.IntakeRollersConstants.*;
+import static frc.robot.subsystems.Intake.IntakeRollers.IntakeRollersConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;

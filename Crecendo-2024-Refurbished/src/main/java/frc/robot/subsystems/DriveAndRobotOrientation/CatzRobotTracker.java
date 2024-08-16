@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems.DriveAndRobotOrientation;
+package frc.robot.subsystems.DriveAndRobotOrientation;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +32,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
 import frc.robot.FieldConstants;
-import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzSwerveModule;
-import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
-import frc.robot.Subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import frc.robot.Utilities.CatzMathUtils;
 import frc.robot.Utilities.FieldRelativeAccel;
 import frc.robot.Utilities.FieldRelativeSpeed;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzSwerveModule;
+import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import lombok.Getter;
 import lombok.Setter;
 

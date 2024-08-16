@@ -10,19 +10,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.FieldConstants;
-import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 
 public class AutoAimingParametersUtil {
 
     private AimingParameters latestParameters;
-    private static final LoggedTunableNumber autoLookahead =
-        new LoggedTunableNumber("RobotState/AutoLookahead", 0.5);
-    private static final LoggedTunableNumber lookahead =
-        new LoggedTunableNumber("RobotState/lookaheadS", 0.35);
-    private static final LoggedTunableNumber superPoopLookahead =
-        new LoggedTunableNumber("RobotState/SuperPoopLookahead", 0.1);
-    private static final LoggedTunableNumber closeShootingZoneFeet =
-        new LoggedTunableNumber("RobotState/CloseShootingZoneFeet", 10.0);
+    private static final LoggedTunableNumber autoLookahead = new LoggedTunableNumber("RobotState/AutoLookahead", 0.5);
+    private static final LoggedTunableNumber lookahead = new LoggedTunableNumber("RobotState/lookaheadS", 0.35);
+    private static final LoggedTunableNumber superPoopLookahead = new LoggedTunableNumber("RobotState/SuperPoopLookahead", 0.1);
+    private static final LoggedTunableNumber closeShootingZoneFeet = new LoggedTunableNumber("RobotState/CloseShootingZoneFeet", 10.0);
 
     public AimingParameters getAimingParameters() {
         if (latestParameters != null) {
@@ -31,9 +27,10 @@ public class AutoAimingParametersUtil {
         return latestParameters;
         }
 
-        Translation2d targetPosition = 
-            AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
+        //Obtain where robot should aim
+        Translation2d targetPosition = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).toTranslation2d();
 
+        // Collect robot in feild position
         Pose2d predicitedRobotPose;
         if (DriverStation.isAutonomousEnabled()) {
             predicitedRobotPose = CatzRobotTracker.getInstance().getPredictedPose(autoLookahead.get(), autoLookahead.get());
@@ -45,6 +42,7 @@ public class AutoAimingParametersUtil {
         Pose2d predictedRobotPoseFixed =
             new Pose2d(predicitedRobotPose.getTranslation(), new Rotation2d());
 
+        // Difference the robot position and Target Position
         Translation2d predictedVehicleToTargetTranslation = targetPosition.minus(predicitedRobotPose.getTranslation());
         Translation2d predictedVehicleFixedToTargetTranslation = targetPosition.minus(predictedRobotPoseFixed.getTranslation());
 
@@ -56,7 +54,7 @@ public class AutoAimingParametersUtil {
         //  Calculate new turret target angle in deg based off:
         //    - Current robot position
         //    - Current robot rotation
-        //---------------------------------------------------------------------------------  -----------
+        //--------------------------------------------------------------------------------------------
         double angle = Math.atan2(predictedVehicleToTargetTranslation.getY(), predictedVehicleToTargetTranslation.getX());
   
         //Logger.recordOutput("AutoAim/local turret target angle", angle);
@@ -83,7 +81,7 @@ public class AutoAimingParametersUtil {
 
 
     public record AimingParameters(
-        Rotation2d driveHeading,
+        Rotation2d turretHeading,
         Rotation2d armAngle,
         double effectiveDistance,
         FlywheelSpeeds flywheelSpeeds) {}
