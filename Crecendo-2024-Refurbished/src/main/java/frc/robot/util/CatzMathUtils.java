@@ -74,7 +74,7 @@ public class CatzMathUtils {
      * 
      ***********************************************************************************************/
     public class Conversions {
-        private static final double wheelCircumference = DriveConstants.driveConfig.wheelRadius() * 2.0;
+        private static final double wheelCircumference = DriveConstants.driveConfig.wheelRadius() * 2.0 * Math.PI;
         private static final double gearRatio = DriveConstants.moduleGainsAndRatios.driveReduction();
     
         public static double RPSToMPS(double rps){

@@ -28,7 +28,7 @@ public class DriveConstants {
     switch (CatzConstants.getRobotType()) {
       case SN_TEST, SN2 ->
           DriveConfig.builder()
-              .wheelRadius(Units.inchesToMeters(1.891))
+              .wheelRadius(Units.inchesToMeters(4)) // 1.891
               .robotLengthX(Units.inchesToMeters(24.0))
               .robotWidthY(Units.inchesToMeters(23.5))
               .bumperWidthX(Units.inchesToMeters(37))
@@ -69,7 +69,7 @@ public class DriveConstants {
                     0.1,
                     0.13,
                     0.0,
-                    0.1,
+                    1.0,
                     0.0,
                     0.1,
                     0.0,

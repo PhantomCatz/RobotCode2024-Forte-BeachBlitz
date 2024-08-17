@@ -108,7 +108,8 @@ public class CatzSwerveModule {
     } // -End of CatzSwerveModule Periodic 
 
     public void debugLogsSwerve(){
-        Logger.recordOutput("Module " + m_moduleName + "/drive mps", m_swerveModuleState.speedMetersPerSecond);
+        Logger.recordOutput("Module " + m_moduleName + "/drive recorded fps", Units.metersToFeet(Conversions.RPSToMPS(inputs.driveVelocityRPS)));
+        Logger.recordOutput("Module " + m_moduleName + "/drive target fps", Units.metersToFeet(m_swerveModuleState.speedMetersPerSecond));
         Logger.recordOutput("Module " + m_moduleName + "/current state", getModuleState());
         Logger.recordOutput("Module " + m_moduleName + "/angle error deg", Math.toDegrees(m_swerveModuleState.angle.getRadians()-getAbsEncRadians()));
         Logger.recordOutput("Module " + m_moduleName + "/currentmoduleangle rad", getAbsEncRadians());
