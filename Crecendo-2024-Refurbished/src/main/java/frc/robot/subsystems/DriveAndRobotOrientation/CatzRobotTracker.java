@@ -154,12 +154,12 @@ public class CatzRobotTracker {
         // Recalculate distance to account for robot movement.
         var poseVisionHorizontalDistance =
                 observation.visionPose.getTranslation().getNorm();
-        Logger.recordOutput("Vision/HorizontalDistanceFromPose", poseVisionHorizontalDistance);
+       // Logger.recordOutput("Vision/HorizontalDistanceFromPose", poseVisionHorizontalDistance);
 
         var latencyCompensatedVisionHorizontalDistance =
                 newCameraPose.getTranslation().getNorm();
-        Logger.recordOutput(
-                "Vision/LatencyCompensatedHorizontalDistance", latencyCompensatedVisionHorizontalDistance);
+        // Logger.recordOutput(
+        //         "Vision/LatencyCompensatedHorizontalDistance", latencyCompensatedVisionHorizontalDistance);
 
         m_poseEstimator.addVisionMeasurement(observation.visionPose, observation.timestamp);
     }

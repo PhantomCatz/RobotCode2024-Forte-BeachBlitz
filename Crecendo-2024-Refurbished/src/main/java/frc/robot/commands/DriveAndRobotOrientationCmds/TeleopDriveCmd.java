@@ -77,9 +77,9 @@ public class TeleopDriveCmd extends Command {
     m_headingAndVelocity_Y =       Math.abs(m_headingAndVelocity_Y) > XboxInterfaceConstants.kDeadband ? m_headingAndVelocity_Y * DriveConstants.driveConfig.maxLinearVelocity(): 0.0;
     turningVelocity =              Math.abs(turningVelocity) > XboxInterfaceConstants.kDeadband ? turningVelocity * DriveConstants.driveConfig.maxAngularVelocity(): 0.0;
 
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityX", m_headingAndVelocity_X);
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityY", m_headingAndVelocity_Y);
-    Logger.recordOutput("Telopdrvcmd/CmdVelocityThetha", turningVelocity);
+    // Logger.recordOutput("Telopdrvcmd/CmdVelocityX", m_headingAndVelocity_X);
+    // Logger.recordOutput("Telopdrvcmd/CmdVelocityY", m_headingAndVelocity_Y);
+    // Logger.recordOutput("Telopdrvcmd/CmdVelocityThetha", turningVelocity);
 
 
     // Construct desired chassis speeds

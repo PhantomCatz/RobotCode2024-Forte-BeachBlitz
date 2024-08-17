@@ -48,54 +48,57 @@ public class Robot extends LoggedRobot {
 
 
 
+  private Alert benchmarkAlert = new Alert("Rio Benchmark!" + Timer.getFPGATimestamp(), Alert.AlertType.WARNING);
+  
   @Override
   public void robotInit() {
-    // Record metadata
-    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    switch (BuildConstants.DIRTY) {
-        case 0:
-            Logger.recordMetadata("GitDirty", "All changes committed");
-            break;
-        case 1:
-            Logger.recordMetadata("GitDirty", "Uncomitted changes");
-            break;
-        default:
-            Logger.recordMetadata("GitDirty", "Unknown");
-            break;
-    }
+    // // Record metadata
+    // Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    // Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    // Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    // Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    // Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    // switch (BuildConstants.DIRTY) {
+    //     case 0:
+    //         Logger.recordMetadata("GitDirty", "All changes committed");
+    //         break;
+    //     case 1:
+    //         Logger.recordMetadata("GitDirty", "Uncomitted changes");
+    //         break;
+    //     default:
+    //         Logger.recordMetadata("GitDirty", "Unknown");
+    //         break;
+    // }
 
-    // Set up data receivers & replay source
-    switch (CatzConstants.hardwareMode) {
-        case REAL:
-            // Running on a real robot, log to a USB stick ("/U/logs")
-            Logger.addDataReceiver(new WPILOGWriter());
-            //Logger.addDataReceiver(new WPILOGWriter("E:/Logs"));
-            Logger.addDataReceiver(new NT4Publisher());
-            break;
+    // // Set up data receivers & replay source
+    // switch (CatzConstants.hardwareMode) {
+    //     case REAL:
+    //         // Running on a real robot, log to a USB stick ("/U/logs")
+    //         Logger.addDataReceiver(new WPILOGWriter());
+    //         //Logger.addDataReceiver(new WPILOGWriter("E:/Logs"));
+    //         Logger.addDataReceiver(new NT4Publisher());
+    //         break;
 
-        case SIM:
-            // Running a physics simulator, log to NT
-            //Logger.addDataReceiver(new WPILOGWriter("F:/robotics code projects/loggingfiles/"));
-            Logger.addDataReceiver(new NT4Publisher());
-            break;
+    //     case SIM:
+    //         // Running a physics simulator, log to NT
+    //         //Logger.addDataReceiver(new WPILOGWriter("F:/robotics code projects/loggingfiles/"));
+    //         Logger.addDataReceiver(new NT4Publisher());
+    //         break;
 
-        case REPLAY:
-            // Replaying a log, set up replay source
-            setUseTiming(false); // Run as fast as possible
-            String logPath = LogFileUtil.findReplayLog();
-            Logger.setReplaySource(new WPILOGReader(logPath));
-            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-            break;
-    }
+    //     case REPLAY:
+    //         // Replaying a log, set up replay source
+    //         setUseTiming(false); // Run as fast as possible
+    //         String logPath = LogFileUtil.findReplayLog();
+    //         Logger.setReplaySource(new WPILOGReader(logPath));
+    //         Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+    //         break;
+    // }
 
     // Start AdvantageKit logger
     //Logger.start(); //TODO test on saturday for can bus benchmark
 
 
+      benchmarkAlert.setAlertOnloop(true, 2, 5);
 
     // Instantiate robotContainer
     m_robotContainer = new RobotContainer();
@@ -104,6 +107,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    benchmarkAlert.set(true);
+
 
   }
 

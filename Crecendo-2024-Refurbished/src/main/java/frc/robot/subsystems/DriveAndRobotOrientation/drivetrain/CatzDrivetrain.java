@@ -98,15 +98,15 @@ public class CatzDrivetrain extends SubsystemBase {
         // Configure logging trajectories to advantage kit
         Pathfinding.setPathfinder(new LocalADStarAK());
         
-        // PathPlanner Debug
-        PathPlannerLogging.setLogActivePathCallback(
-            (activepath)->{
-                Logger.recordOutput("Obometry/Trajectory", activepath.toArray(new Pose2d[activepath.size()]));
-            });
-        PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose)-> {
-                Logger.recordOutput("Obometry/TrajectorySetpoint", targetPose);
-            });
+        // // PathPlanner Debug
+        // PathPlannerLogging.setLogActivePathCallback(
+        //     (activepath)->{
+        //         Logger.recordOutput("Obometry/Trajectory", activepath.toArray(new Pose2d[activepath.size()]));
+        //     });
+        // PathPlannerLogging.setLogTargetPoseCallback(
+        //     (targetPose)-> {
+        //         Logger.recordOutput("Obometry/TrajectorySetpoint", targetPose);
+        //     });
 
         gyroDisconnected = new Alert("Gyro disconnected!", Alert.AlertType.WARNING);  
     }
@@ -124,7 +124,7 @@ public class CatzDrivetrain extends SubsystemBase {
         } catch (Exception e) {
 
         }
-        Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
+       // Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
         // Set Gyro Disconnect alert
         if (Robot.isReal()) {
             gyroDisconnected.set(!gyroInputs.gyroConnected);
