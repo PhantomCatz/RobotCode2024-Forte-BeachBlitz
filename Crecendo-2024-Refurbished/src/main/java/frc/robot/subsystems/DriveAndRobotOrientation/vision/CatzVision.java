@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
-import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOInputsAutoLogged;
+import frc.robot.Subsystems.DriveAndRobotOrientation.vision.VisionIOInputsAutoLogged;
 
  
 /*

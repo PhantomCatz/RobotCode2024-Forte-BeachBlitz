@@ -29,11 +29,6 @@ import frc.robot.CatzConstants;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.util.MotorUtil.NeutralMode;
 
-import java.util.Queue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ModuleIORealFoc implements ModuleIO {
@@ -60,12 +55,14 @@ public class ModuleIORealFoc implements ModuleIO {
   private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final PositionTorqueCurrentFOC positionControl = new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
-  private final PIDController steerFeedback = new PIDController(0.4, 0.1, 0.0, CatzConstants.LOOP_TIME);
+  private final PIDController steerFeedback = new PIDController(0.01, 0.0, 0.0); //TODO tune and add constants to controler
 
   // Status Code Initialization
   private StatusCode initializationStatus = StatusCode.StatusCodeNotInitialized;
 
+  ModuleConfig m_config;
   public ModuleIORealFoc(ModuleConfig config) {
+    m_config = config;
     // Init drive controllers from config constants
     driveTalon = new TalonFX(config.driveID());
 
@@ -77,6 +74,7 @@ public class ModuleIORealFoc implements ModuleIO {
     driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
     driveTalonConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.02;
     driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     // Gain Setting
     driveTalonConfig.Slot0.kP = moduleGainsAndRatios.drivekP();
     driveTalonConfig.Slot0.kD = moduleGainsAndRatios.drivekD();
@@ -94,6 +92,9 @@ public class ModuleIORealFoc implements ModuleIO {
     steerAbsoluteMagEnc = new DutyCycleEncoder(magEncPWMInput);
     absoluteEncoderOffset = Rotation2d.fromRotations(config.absoluteEncoderOffset());
     steerSparkMax = new CANSparkMax(config.steerID(), MotorType.kBrushless);
+    steerSparkMax.enableVoltageCompensation(12.0);
+    steerSparkMax.setSecondaryCurrentLimit(12);
+    steerSparkMax.burnFlash();
 
     steerFeedback.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -171,16 +172,20 @@ public class ModuleIORealFoc implements ModuleIO {
     );
   }
 
+  public void runSteerPercentOutput(double percentOutput) {
+    steerSparkMax.set(percentOutput);
+  }
+
   @Override
-  public void runSteerPositionSetpoint(double currentAngleRad, double targetAngleRad) {
+  public void runSteerPositionSetpoint(double currentAngleRads, double targetAngleRads) {
       //calculate steer pwr
       //negative steer power because of coordinate system
-    double volts = -steerFeedback.calculate(currentAngleRad, targetAngleRad); 
-    runSteerVolts(volts);
-    
-    Logger.recordOutput("Drive/steer Output Volts", volts);
-    Logger.recordOutput("Drive/steer current Angle", currentAngleRad);
-    Logger.recordOutput("Drive/steer Target Angle", targetAngleRad);
+    double percentOutput = -steerFeedback.calculate(currentAngleRads, targetAngleRads); 
+    runSteerPercentOutput(percentOutput);
+
+     Logger.recordOutput("Module " + m_config.driveID() + "/steer volts", percentOutput);
+     Logger.recordOutput("Module " + m_config.driveID() + "/steer current Angle", currentAngleRads);
+     Logger.recordOutput("Module " + m_config.driveID() + "/steer Target Angle", targetAngleRads);
 
   }
 

@@ -14,10 +14,10 @@ import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 
 public class TeleopDriveCmd extends Command {
-  // Subsystem 
+  // Subsystem declaration
   private CatzDrivetrain m_drivetrain;
 
-  //
+  // 
   private Supplier<Double> m_headingPctOutput_X;
   private Supplier<Double> m_headingPctOutput_Y;
   private Supplier<Double> m_angVelocityPctOutput;
@@ -64,7 +64,7 @@ public class TeleopDriveCmd extends Command {
     // obtain realtime joystick inputs with supplier methods
     m_headingAndVelocity_X =       -m_headingPctOutput_Y.get(); 
     m_headingAndVelocity_Y =       -m_headingPctOutput_X.get(); 
-    turningVelocity =  m_angVelocityPctOutput.get(); //alliance flip shouldn't change for turing speed when switching alliances
+    turningVelocity =               m_angVelocityPctOutput.get(); //alliance flip shouldn't change for turing speed when switching alliances
 
     // Flip Directions for left joystick if alliance is red
     if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
@@ -79,6 +79,7 @@ public class TeleopDriveCmd extends Command {
 
     Logger.recordOutput("Telopdrvcmd/CmdVelocityX", m_headingAndVelocity_X);
     Logger.recordOutput("Telopdrvcmd/CmdVelocityY", m_headingAndVelocity_Y);
+    Logger.recordOutput("Telopdrvcmd/CmdVelocityThetha", turningVelocity);
 
 
     // Construct desired chassis speeds

@@ -19,8 +19,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.ModuleIORealFoc;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.ModuleIOInputsAutoLogged;
 import frc.robot.util.Alert;
 import frc.robot.util.CatzMathUtils;
 import frc.robot.util.CatzMathUtils.Conversions;
@@ -37,7 +37,7 @@ public class CatzSwerveModule {
     private final String m_moduleName;
 
     // Global swerve module variables
-    private SwerveModuleState m_swerveModuleState = null;
+    private SwerveModuleState m_swerveModuleState = new SwerveModuleState();
 
     // FeedFoward definment
     private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.driveFFkS(),
@@ -77,10 +77,8 @@ public class CatzSwerveModule {
         }
 
         // Disconnected Alerts
-        driveMotorDisconnected =
-            new Alert(m_moduleName + " drive motor disconnected!", Alert.AlertType.WARNING);
-        steerMotorDisconnected =
-            new Alert(m_moduleName + " steer motor disconnected!", Alert.AlertType.WARNING);
+        driveMotorDisconnected = new Alert(m_moduleName + " drive motor disconnected!", Alert.AlertType.WARNING);
+        steerMotorDisconnected = new Alert(m_moduleName + " steer motor disconnected!", Alert.AlertType.WARNING);
 
         resetDriveEncs();
     } // -End of CatzSwerveModule Constructor
@@ -128,9 +126,9 @@ public class CatzSwerveModule {
      */
     public void setModuleAngleAndVelocity(SwerveModuleState state) { //TODO log variables actually used in calculations
 
-        this.m_swerveModuleState       = state;
-        double targetAngleRad          = state.angle.getRadians();
-        double currentAngleRad         = getAbsEncRadians();
+        this.m_swerveModuleState        = state;
+        double targetAngleRads          = state.angle.getRadians();
+        double currentAngleRads         = getAbsEncRadians();
 
         // Run closed loop drive control
         io.runDriveVelocityRPSIO(
@@ -139,14 +137,14 @@ public class CatzSwerveModule {
         );
         // Run Closed Loop Steer Control
 
-        io.runSteerPositionSetpoint(currentAngleRad, targetAngleRad);
+        io.runSteerPositionSetpoint(currentAngleRads, targetAngleRads);
     }
 
     //--------------------------------------------------------------------------------------------------------------------
     //  Drivetrain Power Setting methods
     //--------------------------------------------------------------------------------------------------------------------
     public void setSteerPower(double pwr) {
-        io.runSteerPercentOutputIO(pwr);
+        io.runSteerPercentOutput(pwr);
     }
 
     public void setDriveVelocity(double velocity) {

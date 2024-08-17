@@ -40,7 +40,7 @@ import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.Robot;
 import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker.OdometryObservation;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.GyroIOInputsAutoLogged;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.GyroIONavX;
 import frc.robot.util.Alert;
 import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
@@ -67,20 +67,6 @@ public class CatzDrivetrain extends SubsystemBase {
     public final CatzSwerveModule RT_FRNT_MODULE;
     public final CatzSwerveModule RT_BACK_MODULE;
 
-    // Variable Declaration
-    private SwerveModuleState[] m_desiredStates = new SwerveModuleState[] {
-                                                        new SwerveModuleState(),
-                                                        new SwerveModuleState(),
-                                                        new SwerveModuleState(),
-                                                        new SwerveModuleState()
-                                                    };
-                                                            
-    private SwerveModuleState[] m_optimizedDesiredStates = new SwerveModuleState[] {
-                                                                new SwerveModuleState(),
-                                                                new SwerveModuleState(),
-                                                                new SwerveModuleState(),
-                                                                new SwerveModuleState()
-                                                            };
 
     public CatzDrivetrain() {
 
@@ -176,8 +162,6 @@ public class CatzDrivetrain extends SubsystemBase {
         // Logging
         SmartDashboard.putNumber("Heading", getGyroHeading());
         Logger.recordOutput("Drive/Pose", CatzRobotTracker.getInstance().getEstimatedPose());
-        Logger.recordOutput("Drive/unoptimized module states", m_desiredStates);
-        Logger.recordOutput("Drive/optimized module states", m_optimizedDesiredStates);
 
     }   //end of drivetrain periodic
 
@@ -207,6 +191,10 @@ public class CatzDrivetrain extends SubsystemBase {
             // Set module states to each of the swerve modules
             m_swerveModules[i].setModuleAngleAndVelocity(optimizedDesiredStates[i]);
         }
+
+        Logger.recordOutput("Drive/chassispeeds", chassisSpeeds);
+        Logger.recordOutput("Drive/modulestates", optimizedDesiredStates);
+
     }
 
     /**  Create a command to stop driving */

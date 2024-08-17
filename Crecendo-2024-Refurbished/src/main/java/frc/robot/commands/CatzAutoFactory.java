@@ -55,7 +55,7 @@ public class CatzAutoFactory {
     //          Characteration Routines
     //---------------------------------------------------------------------------------------------------------
     public Command flywheelCharacterization(RobotContainer container) {
-        return new SequentialCommandGroup(null);
+        return new SequentialCommandGroup();
     }
     
 

@@ -56,7 +56,7 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  //   Steer Access Methods
  //---------------------------------------------------------------------------
- public default void runSteerPercentOutputIO(double steerPwr) {}
+ public default void runSteerPercentOutput(double steerPwr) {}
 
  public default void runSteerPositionSetpoint(double currentAngleRad, double currentAngleRads) {}
 
