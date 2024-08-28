@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Autonomous.CatzAutoFactory;
+import frc.robot.autonomous.CatzAutoRoutines;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.Commands.AutomatedSequenceCmds;
@@ -30,28 +30,33 @@ import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.CatzVision;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIO;
 import frc.robot.subsystems.DriveAndRobotOrientation.vision.VisionIOLimeLight;
-import frc.robot.subsystems.Intake.IntakePivot.CatzIntakePivot;
-import frc.robot.subsystems.Intake.IntakeRollers.CatzIntakeRollers;
+import frc.robot.subsystems.IntakeRollers.CatzIntakeRollers;
 import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
-import frc.robot.subsystems.Shooter.ShooterPivot.CatzShooterPivot;
-import frc.robot.subsystems.Shooter.ShooterTurret.CatzShooterTurret;
-import frc.robot.subsystems.elevator.CatzElevator;
+import frc.robot.subsystems.SuperStructure.CatzSuperstructure;
+import frc.robot.subsystems.SuperStructure.CatzSuperstructure.SuperstructureState;
+import frc.robot.subsystems.SuperStructure.IntakePivot.CatzIntakePivot;
+import frc.robot.subsystems.SuperStructure.ShooterPivot.CatzShooterPivot;
+import frc.robot.subsystems.SuperStructure.ShooterTurret.CatzShooterTurret;
+import frc.robot.subsystems.SuperStructure.elevator.CatzElevator;
 
 public class RobotContainer {
 
   // Subsystem Declaration
   private static CatzDrivetrain   drive                = new CatzDrivetrain();
-  private static CatzElevator     elevator             = new CatzElevator();
   private static CatzShooterFeeder shooterFeeder       = new CatzShooterFeeder();
   private static CatzShooterFlywheels shooterFlywheels = new CatzShooterFlywheels();
+  private static CatzIntakeRollers rollers             = new CatzIntakeRollers();
+
+  // Superstructure member subsystem declaration
+  private static CatzElevator     elevator             = new CatzElevator();
   private static CatzShooterTurret turret              = new CatzShooterTurret();
   private static CatzShooterPivot  shooterPivot        = new CatzShooterPivot();
-  private static CatzIntakeRollers rollers             = new CatzIntakeRollers();
   private static CatzIntakePivot   intakePivot         = new CatzIntakePivot();
+  private static CatzSuperstructure superstructure = new CatzSuperstructure(elevator, turret, shooterPivot, intakePivot);
 
-
+  // Assistance Subsystem declaration
   private static CatzLED          led = CatzLED.getInstance();
   private static CatzRobotTracker robotTracker = CatzRobotTracker.getInstance();
   private static CatzVision       vision       = new CatzVision(new VisionIO[] {
@@ -70,7 +75,7 @@ public class RobotContainer {
   private final LoggedDashboardNumber endgameAlert2 = new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
   // Auto Declaration
-  private CatzAutoFactory auto = new CatzAutoFactory(this);
+  private CatzAutoRoutines auto = new CatzAutoRoutines(this);
 
 
   public RobotContainer() {
@@ -103,8 +108,21 @@ public class RobotContainer {
     );
   }
 
+  //---------------------------------------------------------------------------
+  //
+  //  Button mapping to commands
+  //
+  //---------------------------------------------------------------------------
   private void configureBindings() { // TODO organize by function
-    
+  
+    xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
+    xboxAux.leftBumper().whileTrue(rollers.setRollersOut());
+
+    xboxAux.y().onTrue(superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM));
+
+    xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
+    xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
+    xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
 
 
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
@@ -127,6 +145,11 @@ public class RobotContainer {
         });
   }
 
+  //---------------------------------------------------------------------------
+  //
+  //  Misc methods
+  //
+  //---------------------------------------------------------------------------
   /** Updates dashboard data. */ //TODO if needed add values here
   public void updateDashboardOutputs() {
 
@@ -150,10 +173,16 @@ public class RobotContainer {
   }
 
   //---------------------------------------------------------------------------
+  //
   //      Subsystem getters
+  //
   //---------------------------------------------------------------------------
   public CatzDrivetrain getCatzDrivetrain() {
     return drive;
+  }
+
+  public CatzSuperstructure getCatzSuperstructure() {
+    return superstructure;
   }
 
   public CatzElevator getCatzElevator() {

@@ -32,7 +32,7 @@ public class CatzSwerveModule {
     private final String m_moduleName;
 
     // Global swerve module variables
-    private SwerveModuleState m_swerveModuleState = null;
+    private SwerveModuleState m_swerveModuleState = new SwerveModuleState();
 
     // FeedFoward definment
     private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.ffkS(),

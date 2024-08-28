@@ -191,7 +191,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
 
   //-----------------------------------------------------------------------------------------
   //
-  //    Command Flywheel State Access methods
+  //    Flywheel State Setting Method
   //
   //-----------------------------------------------------------------------------------------
   /** Set the current goal of the flywheel */
@@ -220,7 +220,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
 
   //-----------------------------------------------------------------------------------------
   //
-  //    Flywheel commands
+  //    Flywheel Instance Factory Commands
   //
   //-----------------------------------------------------------------------------------------
   public Command shootCommand() {
