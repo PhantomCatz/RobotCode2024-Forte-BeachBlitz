@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeRollers.CatzIntakeRollers;
-import frc.robot.subsystems.SuperStructure.CatzSuperstructure;
-import frc.robot.subsystems.SuperStructure.CatzSuperstructure.SuperstructureState;
+import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem;
+import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
 
 /** Place where any sequencing/nonPosition Based robot state logic is held */
 public class AutomatedSequenceCmds {
@@ -20,7 +20,7 @@ public class AutomatedSequenceCmds {
     public static Command noteDetectIntakeToShooter(RobotContainer container) {
         // declare subsystem requirements
         CatzIntakeRollers rollers = container.getCatzIntakeRollers();
-        CatzSuperstructure superstructure = container.getCatzSuperstructure();
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
         noteDetectIntakeToShooter(container).addRequirements(rollers, superstructure);
 
         // return command sequence
@@ -37,7 +37,7 @@ public class AutomatedSequenceCmds {
      * Runs the Auto Note detect in telop to feed note into Intake for amp Scoring
      */
     public static Command NoteDetectIntakeToAmpScoring(RobotContainer container) {
-        CatzSuperstructure superstructure = container.getCatzSuperstructure();
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
@@ -52,7 +52,7 @@ public class AutomatedSequenceCmds {
      * Runs shooter to intake note transfer
      */
     public static Command TransferNoteToIntake(RobotContainer container) {
-        CatzSuperstructure superstructure = container.getCatzSuperstructure();
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
         return new SequentialCommandGroup(
             superstructure.setSuperStructureState(SuperstructureState.STOW).until(()->true),
@@ -68,7 +68,7 @@ public class AutomatedSequenceCmds {
      * Runs intake to shooter note transfer
      */
     public static Command TransferNoteToShooter(RobotContainer container) {
-        CatzSuperstructure superstructure = container.getCatzSuperstructure();
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
         return new SequentialCommandGroup(
             superstructure.setSuperStructureState(SuperstructureState.STOW).until(()->true), // Until Intake has stowed 
@@ -84,7 +84,7 @@ public class AutomatedSequenceCmds {
      * Runs a Simple auto aim to the speaker that can be overriden by driver
      */
     public static Command AutoAimShootNote(RobotContainer container, Supplier<Boolean> driverOveride) {
-        CatzSuperstructure superstructure = container.getCatzSuperstructure();
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
         return new SequentialCommandGroup(
             TransferNoteToShooter(container).unless(()->true),// Note is already in shooter

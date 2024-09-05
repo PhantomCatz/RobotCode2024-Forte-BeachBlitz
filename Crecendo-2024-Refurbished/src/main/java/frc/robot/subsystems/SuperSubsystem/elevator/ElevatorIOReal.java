@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SuperStructure.elevator;
+package frc.robot.subsystems.SuperSubsystem.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -11,7 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.util.Units;
 
-import static frc.robot.subsystems.SuperStructure.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.SuperSubsystem.elevator.ElevatorConstants.*;
 
 import java.util.List;
 

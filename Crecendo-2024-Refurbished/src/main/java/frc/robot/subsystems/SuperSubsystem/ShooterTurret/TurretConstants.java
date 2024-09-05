@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SuperStructure.ShooterTurret;
+package frc.robot.subsystems.SuperSubsystem.ShooterTurret;
 import frc.robot.CatzConstants;
 
 

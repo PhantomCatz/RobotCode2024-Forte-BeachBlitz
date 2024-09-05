@@ -46,7 +46,7 @@ public final class CatzConstants {
     // Checks to ensure that the selected robot Hardware mode is not paired with an illegal Robot Id
     if (RobotBase.isReal() && robotType == RobotID.SN_TEST) {
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-          .set(true); //TODO have errors show up until fixed...Have a way to make it sticky for a user specified time
+          .set(true);
       robotType = RobotID.SN2;
     }
     return robotType;

@@ -30,9 +30,9 @@ public class CatzIntakeRollers extends SubsystemBase {
   public enum TargetSpeed { 
     IDLE(() ->  0.0),
     INTAKE(intakeSpeed),
-    EJECT(() -> 0.0),
-    HANDOFF_IN(() -> 0.0),
-    HANDOFF_OUT(() -> 0.0);
+    EJECT(() -> -0.6),
+    HANDOFF_IN(() -> 0.1),
+    HANDOFF_OUT(() -> -0.1);
 
     private final DoubleSupplier requestedRollerSpeed;
     private double getRollerSpeed() {

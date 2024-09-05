@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.SuperStructure.ShooterTurret;
+package frc.robot.subsystems.SuperSubsystem.ShooterTurret;
 
-import static frc.robot.subsystems.SuperStructure.ShooterTurret.TurretConstants.*;
+import static frc.robot.subsystems.SuperSubsystem.ShooterTurret.TurretConstants.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
+import frc.robot.Utilities.AutoAimingParametersUtil;
+import frc.robot.subsystems.SuperStructure.ShooterTurret.TurretIOInputsAutoLogged;
 import lombok.RequiredArgsConstructor;
 
 
@@ -32,7 +34,9 @@ public class CatzShooterTurret {
   // State amchine
   @RequiredArgsConstructor
   public enum TurretPosition {
-    AUTO_AIM(()->0.0), //TODO add auto aim parameters
+    AUTO_AIM(()-> AutoAimingParametersUtil.getAutoAimSpeakerParemeters()
+                                          .turretHeading()
+                                          .getDegrees()), 
     HOME(()->0.0),
     TEST_POSITION(()-> 90.0),
     IDLE(()->targetTurretPosition),
@@ -84,7 +88,6 @@ public class CatzShooterTurret {
     }
 
   }
-
 
   //-----------------------------------------------------------------------------------------
   //

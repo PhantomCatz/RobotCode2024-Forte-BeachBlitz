@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SuperStructure.elevator;
+package frc.robot.subsystems.SuperSubsystem.elevator;
 
 public class ElevatorIONull implements ElevatorIO {
     ElevatorIONull() {

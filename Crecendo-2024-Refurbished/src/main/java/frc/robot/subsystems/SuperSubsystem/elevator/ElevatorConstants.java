@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.SuperStructure.elevator;
+package frc.robot.subsystems.SuperSubsystem.elevator;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -61,17 +61,17 @@ public class ElevatorConstants {
         };
 
     // Adjustable Dashboard PIDF values
-    public static final LoggedTunableNumber kP = new LoggedTunableNumber("Arm/Gains/kP", gains.kP());
-    public static final LoggedTunableNumber kI = new LoggedTunableNumber("Arm/Gains/kI", gains.kI());
-    public static final LoggedTunableNumber kD = new LoggedTunableNumber("Arm/Gains/kD", gains.kD());
-    public static final LoggedTunableNumber kS = new LoggedTunableNumber("Arm/Gains/kS", gains.kS());
-    public static final LoggedTunableNumber kV = new LoggedTunableNumber("Arm/Gains/kV", gains.kV());
-    public static final LoggedTunableNumber kA = new LoggedTunableNumber("Arm/Gains/kA", gains.kA());
-    public static final LoggedTunableNumber kG = new LoggedTunableNumber("Arm/Gains/kG", gains.kG());
-    public static final LoggedTunableNumber mmCruiseVelocity = new LoggedTunableNumber("Arm/Gains/kV", motionMagicParameters.mmCruiseVelocity());
-    public static final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Arm/Gains/kA", motionMagicParameters.mmAcceleration());
-    public static final LoggedTunableNumber mmJerk = new LoggedTunableNumber("Arm/Gains/kG", motionMagicParameters.mmJerk());
-    public static final LoggedTunableNumber lowerLimitRotations = new LoggedTunableNumber("Arm/LowerLimitDegrees", MIN_ROTATIONS);
-    public static final LoggedTunableNumber upperLimitRotations = new LoggedTunableNumber("Arm/UpperLimitDegrees", MAX_ROTATIONS);
+    public static final LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/Gains/kP", gains.kP());
+    public static final LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/Gains/kI", gains.kI());
+    public static final LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/Gains/kD", gains.kD());
+    public static final LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/Gains/kS", gains.kS());
+    public static final LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/Gains/kV", gains.kV());
+    public static final LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/Gains/kA", gains.kA());
+    public static final LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/Gains/kG", gains.kG());
+    public static final LoggedTunableNumber mmCruiseVelocity = new LoggedTunableNumber("Elevator/Gains/kV", motionMagicParameters.mmCruiseVelocity());
+    public static final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Elevator/Gains/kA", motionMagicParameters.mmAcceleration());
+    public static final LoggedTunableNumber mmJerk = new LoggedTunableNumber("Elevator/Gains/kG", motionMagicParameters.mmJerk());
+    public static final LoggedTunableNumber lowerLimitRotations = new LoggedTunableNumber("Elevator/LowerLimitDegrees", MIN_ROTATIONS);
+    public static final LoggedTunableNumber upperLimitRotations = new LoggedTunableNumber("Elevator/UpperLimitDegrees", MAX_ROTATIONS);
 
 }

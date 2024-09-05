@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.SuperStructure;
+package frc.robot.subsystems.SuperSubsystem;
 
 import javax.lang.model.element.ElementKind;
 
@@ -10,15 +10,15 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.SuperStructure.IntakePivot.CatzIntakePivot;
-import frc.robot.subsystems.SuperStructure.IntakePivot.CatzIntakePivot.IntakePivotPosition;
-import frc.robot.subsystems.SuperStructure.ShooterPivot.CatzShooterPivot;
-import frc.robot.subsystems.SuperStructure.ShooterTurret.CatzShooterTurret;
-import frc.robot.subsystems.SuperStructure.ShooterTurret.CatzShooterTurret.TurretPosition;
-import frc.robot.subsystems.SuperStructure.elevator.CatzElevator;
-import frc.robot.subsystems.SuperStructure.elevator.CatzElevator.ElevatorPosition;
+import frc.robot.subsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
+import frc.robot.subsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.IntakePivotPosition;
+import frc.robot.subsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
+import frc.robot.subsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
+import frc.robot.subsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret.TurretPosition;
+import frc.robot.subsystems.SuperSubsystem.elevator.CatzElevator;
+import frc.robot.subsystems.SuperSubsystem.elevator.CatzElevator.ElevatorPosition;
 
-public class CatzSuperstructure extends SubsystemBase {
+public class CatzSuperSubsystem extends SubsystemBase {
 
   private static SuperstructureState currentSuperstructureState = SuperstructureState.STOW;
   private static SuperstructureState previousSuperstructureState = SuperstructureState.STOW;
@@ -44,7 +44,7 @@ public class CatzSuperstructure extends SubsystemBase {
   private boolean isIntakePivotCausingDanger = false;
 
   /** Creates a new Superstructure. */
-  public CatzSuperstructure(CatzElevator elevator, CatzShooterTurret turret, CatzShooterPivot shooterPivot, CatzIntakePivot intakePivot) {
+  public CatzSuperSubsystem(CatzElevator elevator, CatzShooterTurret turret, CatzShooterPivot shooterPivot, CatzIntakePivot intakePivot) {
     this.elevator = elevator;
     this.turret = turret;
     this.shooterPivot = shooterPivot;

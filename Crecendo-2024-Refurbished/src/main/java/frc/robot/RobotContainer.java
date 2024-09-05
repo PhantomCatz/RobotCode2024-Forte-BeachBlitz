@@ -34,12 +34,12 @@ import frc.robot.subsystems.IntakeRollers.CatzIntakeRollers;
 import frc.robot.subsystems.LEDs.CatzLED;
 import frc.robot.subsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
-import frc.robot.subsystems.SuperStructure.CatzSuperstructure;
-import frc.robot.subsystems.SuperStructure.CatzSuperstructure.SuperstructureState;
-import frc.robot.subsystems.SuperStructure.IntakePivot.CatzIntakePivot;
-import frc.robot.subsystems.SuperStructure.ShooterPivot.CatzShooterPivot;
-import frc.robot.subsystems.SuperStructure.ShooterTurret.CatzShooterTurret;
-import frc.robot.subsystems.SuperStructure.elevator.CatzElevator;
+import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem;
+import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
+import frc.robot.subsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
+import frc.robot.subsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
+import frc.robot.subsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
+import frc.robot.subsystems.SuperSubsystem.elevator.CatzElevator;
 
 public class RobotContainer {
 
@@ -54,7 +54,7 @@ public class RobotContainer {
   private static CatzShooterTurret turret              = new CatzShooterTurret();
   private static CatzShooterPivot  shooterPivot        = new CatzShooterPivot();
   private static CatzIntakePivot   intakePivot         = new CatzIntakePivot();
-  private static CatzSuperstructure superstructure = new CatzSuperstructure(elevator, turret, shooterPivot, intakePivot);
+  private static CatzSuperSubsystem superstructure = new CatzSuperSubsystem(elevator, turret, shooterPivot, intakePivot);
 
   // Assistance Subsystem declaration
   private static CatzLED          led = CatzLED.getInstance();
@@ -181,7 +181,7 @@ public class RobotContainer {
     return drive;
   }
 
-  public CatzSuperstructure getCatzSuperstructure() {
+  public CatzSuperSubsystem getCatzSuperstructure() {
     return superstructure;
   }
 

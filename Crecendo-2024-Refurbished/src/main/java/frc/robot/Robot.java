@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
+import frc.robot.CatzConstants.RobotHardwareMode;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.Alert.AlertType;

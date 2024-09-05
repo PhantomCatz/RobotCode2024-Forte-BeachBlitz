@@ -1,6 +1,6 @@
-package frc.robot.subsystems.SuperStructure.ShooterTurret;
+package frc.robot.subsystems.SuperSubsystem.ShooterTurret;
 
-import static frc.robot.subsystems.SuperStructure.ShooterTurret.TurretConstants.*;
+import static frc.robot.subsystems.SuperSubsystem.ShooterTurret.TurretConstants.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
