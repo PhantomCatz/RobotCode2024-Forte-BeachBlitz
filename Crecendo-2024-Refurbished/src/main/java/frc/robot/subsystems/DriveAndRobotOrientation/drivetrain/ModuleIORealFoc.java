@@ -5,6 +5,7 @@ package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -28,6 +29,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.CatzConstants;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.util.MotorUtil.NeutralMode;
+
+import static frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -55,7 +58,7 @@ public class ModuleIORealFoc implements ModuleIO {
   private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final PositionTorqueCurrentFOC positionControl = new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
-  private final PIDController steerFeedback = new PIDController(0.01, 0.0, 0.0); //TODO tune and add constants to controler
+  private final PIDController steerFeedback = new PIDController(moduleGainsAndRatios.steerkP(), 0.0, moduleGainsAndRatios.steerkD()); //TODO tune and add constants to controler
 
   // Status Code Initialization
   private StatusCode initializationStatus = StatusCode.StatusCodeNotInitialized;
@@ -78,6 +81,8 @@ public class ModuleIORealFoc implements ModuleIO {
     // Gain Setting
     driveTalonConfig.Slot0.kP = moduleGainsAndRatios.drivekP();
     driveTalonConfig.Slot0.kD = moduleGainsAndRatios.drivekD();
+    driveTalonConfig.Slot0.kS = moduleGainsAndRatios.driveFFkS();
+    driveTalonConfig.Slot0.kV = moduleGainsAndRatios.driveFFkV();
 
     //check if drive motor is initialized correctly
     for(int i=0;i<5;i++){
@@ -166,10 +171,8 @@ public class ModuleIORealFoc implements ModuleIO {
   }
 
   @Override
-  public void runDriveVelocityRPSIO(double velocityMetersPerSec, double feedForward) {
-    driveTalon.setControl(velocityTorqueCurrentFOC.withVelocity(velocityMetersPerSec)
-                                                  .withFeedForward(feedForward) //In Amps
-    );
+  public void runDriveVelocityRPSIO(double velocityMetersPerSec) {
+    driveTalon.setControl(velocityTorqueCurrentFOC.withVelocity(velocityMetersPerSec));
   }
 
   public void runSteerPercentOutput(double percentOutput) {

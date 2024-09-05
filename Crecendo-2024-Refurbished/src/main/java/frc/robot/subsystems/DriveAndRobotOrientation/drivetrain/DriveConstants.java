@@ -28,12 +28,12 @@ public class DriveConstants {
     switch (CatzConstants.getRobotType()) {
       case SN_TEST, SN2 ->
           DriveConfig.builder()
-              .wheelRadius(Units.inchesToMeters(4)) // 1.891
+              .wheelRadius(Units.inchesToMeters(2))
               .robotLengthX(Units.inchesToMeters(24.0))
               .robotWidthY(Units.inchesToMeters(23.5))
               .bumperWidthX(Units.inchesToMeters(37))
               .bumperWidthY(Units.inchesToMeters(33))
-              .maxLinearVelocity(Units.feetToMeters(17.0))
+              .maxLinearVelocity(Units.feetToMeters(17))
               .maxLinearAcceleration(Units.feetToMeters(75.0))
               .maxAngularVelocity(12.0)
               .maxAngularAcceleration(6.0)
@@ -61,17 +61,17 @@ public class DriveConstants {
                     35.0,
                     0.0,
                     4000.0,
-                    50.0,
+                    50.0, 
                     Mk4iReductions.L2_PLUS.reduction,
                     Mk4iReductions.steer.reduction);
             case SN2 ->
                 new ModuleGainsAndRatios(
-                    0.1,
-                    0.13,
+                    5.5,
+                    0.125,
                     0.0,
-                    1.0,
+                    1.2,
                     0.0,
-                    0.1,
+                    0.3,
                     0.0,
                     Mk4iReductions.L2_PLUS.reduction,
                     Mk4iReductions.steer.reduction);

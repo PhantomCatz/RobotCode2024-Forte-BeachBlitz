@@ -41,7 +41,7 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  public default void runDrivePwrPercentIO(double drivePwrPercent) {}
 
- public default void runDriveVelocityRPSIO(double velocity, double feedForward) {}
+ public default void runDriveVelocityRPSIO(double velocity) {}
 
  public default void setDriveNeutralModeIO(NeutralModeValue type) {}
 

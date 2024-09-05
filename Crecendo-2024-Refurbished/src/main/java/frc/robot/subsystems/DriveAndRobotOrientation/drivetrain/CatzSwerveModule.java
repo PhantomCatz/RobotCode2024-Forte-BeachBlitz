@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.ModuleIOInputsAutoLogged;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.ModuleIORealFoc;
 import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.util.Alert;
@@ -133,8 +134,7 @@ public class CatzSwerveModule {
 
         // Run closed loop drive control
         io.runDriveVelocityRPSIO(
-            Conversions.MPSToRPS(state.speedMetersPerSecond),
-            ff.calculate(state.speedMetersPerSecond / driveConfig.wheelRadius())
+            Conversions.MPSToRPS(state.speedMetersPerSecond)
         );
         // Run Closed Loop Steer Control
 
@@ -149,7 +149,7 @@ public class CatzSwerveModule {
     }
 
     public void setDriveVelocity(double velocity) {
-        io.runDriveVelocityRPSIO(velocity, 0.0);
+        io.runDriveVelocityRPSIO(velocity);
     }
 
     public void stopDriving() {

@@ -100,7 +100,7 @@ public class Robot extends LoggedRobot {
     Logger.start(); //TODO test on saturday for can bus benchmark
 
 
-      benchmarkAlert.setAlertOnloop(true, 5, 10000.0);
+      //benchmarkAlert.setAlertOnloop(true, 5, 10000.0);
 
     // Instantiate robotContainer
     m_robotContainer = new RobotContainer();
@@ -109,7 +109,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    benchmarkAlert.set(true);
+   // benchmarkAlert.set(true);
 
 
   }
