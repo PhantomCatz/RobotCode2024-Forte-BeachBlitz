@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeRollers.CatzIntakeRollers;
-import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem;
-import frc.robot.subsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
+import frc.robot.CatzSubsystems.IntakeRollers.CatzIntakeRollers;
+import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem;
+import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
 
 /** Place where any sequencing/nonPosition Based robot state logic is held */
 public class AutomatedSequenceCmds {

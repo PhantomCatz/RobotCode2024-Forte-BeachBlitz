@@ -16,7 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 
 public class AutoAimingParametersUtil {
 

@@ -1,4 +1,4 @@
-package frc.robot.autonomous;
+package frc.robot.Autonomous;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 
 public class CatzAutoRoutines {
     
