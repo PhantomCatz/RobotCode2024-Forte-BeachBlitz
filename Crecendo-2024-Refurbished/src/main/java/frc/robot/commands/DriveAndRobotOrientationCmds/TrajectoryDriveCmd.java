@@ -1,4 +1,4 @@
-package frc.robot.commands.DriveAndRobotOrientationCmds;
+package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -13,9 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveAndRobotOrientation.CatzRobotTracker;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
-import frc.robot.subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.Subsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 import frc.robot.CatzConstants;
 
 import java.util.List;
@@ -79,8 +79,8 @@ public class TrajectoryDriveCmd extends Command {
                                 path, 
                                 DriveConstants.
                                     swerveDriveKinematics.
-                                        toChassisSpeeds(m_driveTrain.getModuleStates()),
-                                m_driveTrain.getDriveRotation2d());
+                                        toChassisSpeeds(CatzRobotTracker.getInstance().getRobotSwerveModuleStates()),
+                                CatzRobotTracker.getInstance().getRobotRotation());
                                 
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_RATIO;
 
@@ -113,7 +113,7 @@ public class TrajectoryDriveCmd extends Command {
             ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
 
             //send to drivetrain
-            m_driveTrain.driveWithDiscretizeKinematics(adjustedSpeeds);
+            m_driveTrain.drive(adjustedSpeeds, true);
 
         }else{
             m_driveTrain.stopDriving();

@@ -1,8 +1,12 @@
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.util.MotorUtil.NeutralMode;
 
 
 public interface ModuleIO {
@@ -15,15 +19,16 @@ public interface ModuleIO {
    public double driveSupplyCurrentAmps;
    public double driveTorqueCurrentAmps;
    
-   public boolean isTurnMotorConnected;
-   public double turnAbsoluteInitPosition;
-   public Rotation2d turnPosition = new Rotation2d();
-   public double turnVelocityRadsPerSec;
-   public Rotation2d turnAbsolutePosition = new Rotation2d();
-   public double turnBussVolts;
-   public double turnSupplyCurrentAmps;
+   public boolean isSteerMotorConnected;
+   public double steerAbsoluteInitPosition;
+   public Rotation2d steerPosition = new Rotation2d();
+   public double steerVelocityRadsPerSec;
+   public Rotation2d steerAbsolutePosition = new Rotation2d();
+   public double steerTorqueCurrentAmps;
+   public double steerBusVoltage;
+   public double steerSupplyCurrentAmps;
    public double[] odometryDrivePositionsMeters = new double[0];
-   public Rotation2d[] odometryTurnPositions = new Rotation2d[0];
+   public Rotation2d[] odometrySteerPositions = new Rotation2d[0];
 
 
  }
@@ -36,9 +41,9 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  public default void runDrivePwrPercentIO(double drivePwrPercent) {}
 
- public default void runDriveVelocityRPSIO(double velocity, double feedForward) {}
+ public default void runDriveVelocityRPSIO(double velocity) {}
 
- public default void setDriveBreakModeIO(boolean enable) {}
+ public default void setDriveNeutralModeIO(NeutralModeValue type) {}
 
  public default void setDrvSensorPositionIO(double sensorpos) {}
 
@@ -51,15 +56,15 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  //   Steer Access Methods
  //---------------------------------------------------------------------------
- public default void runSteerPercentOutputIO(double SteerPwr) {}
+ public default void runSteerPercentOutput(double steerPwr) {}
 
  public default void runSteerPositionSetpoint(double currentAngleRad, double currentAngleRads) {}
 
- public default void setSteerBrakeModeIO(boolean enable) {}
+ public default void setSteerNeutralModeIO(IdleMode type) {}
 
  public default void setSteerSimPwrIO(double volts) {}
 
- public default void setTurnPID(double kP, double kI, double kD) {}
+ public default void setSteerPID(double kP, double kI, double kD) {}
 
  //---------------------------------------------------------------------------
  //   Mag Enc Access Methods

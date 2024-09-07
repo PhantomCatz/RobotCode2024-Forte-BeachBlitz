@@ -1,4 +1,4 @@
-package frc.robot.subsystems.DriveAndRobotOrientation.drivetrain;
+package frc.robot.Subsystems.DriveAndRobotOrientation.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -12,19 +12,19 @@ public class GyroIONavX implements GyroIO
         navX = new AHRS(Port.kMXP, (byte) 200);
         navX.enableLogging(true);
         navX.reset(); // implicitly sets the gyro to 0 heading
-        
-        
     }
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-      inputs.gyroAngle = navX.getAngle(); //Acumulated Yaw
-      inputs.gyroYaw = (navX.getYaw());
-      inputs.gyroRoll = navX.getRoll();
-      inputs.gyroConnected = navX.isConnected();
-      inputs.gyroAngleVel = navX.getRate();
-      inputs.gyroAccelX   = navX.getWorldLinearAccelX();
-      inputs.gyroAccelY   = navX.getWorldLinearAccelY();
+      inputs.gyroConnected    = navX.isConnected();
+
+      inputs.gyroAngle        = navX.getAngle(); //Acumulated Yaw no rollover
+      inputs.gyroYawDegrees   = navX.getYaw();
+      inputs.gyroRollDegrees  = navX.getRoll(); 
+           
+      inputs.gyroAngleVel     = navX.getRate();
+      inputs.gyroAccelX       = navX.getWorldLinearAccelX();
+      inputs.gyroAccelY       = navX.getWorldLinearAccelY();
     }
 
 }
