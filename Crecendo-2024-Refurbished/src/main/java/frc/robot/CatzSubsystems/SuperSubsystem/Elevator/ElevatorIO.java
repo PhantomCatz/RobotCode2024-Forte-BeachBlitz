@@ -13,8 +13,6 @@ public interface ElevatorIO {
         public boolean isLeaderMotorConnected = true;
         public boolean isFollowerMotorConnected = true;
 
-        public boolean test =  true;
-
         public double leaderPositionRotations = 0.0;
         public double velocityRps = 0.0;
         public double[] appliedVolts = new double[] {};
