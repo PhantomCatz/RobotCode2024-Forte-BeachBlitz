@@ -10,7 +10,7 @@ package frc.robot.Commands.CharacterizationCmds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.util.PolynomialRegression;
+import frc.robot.Utilities.PolynomialRegression;
 
 import java.util.LinkedList;
 import java.util.List;

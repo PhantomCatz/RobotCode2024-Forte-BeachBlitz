@@ -2,8 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.Alert.AlertType;
 
 /***
  * CatzConstants
@@ -15,12 +15,14 @@ import frc.robot.util.Alert.AlertType;
  ***/
 public final class CatzConstants {
 
-  /**************************************************
-   * Robot Modes
-   *************************************************/
+  //----------------------------------------------------
+  //
+  //  Robot Modes
+  //
+  //--------------------------------------------------/
   public static final RobotSenario robotSenario = RobotSenario.PRACTICE;
-  public static final RobotHardwareMode hardwareMode = RobotHardwareMode.REAL;
-  private static RobotID robotType = RobotID.SN2;
+  public static final RobotHardwareMode hardwareMode = RobotHardwareMode.SIM;
+  private static RobotID robotType = RobotID.SN_TEST;
   
   public static AllianceColor choosenAllianceColor = null;
 
@@ -46,7 +48,7 @@ public final class CatzConstants {
     // Checks to ensure that the selected robot Hardware mode is not paired with an illegal Robot Id
     if (RobotBase.isReal() && robotType == RobotID.SN_TEST) {
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-          .set(true); //TODO have errors show up until fixed...Have a way to make it sticky for a user specified time
+          .set(true);
       robotType = RobotID.SN2;
     }
     return robotType;
@@ -67,21 +69,13 @@ public final class CatzConstants {
     public static final int XBOX_DRV_PORT = 0;
     public static final int XBOX_AUX_PORT = 1;
 
-    // Xbox Axis IDs
-    public static final int kDriverYAxis = 1;
-    public static final int kDriverXAxis = 0;
-    public static final int kDriverRotAxis = 4;
-
-    // Xbox Button Mapping
-    public static final int kDriverFieldOrientedButtonIdx = 1;
-
     // Deadbands
     public static final double kDeadband = 0.1;
   }
 
   // COLOR CONSTANTS
   public static final class CatzColorConstants {
-    public static final Color PHANTOM_SAPPHIRE = new Color(15, 25, 200);
+    public static final Color PHANTOM_SAPPHIRE = new Color(15, 25, 400);
   }
 
 }

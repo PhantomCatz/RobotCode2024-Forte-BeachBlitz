@@ -72,9 +72,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
 
     implementation 'gov.nist.math:jama:1.0.3'
-    
-    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
-    annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
 }
 
 test {
@@ -106,7 +103,6 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
-
 repositories {
     maven {
         url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")
@@ -127,6 +123,12 @@ task(checkAkitInstall, dependsOn: "classes", type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 compileJava.finalizedBy checkAkitInstall
+
+dependencies {
+    // ...
+    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
+}
 
 // Create version file
 project.compileJava.dependsOn(createVersionFile)

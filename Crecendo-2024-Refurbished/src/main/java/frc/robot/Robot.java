@@ -4,54 +4,111 @@
 
 package frc.robot;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.DoubleSupplier;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import com.google.flatbuffers.Constants;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
+import frc.robot.CatzSubsystems.LEDs.CatzLED;
+import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
-  // Essential Robot.java object declaration
+  //-------------------------------------------------------------------------------------------------------------
+  //
+  //  Essential Robot.java object declaration
+  //
+  //--------------------------------------------------------------------------------------------------------------
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private Optional<Alliance> alliance = Optional.empty();
 
+  //-------------------------------------------------------------------------------------------------------------
+  //
+  //  MISC
+  //
+  //--------------------------------------------------------------------------------------------------------------
+  // Robot Timers
+  private final Timer disabledTimer = new Timer();
+  private final Timer canInitialErrorTimer = new Timer();
+  private final Timer canErrorTimer = new Timer();
+  private final Timer canivoreErrorTimer = new Timer();
+
+  // Timer related variables
+  private double teleStart;
+  private double autoStart;
+  private boolean autoMessagePrinted;
+  private static double teleElapsedTime = 0.0;
+  // Can Error Detection variables
+  private static final double canErrorTimeThreshold = 0.5; // Seconds to disable alert
+  private static final double canivoreErrorTimeThreshold = 0.5;
+
+  // Battery Logging Variables
+  private static final String batteryNameFile = "/home/lvuser/battery-name.txt";
+  private static final double lowBatteryVoltage = 11.8;
+  private static final double lowBatteryDisabledTime = 1.5;
+
+  private static final String defaultBatteryName = "BAT-0000-000";
+  private final StringSubscriber batteryNameSubscriber =
+      NetworkTableInstance.getDefault()
+          .getStringTopic("/battery_name")
+          .subscribe(defaultBatteryName);
+  private boolean batteryNameChecked = false;
+  private boolean batteryNameWritten = false;
+
+  //--------------------------------------------------------------------------------------------------------
+  //
+  //        Alerts
+  //
+  //--------------------------------------------------------------------------------------------------------
+  // CAN
+  private final Alert canErrorAlert = new Alert("CAN errors detected, robot may not be controllable.", AlertType.ERROR);
+
+  // Battery Alerts
+  private final Alert lowBatteryAlert = new Alert("Battery voltage is very low, consider turning off the robot or replacing the battery.", AlertType.WARNING);
+  private final Alert sameBatteryAlert = new Alert("The battery has not been changed since the last match.", AlertType.WARNING);
+
+  // Garbage Collection Alerts
+  private final Alert gcAlert = new Alert("Please wait to enable, collecting garbage. 🗑️", AlertType.WARNING);
+
+  // DriverStation related alerts
+  private final Alert driverStationDisconnectAlert = new Alert("Driverstation is not online, alliance selection will not work", AlertType.ERROR);
+  private final Alert fmsDisconnectAlert = new Alert("fms is offline, robot cannot compete in match", AlertType.ERROR);
+
+  // Last deployment logging
+  Date date = Calendar.getInstance().getTime();	
+  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk.mm.ss");;
+  String dateFormatted = sdf.format(date);
+  private final Alert lastDeploymentAlert = new Alert("Last Deployment: " + dateFormatted , AlertType.INFO);
 
 
-  private Alert benchmarkAlert = new Alert("Last Deployment of code: " + Date.valueOf(LocalDate.MAX), Alert.AlertType.WARNING);
-  
+
   @Override
   public void robotInit() {
     // Record metadata
@@ -96,22 +153,142 @@ public class Robot extends LoggedRobot {
             break;
     }
 
-    //Start AdvantageKit logger
-    Logger.start(); //TODO test on saturday for can bus benchmark
-
-
-      //benchmarkAlert.setAlertOnloop(true, 5, 10000.0);
+    // Start AdvantageKit logger
+    Logger.start();
 
     // Instantiate robotContainer
     m_robotContainer = new RobotContainer();
+
+    // Log active commands
+    Map<String, Integer> commandCounts = new HashMap<>();
+    BiConsumer<Command, Boolean> logCommandFunction =
+        (Command command, Boolean active) -> {
+          String name = command.getName();
+          int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+          commandCounts.put(name, count);
+          Logger.recordOutput(
+              "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+          Logger.recordOutput("CommandsAll/" + name, count > 0);
+        };
+    CommandScheduler.getInstance()
+        .onCommandInitialize(
+            (Command command) -> {
+              logCommandFunction.accept(command, true);
+            });
+    CommandScheduler.getInstance()
+        .onCommandFinish(
+            (Command command) -> {
+              logCommandFunction.accept(command, false);
+            });
+    CommandScheduler.getInstance()
+        .onCommandInterrupt(
+            (Command command) -> {
+              logCommandFunction.accept(command, false);
+            });
+
+    // Reset alert timers
+    canInitialErrorTimer.restart();
+    canErrorTimer.restart();
+    canivoreErrorTimer.restart();
+    disabledTimer.restart();
+
+    RobotController.setBrownoutVoltage(6.0);
+
+    // Print out Catz Constant enums
+    System.out.println("Enviroment: " + CatzConstants.robotSenario.toString());
+    System.out.println("Mode: " + CatzConstants.hardwareMode.toString());
+    System.out.println("Type: " + CatzConstants.getRobotType().toString());
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-   // benchmarkAlert.set(true);
 
+    // Print auto duration
+    if (m_autonomousCommand != null) {
+      if (!m_autonomousCommand.isScheduled() && !autoMessagePrinted) {
+        if (DriverStation.isAutonomousEnabled()) {
+          System.out.printf(
+              "*** Auto finished in %.2f secs ***%n", Timer.getFPGATimestamp() - autoStart);
+        } else {
+          System.out.printf(
+              "*** Auto cancelled in %.2f secs ***%n", Timer.getFPGATimestamp() - autoStart);
+        }
+        autoMessagePrinted = true;
+        CatzLED.getInstance().autoFinished = true;
+        CatzLED.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
+      }
 
+      //TODO add note visualizer stuff
+    }
+
+    // Robot container periodic methods
+    m_robotContainer.checkControllers();
+    m_robotContainer.updateDashboardOutputs();
+    m_robotContainer.updateAlerts();
+
+    // Check CAN status
+    var canStatus = RobotController.getCANStatus();
+    if (canStatus.transmitErrorCount > 0 || canStatus.receiveErrorCount > 0) {
+      canErrorTimer.restart();
+    }
+    canErrorAlert.set(
+        !canErrorTimer.hasElapsed(canErrorTimeThreshold)
+            && !canInitialErrorTimer.hasElapsed(canErrorTimeThreshold));
+
+    // Low battery alert
+    if (DriverStation.isEnabled()) {
+      disabledTimer.reset();
+    }
+    if (RobotController.getBatteryVoltage() <= lowBatteryVoltage
+        && disabledTimer.hasElapsed(lowBatteryDisabledTime)) {
+      lowBatteryAlert.set(true);
+      CatzLED.getInstance().lowBatteryAlert = true;
+    }
+
+    // Garbage Collection alert
+    gcAlert.set(Timer.getFPGATimestamp() < 45.0);
+
+    // Update battery logging
+    String batteryName = batteryNameSubscriber.get();
+    Logger.recordOutput("BatteryName", batteryName);
+    if (CatzConstants.hardwareMode == CatzConstants.RobotHardwareMode.REAL && !batteryName.equals(defaultBatteryName)) {
+      // Check for battery alert
+      if (!batteryNameChecked) {
+        batteryNameChecked = true;
+        File file = new File(batteryNameFile);
+        if (file.exists()) {
+          // Read previous battery name
+          String previousBatteryName = "";
+          try {
+            previousBatteryName =
+                new String(Files.readAllBytes(Paths.get(batteryNameFile)), StandardCharsets.UTF_8);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          if (previousBatteryName.equals(batteryName)) {
+            // Same battery, set alert
+            sameBatteryAlert.set(true);
+            CatzLED.getInstance().sameBattery = true;
+          } else {
+            // New battery, delete file
+            file.delete();
+          }
+        }
+      }
+
+      // Write battery name if in Competition Mode
+      if (!batteryNameWritten && CatzConstants.robotSenario == RobotSenario.COMPETITION) {
+        batteryNameWritten = true;
+        try {
+          FileWriter fileWriter = new FileWriter(batteryNameFile);
+          fileWriter.write(batteryName);
+          fileWriter.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   @Override
@@ -119,6 +296,21 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    // Run Driver Station Chooser
+    if(DriverStation.isDSAttached()) {
+      alliance = DriverStation.getAlliance();
+      CatzConstants.choosenAllianceColor =
+          alliance
+              .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
+              .orElse(AllianceColor.Red);
+    } 
+
+    // Driver Station Alerts
+    driverStationDisconnectAlert.set(!DriverStation.isDSAttached());
+    fmsDisconnectAlert.set(!DriverStation.isFMSAttached());
+
+    // deployment benchmark
+    lastDeploymentAlert.set(false);
 
   }
 
@@ -127,6 +319,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    // deployment benchmark
+    lastDeploymentAlert.set(true);
+    autoStart = Timer.getFPGATimestamp();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -142,13 +337,19 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    // deployment benchmark
+    lastDeploymentAlert.set(true);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    teleStart = Timer.getFPGATimestamp();
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    teleElapsedTime = Timer.getFPGATimestamp() - teleStart;
+  }
 
   @Override
   public void teleopExit() {}

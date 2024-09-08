@@ -4,9 +4,10 @@ package frc.robot.Commands.CharacterizationCmds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Utilities.LoggedTunableNumber;
+
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import frc.robot.util.LoggedTunableNumber;
 
 public class StaticCharacterization extends Command {
   private static final LoggedTunableNumber currentRampFactor =
