@@ -118,9 +118,11 @@ public class RobotContainer {
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
     xboxAux.leftBumper().whileTrue(rollers.setRollersOut());
 
-    xboxAux.y().onTrue(superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM));
+    // xboxAux.y().onTrue(superstructure.deployIntake());
+    // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
+    xboxAux.y().onTrue(superstructure.moveTurretToHome());
 
-    xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
+    xboxAux.a().onTrue(rollers.setRollersIn());
     xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
     xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
 

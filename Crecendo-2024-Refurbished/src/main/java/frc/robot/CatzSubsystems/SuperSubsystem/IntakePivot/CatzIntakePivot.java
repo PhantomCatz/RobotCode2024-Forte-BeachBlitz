@@ -58,19 +58,19 @@ public class CatzIntakePivot {
       switch (CatzConstants.hardwareMode) {
         case REAL:
           io = new IntakePivotIOReal();
-          System.out.println("Intake Configured for Real");
+          System.out.println("Intake Pivot Configured for Real");
           break;
         case REPLAY:
           io = new IntakePivotIOReal() {};
-          System.out.println("Intake Configured for Replayed simulation");
+          System.out.println("Intake Pivot Configured for Replayed simulation");
           break;
         case SIM:
           io = new IntakePivotIOSim();
-          System.out.println("IntakeRollers Configured for WPILIB simulation");
+          System.out.println("Intake Pivot Configured for WPILIB simulation");
           break;
         default:
           io = null;
-          System.out.println("Intake Unconfigured");
+          System.out.println("Intake Pivot Unconfigured");
           break;
       }
     }
@@ -79,6 +79,7 @@ public class CatzIntakePivot {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("intake/inputs", inputs);
+
 
     // Run Setpoint Control
     if(DriverStation.isDisabled() || m_targetPosition == null) {
@@ -104,6 +105,8 @@ public class CatzIntakePivot {
       }
     }
     
+    Logger.recordOutput("Target Degree Pivot", m_targetPosition.getTargetDegree());
+    Logger.recordOutput("Enum Intake Pivot", m_targetPosition.name());
   }
 
   //-----------------------------------------------------------------------------------------

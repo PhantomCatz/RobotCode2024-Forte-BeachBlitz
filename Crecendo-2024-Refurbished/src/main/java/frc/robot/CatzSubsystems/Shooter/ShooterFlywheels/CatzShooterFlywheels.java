@@ -210,7 +210,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
 
     // Enable close loop
     if (!isFlywheelClosedLoop) {
-      leftProfile.setGoal(targetSpeed.getTargetSpeedLT(), inputs.leftVelocityRpm);
+      leftProfile.setGoal(-targetSpeed.getTargetSpeedLT(), inputs.leftVelocityRpm);
       rightProfile.setGoal(targetSpeed.getTargetSpeedRT(), inputs.rightVelocityRpm);
       isFlywheelClosedLoop = true;
     }

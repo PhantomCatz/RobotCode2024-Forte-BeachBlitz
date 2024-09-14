@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CatzSubsystems.Shooter.ShooterFeeder.CatzShooterFeeder.ShooterFeederState;
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator;
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator.ElevatorPosition;
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
@@ -185,4 +186,15 @@ public class CatzSuperSubsystem extends SubsystemBase {
     return runOnce(() -> currentSuperstructureState = newState);
   }
 
+  public Command deployIntake() {
+    return runOnce(() -> intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND));
+  }
+
+  public Command setElevatorTargetPos() {
+    return runOnce(() -> elevator.setTargetPosition(ElevatorPosition.SCORE_AMP));
+  }
+
+  public Command moveTurretToHome() {
+    return runOnce(() -> turret.setTargetPosition(TurretPosition.HOME));
+  }
 }

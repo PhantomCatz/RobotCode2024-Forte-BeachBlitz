@@ -56,11 +56,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
     // General config
     config.CurrentLimits.SupplyCurrentLimit = 60.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.Feedback.SensorToMechanismRatio = FINAL_REDUCTION;
-    config.Feedback.FeedbackRotorOffset = INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV;
-
+    // config.Feedback.SensorToMechanismRatio = FINAL_REDUCTION;
     config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     // Controller config;
@@ -75,6 +73,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.MotionMagic.MotionMagicCruiseVelocity = motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
     config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
     config.MotionMagic.MotionMagicJerk           = motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    pivotTalon.setPosition(IntakePivotConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
+    System.out.println(pivotTalon.getPosition().getValue());
 
     // Apply configs
     pivotTalon.getConfigurator().apply(config, 1.0);
@@ -111,7 +112,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 tempCelsius)
             .isOK();
 
-    inputs.positionRads = Units.rotationsToRadians(position.getValueAsDouble());
+    inputs.positionRads = (Math.PI*(Units.rotationsToRadians(position.getValueAsDouble())))/180;
     inputs.velocityRps = velocity.getValueAsDouble() * 60.0;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();

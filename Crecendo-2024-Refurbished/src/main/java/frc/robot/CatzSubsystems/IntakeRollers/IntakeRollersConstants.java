@@ -12,7 +12,7 @@ public class IntakeRollersConstants {
     // motor ID assignment
     public static final int INTAKE_ROLLER_ID = 
         switch(CatzConstants.getRobotType()) {
-            case SN2 -> 21;
+            case SN2 -> 11;
             case SN1 -> 23;
             case SN_TEST -> 24;
         };

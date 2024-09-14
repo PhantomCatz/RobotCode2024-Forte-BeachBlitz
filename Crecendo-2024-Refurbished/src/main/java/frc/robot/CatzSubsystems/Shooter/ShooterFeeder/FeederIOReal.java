@@ -18,7 +18,7 @@ public class FeederIOReal implements FeederIO {
 
     public FeederIOReal() {
         // Feeder Neo hardware instantiation
-        feederNeo = new CANSparkMax(21, MotorType.kBrushless);
+        feederNeo = new CANSparkMax(23, MotorType.kBrushless);
         feederNeo.restoreFactoryDefaults();
         feederNeo.setSmartCurrentLimit(30);
         feederNeo.setIdleMode(IdleMode.kBrake);
