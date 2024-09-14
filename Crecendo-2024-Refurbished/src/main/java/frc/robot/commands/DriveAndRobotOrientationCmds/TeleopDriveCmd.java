@@ -2,8 +2,6 @@ package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CatzConstants;
@@ -15,13 +13,13 @@ import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstan
 
 public class TeleopDriveCmd extends Command {
   // Subsystem declaration
-  private CatzDrivetrain m_drivetrain;
+  private final CatzDrivetrain m_drivetrain;
 
-  // 
-  private Supplier<Double> m_headingPctOutput_X;
-  private Supplier<Double> m_headingPctOutput_Y;
-  private Supplier<Double> m_angVelocityPctOutput;
-  private Supplier<Boolean> m_orientation;
+  // Xbox controller buttons
+  private final Supplier<Double> m_headingPctOutput_X;
+  private final Supplier<Double> m_headingPctOutput_Y;
+  private final Supplier<Double> m_angVelocityPctOutput;
+  private final Supplier<Boolean> m_orientation;
 
   //drive variables
   private double m_headingAndVelocity_X;
@@ -85,7 +83,10 @@ public class TeleopDriveCmd extends Command {
     // Construct desired chassis speeds
     if (m_orientation.get()) {
         // Relative to robot
-        chassisSpeeds = new ChassisSpeeds(m_headingAndVelocity_X, m_headingAndVelocity_Y, turningVelocity);
+        chassisSpeeds = new ChassisSpeeds(m_headingAndVelocity_X, 
+                                          m_headingAndVelocity_Y, 
+                                          turningVelocity
+                            );
     } else {
         // Relative to field
         chassisSpeeds = ChassisSpeeds

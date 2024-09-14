@@ -1,4 +1,3 @@
-
 package frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain;
 
 import static frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.*;
@@ -15,11 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CatzConstants;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.ModuleIOInputsAutoLogged;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.ModuleIORealFoc;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants.ModuleConfig;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.CatzMathUtils;
-import frc.robot.Utilities.LoggedTunableNumber;
 import frc.robot.Utilities.CatzMathUtils.Conversions;
+import frc.robot.Utilities.MotorUtil.NeutralMode;
+import frc.robot.Utilities.LoggedTunableNumber;
 
 public class CatzSwerveModule {
 
@@ -33,10 +35,6 @@ public class CatzSwerveModule {
     // Global swerve module variables
     private SwerveModuleState m_swerveModuleState = new SwerveModuleState();
 
-    // FeedFoward definment
-    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(moduleGainsAndRatios.driveFFkS(),
-                                                                   moduleGainsAndRatios.driveFFkV(), 
-                                                                   0.0);
     // Alerts                                                                               
     private final Alert driveMotorDisconnected;
     private final Alert steerMotorDisconnected;
@@ -83,11 +81,6 @@ public class CatzSwerveModule {
         Logger.processInputs("Drive/M " + m_moduleName, inputs); 
 
         // Update ff and controllers
-        LoggedTunableNumber.ifChanged(
-            hashCode(),
-            () -> ff = new SimpleMotorFeedforward(drivekS.get(), drivekV.get(), 0),
-            drivekS,
-            drivekV);
         LoggedTunableNumber.ifChanged(
             hashCode(), () -> io.setDrivePID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
         LoggedTunableNumber.ifChanged(
