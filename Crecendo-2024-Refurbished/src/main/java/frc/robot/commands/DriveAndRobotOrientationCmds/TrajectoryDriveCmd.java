@@ -1,5 +1,7 @@
 package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
+import java.util.List;
+
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -17,8 +19,6 @@ import frc.robot.CatzConstants;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
-
-import java.util.List;
 
 public class TrajectoryDriveCmd extends Command {
 
@@ -80,7 +80,8 @@ public class TrajectoryDriveCmd extends Command {
                                 DriveConstants.
                                     swerveDriveKinematics.
                                         toChassisSpeeds(CatzRobotTracker.getInstance().getRobotSwerveModuleStates()),
-                                CatzRobotTracker.getInstance().getRobotRotation());
+                                CatzRobotTracker.getInstance().getRobotRotation()
+                                );
                                 
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_RATIO;
 
