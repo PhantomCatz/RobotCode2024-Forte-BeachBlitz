@@ -128,7 +128,9 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Drivetrain Power Setting methods
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public void setSteerPower(double pwr) {
         io.runSteerPercentOutput(pwr);
@@ -143,7 +145,9 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Module Util Methods
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public void setNeutralModeDrive(NeutralModeValue type) {
         io.setDriveNeutralModeIO(type);
@@ -164,7 +168,9 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Module getters
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public SwerveModuleState getModuleState() {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);

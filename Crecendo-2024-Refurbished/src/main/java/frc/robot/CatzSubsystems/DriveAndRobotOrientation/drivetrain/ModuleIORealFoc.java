@@ -54,7 +54,7 @@ public class ModuleIORealFoc implements ModuleIO {
   private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final PositionTorqueCurrentFOC positionControl = new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
-  private final PIDController steerFeedback = new PIDController(moduleGainsAndRatios.steerkP(), 0.0, moduleGainsAndRatios.steerkD()); //TODO tune and add constants to controler
+  private final PIDController steerFeedback = new PIDController(moduleGainsAndRatios.steerkP(), 0.0, moduleGainsAndRatios.steerkD());
 
   // Status Code Initialization
   private StatusCode initializationStatus = StatusCode.StatusCodeNotInitialized;
@@ -178,14 +178,13 @@ public class ModuleIORealFoc implements ModuleIO {
   @Override
   public void runSteerPositionSetpoint(double currentAngleRads, double targetAngleRads) {
       //calculate steer pwr
-      //negative steer power because of coordinate system
-    double percentOutput = -steerFeedback.calculate(currentAngleRads, targetAngleRads); 
+      //negative steer power because of coordinate system 
+    double percentOutput = -steerFeedback.calculate(currentAngleRads, targetAngleRads); // Right in terms of the coordinate system was not right in terms of the motor
     runSteerPercentOutput(percentOutput);
 
      Logger.recordOutput("Module " + m_config.driveID() + "/steer volts", percentOutput);
      Logger.recordOutput("Module " + m_config.driveID() + "/steer current Angle", currentAngleRads);
      Logger.recordOutput("Module " + m_config.driveID() + "/steer Target Angle", targetAngleRads);
-
   }
 
   @Override
