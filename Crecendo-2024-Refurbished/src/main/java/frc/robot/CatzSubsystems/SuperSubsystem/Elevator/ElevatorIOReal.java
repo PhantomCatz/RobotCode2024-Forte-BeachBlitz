@@ -24,10 +24,10 @@ public class ElevatorIOReal implements ElevatorIO {
   // Status Signals
   private final StatusSignal<Double> internalPositionRotations;
   private final StatusSignal<Double> velocityRps;
-  private final List<StatusSignal<Double>> appliedVoltage;
-  private final List<StatusSignal<Double>> supplyCurrent;
-  private final List<StatusSignal<Double>> torqueCurrent;
-  private final List<StatusSignal<Double>> tempCelsius;
+  private final StatusSignal<Double> appliedVoltage;
+  private final StatusSignal<Double> supplyCurrent;
+  private final StatusSignal<Double> torqueCurrent;
+  private final StatusSignal<Double> tempCelsius;
 
   // Control
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true).withUpdateFreqHz(0.0);
@@ -65,23 +65,19 @@ public class ElevatorIOReal implements ElevatorIO {
     velocityRps = leaderTalon.getVelocity();
 
     // Assign leader and Follower signals
-    appliedVoltage = List.of(leaderTalon.getMotorVoltage(), followerTalon.getMotorVoltage());
-    supplyCurrent = List.of(leaderTalon.getSupplyCurrent(), followerTalon.getSupplyCurrent());
-    torqueCurrent = List.of(leaderTalon.getTorqueCurrent(), followerTalon.getTorqueCurrent());
-    tempCelsius = List.of(leaderTalon.getDeviceTemp(), followerTalon.getDeviceTemp());
+    appliedVoltage = leaderTalon.getMotorVoltage();
+    supplyCurrent = leaderTalon.getSupplyCurrent();
+    torqueCurrent = leaderTalon.getTorqueCurrent();
+    tempCelsius = leaderTalon.getDeviceTemp();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100,
         internalPositionRotations,
         velocityRps,
-        appliedVoltage.get(0),
-        appliedVoltage.get(1),
-        supplyCurrent.get(0),
-        supplyCurrent.get(1),
-        torqueCurrent.get(0),
-        torqueCurrent.get(1),
-        tempCelsius.get(0),
-        tempCelsius.get(1));
+        appliedVoltage,
+        supplyCurrent,
+        torqueCurrent,
+        tempCelsius);
 
     leaderTalon.optimizeBusUtilization(0, 1.0);
   }
@@ -91,26 +87,19 @@ public class ElevatorIOReal implements ElevatorIO {
         BaseStatusSignal.refreshAll(
                 internalPositionRotations,
                 velocityRps,
-                appliedVoltage.get(0),
-                supplyCurrent.get(0),
-                torqueCurrent.get(0),
-                tempCelsius.get(0))
+                appliedVoltage,
+                supplyCurrent,
+                torqueCurrent,
+                tempCelsius)
             .isOK();
 
-    inputs.isFollowerMotorConnected =
-        BaseStatusSignal.refreshAll(
-                appliedVoltage.get(1),
-                supplyCurrent.get(1),
-                torqueCurrent.get(1),
-                tempCelsius.get(1))
-            .isOK();
 
     inputs.leaderPositionRotations = internalPositionRotations.getValueAsDouble();
     inputs.velocityRps        = velocityRps.getValue();
-    inputs.appliedVolts      = appliedVoltage.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.supplyCurrentAmps = supplyCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.torqueCurrentAmps = torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
-    inputs.tempCelcius       = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+    inputs.appliedVolts      = appliedVoltage.getValue();
+    inputs.supplyCurrentAmps = supplyCurrent.getValue();
+    inputs.torqueCurrentAmps = torqueCurrent.getValue();
+    inputs.tempCelcius       = tempCelsius.getValue();
   }
 
   //-----------------------------------------------------------------------------------------

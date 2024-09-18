@@ -37,7 +37,6 @@ public class CatzElevator {
 
   // Motor Console alerts
   private final Alert disconnectedAlertLeader   = new Alert("Elevator leader motor disconnected!", Alert.AlertType.WARNING);
-  private final Alert disconnectedAlertFollower = new Alert("Elevator follower motor disconnected!", Alert.AlertType.WARNING);
 
   @RequiredArgsConstructor
   public static enum ElevatorPosition {
@@ -88,7 +87,6 @@ public class CatzElevator {
 
     // Set alerts
     disconnectedAlertLeader.set(!inputs.isLeaderMotorConnected);
-    disconnectedAlertFollower.set(!inputs.isFollowerMotorConnected);
 
     // Update controllers when user specifies
     LoggedTunableNumber.ifChanged(

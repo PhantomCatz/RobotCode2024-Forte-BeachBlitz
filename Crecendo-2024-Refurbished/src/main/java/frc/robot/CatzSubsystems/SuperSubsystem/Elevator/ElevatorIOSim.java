@@ -53,10 +53,10 @@ public class ElevatorIOSim implements ElevatorIO{
 
     inputs.leaderPositionRotations = sim.getPositionMeters();
     inputs.velocityRps = sim.getVelocityMetersPerSecond();// TODO fix
-    inputs.appliedVolts = new double[] {appliedVoltage};
-    inputs.supplyCurrentAmps = new double[] {sim.getCurrentDrawAmps()};
-    inputs.torqueCurrentAmps = new double[] {sim.getCurrentDrawAmps()};
-    inputs.tempCelcius = new double[] {0.0};
+    inputs.appliedVolts = appliedVoltage;
+    inputs.supplyCurrentAmps = sim.getCurrentDrawAmps();
+    inputs.torqueCurrentAmps = sim.getCurrentDrawAmps();
+    inputs.tempCelcius = 0.0;
 
     // Reset input
     sim.setInputVoltage(0.0);
