@@ -78,7 +78,7 @@ public class CatzIntakePivot {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("intake/inputs", inputs);
+    Logger.processInputs("inputs/intakePivot", inputs);
 
 
     // Run Setpoint Control

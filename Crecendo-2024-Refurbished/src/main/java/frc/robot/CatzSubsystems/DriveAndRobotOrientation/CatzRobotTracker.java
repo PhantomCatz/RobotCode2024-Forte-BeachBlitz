@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
 import frc.robot.FieldConstants;
+import frc.robot.Robot;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzSwerveModule;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
@@ -68,6 +69,8 @@ public class CatzRobotTracker {
 
   private Twist2d robotVelocity;
   private Twist2d trajectoryVelocity;
+
+  private Pose2d trajectorySetpointPose;
 
   private boolean hasTarget;
 
@@ -225,6 +228,10 @@ public class CatzRobotTracker {
     this.trajectoryVelocity = robotVelocity;
   }
 
+  public void addTrajectorySetpointData(Pose2d targetPose) {
+    this.trajectorySetpointPose = targetPose;
+  }
+
 
   /**
    * Applies latency compensation to a vision observation.
@@ -280,6 +287,11 @@ public class CatzRobotTracker {
   @AutoLogOutput
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  @AutoLogOutput
+  public Pose2d getChassisSetpointPose() {
+    return trajectorySetpointPose;
   }
 
   public Rotation2d getRobotRotation() {

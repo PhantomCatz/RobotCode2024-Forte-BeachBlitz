@@ -78,7 +78,7 @@ public class CatzSwerveModule {
     public void periodic() {
         // Process and Log Module Inputs
         io.updateInputs(inputs);
-        Logger.processInputs("Drive/M " + m_moduleName, inputs); 
+        Logger.processInputs("inputs/Drive/M " + m_moduleName, inputs); 
 
         // Update ff and controllers
         LoggedTunableNumber.ifChanged(
@@ -169,6 +169,7 @@ public class CatzSwerveModule {
     public SwerveModuleState getModuleState() {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);
         
+         Logger.recordOutput("Module " + m_moduleName + "/velocityMPS", velocityMPS);
         return new SwerveModuleState(velocityMPS, getCurrentRotation());
     }
 

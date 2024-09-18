@@ -40,7 +40,7 @@ public class CatzVision extends SubsystemBase {
         for (int i = 0; i < inputs.length; i++) {
             // update and process new inputs[cameraNum] for camera
             cameras[i].updateInputs(inputs[i]);
-            Logger.processInputs("Vsn/" + cameras[i].getName() + "/Inputs", inputs[i]);
+            Logger.processInputs("inputs/Vision/" + cameras[i].getName() + "/Inputs", inputs[i]);
            
             // Check when to process Vision Info
             if(cameras[i].getName().equals("limelight-ramen")) { 

@@ -76,7 +76,7 @@ public class CatzShooterTurret {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Turret/", inputs);
+    Logger.processInputs("inputs/Turret", inputs);
 
     if(DriverStation.isDisabled()) {
       io.runPercentOutput(0.0);

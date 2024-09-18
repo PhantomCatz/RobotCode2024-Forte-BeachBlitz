@@ -15,7 +15,7 @@ import frc.robot.Utilities.MotorUtil.MotionMagicParameters;
 public class ElevatorConstants {
 
     // Subsystem safety disable
-    public static final boolean isElevatorDisabled = false;
+    public static final boolean isElevatorDisabled = true;
 
     // Gearbox definitions
     public static final double MAXPLANETARY_GEAR_RATIO   = 4.0 * 4.0;
@@ -50,7 +50,7 @@ public class ElevatorConstants {
     // Initial PIDF and motion magic assignment
     public static final Gains gains =
         switch (CatzConstants.getRobotType()) {
-            case SN2 -> new Gains(90.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);//TODO fix gains
+            case SN2 -> new Gains(90.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0);//TODO fix gains
             case SN1 -> new Gains(75.0, 0.0, 2.5, 0.0, 0.0, 0.0, 0.0);
             case SN_TEST -> new Gains(7000.0, 0.0, 250.0, 8.4, 0.0, 0.0, 22.9);
         };

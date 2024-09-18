@@ -69,7 +69,7 @@ public class CatzIntakeRollers extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Intake/IntakeRollers/inputs", inputs);
+    Logger.processInputs("inputs/IntakeRollers", inputs);
   }
 
 

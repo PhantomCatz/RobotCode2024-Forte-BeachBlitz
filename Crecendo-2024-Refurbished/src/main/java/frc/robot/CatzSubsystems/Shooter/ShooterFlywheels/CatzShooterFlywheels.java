@@ -107,7 +107,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Flywheels", inputs);
+    Logger.processInputs("inputs/Flywheels", inputs);
 
     // Set alerts
     disconnectedAlertLT.set(!inputs.isLeftMotorConnected);

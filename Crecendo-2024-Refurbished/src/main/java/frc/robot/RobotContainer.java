@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.google.flatbuffers.Constants;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -79,6 +80,10 @@ public class RobotContainer {
 
 
   public RobotContainer() {
+
+    NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
+    NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(this));
+
     // Drive And Aux Command Mapping
     configureBindings();
 

@@ -64,6 +64,7 @@ public class TrajectoryDriveCmd extends Command {
 
     @Override
     public void initialize() {
+
         // Reset and begin timer
         timer.reset();
         timer.start();
@@ -115,6 +116,8 @@ public class TrajectoryDriveCmd extends Command {
 
             //send to drivetrain
             m_driveTrain.drive(adjustedSpeeds, true);
+            CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
+
 
         }else{
             m_driveTrain.stopDriving();

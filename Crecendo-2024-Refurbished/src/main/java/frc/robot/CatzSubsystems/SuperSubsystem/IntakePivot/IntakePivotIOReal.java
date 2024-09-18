@@ -4,14 +4,9 @@
 
 package frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot;
 
-import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.*;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -20,11 +15,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
+import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.PIVOT_MTR_ID;
+import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.gains;
+import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.motionMagicParameters;
 
 /** Add your docs here. */
 public class IntakePivotIOReal implements IntakePivotIO {
@@ -58,7 +54,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    // config.Feedback.SensorToMechanismRatio = FINAL_REDUCTION;
+    //config.Feedback.SensorToMechanismRatio = FINAL_REDUCTION;
     config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     // Controller config;
@@ -112,7 +108,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 tempCelsius)
             .isOK();
 
-    inputs.positionRads = (Math.PI*(Units.rotationsToRadians(position.getValueAsDouble())))/180;
+    inputs.positionRads = (Units.rotationsToRadians(position.getValueAsDouble()));
     inputs.velocityRps = velocity.getValueAsDouble() * 60.0;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();

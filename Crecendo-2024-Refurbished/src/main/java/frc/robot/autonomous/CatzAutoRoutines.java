@@ -2,6 +2,7 @@ package frc.robot.Autonomous;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -36,12 +37,16 @@ public class CatzAutoRoutines {
         //-------------------------------------------------------------------------------------------------------------------*/
         autoPathChooser.addOption("Test Auto", testAuto());
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
+
+
+        System.out.println("registered");
+        
     }
 
     private PathPlannerPath US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
     private PathPlannerPath US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
     private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
-    private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("DriveStraightMid");
+    private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("test");
 
     private Command testAuto() {
         preloadTrajectoryClass(US_W1_3_1);
@@ -88,6 +93,6 @@ public class CatzAutoRoutines {
 
     /** Getter for final autonomous routine */
     public Command getCommand() { 
-        return autoPathChooser.get();
+        return testAuto();
     }
 }
