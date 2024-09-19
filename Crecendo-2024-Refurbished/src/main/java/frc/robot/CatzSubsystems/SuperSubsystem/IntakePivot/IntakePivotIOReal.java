@@ -18,6 +18,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.IntakePivotPosition;
+
 import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.PIVOT_MTR_ID;
 import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.gains;
 import static frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.IntakePivotConstants.motionMagicParameters;
@@ -54,7 +56,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    //config.Feedback.SensorToMechanismRatio = FINAL_REDUCTION;
+    config.Feedback.SensorToMechanismRatio = 35*4/2/2.3; // TODO
     config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     // Controller config;
@@ -65,14 +67,11 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.Slot0.kV = gains.kV();
     config.Slot0.kA = gains.kA();
     
-
     config.MotionMagic.MotionMagicCruiseVelocity = motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
     config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
     config.MotionMagic.MotionMagicJerk           = motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    pivotTalon.setPosition(IntakePivotConstants.INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV);
-    System.out.println(pivotTalon.getPosition().getValue());
-
+    pivotTalon.setPosition(164.0/360); //TODO
     // Apply configs
     pivotTalon.getConfigurator().apply(config, 1.0);
 
@@ -108,7 +107,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 tempCelsius)
             .isOK();
 
-    inputs.positionRads = (Units.rotationsToRadians(position.getValueAsDouble()));
+    inputs.positionRads = Units.rotationsToRadians(position.getValueAsDouble());
     inputs.velocityRps = velocity.getValueAsDouble() * 60.0;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();

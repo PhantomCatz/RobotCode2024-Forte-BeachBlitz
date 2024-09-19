@@ -46,7 +46,7 @@ public class CatzAutoRoutines {
     private PathPlannerPath US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
     private PathPlannerPath US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
     private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
-    private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("test");
+    private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("Test");
 
     private Command testAuto() {
         preloadTrajectoryClass(US_W1_3_1);

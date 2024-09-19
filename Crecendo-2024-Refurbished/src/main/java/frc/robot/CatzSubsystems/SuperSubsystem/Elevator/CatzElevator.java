@@ -109,24 +109,26 @@ public class CatzElevator {
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
     } else {
-      // Run Softlimit check
-      if(getElevatorPositionRotations() > MAX_ROTATIONS) {
-        io.stop();
-      } else {
-        // Run state check
-        if(m_targetPosition == ElevatorPosition.STOW) {
-          // Run Crossbar hit check
-          if(getElevatorPositionRotations() < 5.0) {
-            io.stop();
-          } else {
-            // Run Setpoint Motion Magic    
-            io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
-          }
-        } else {
-          // Run Setpoint Motion Magic    
-          io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
-        }
-      }
+      System.out.println((m_targetPosition.getTargetPositionRotations()));
+      io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
+      // // Run Softlimit check
+      // if(getElevatorPositionRotations() > MAX_ROTATIONS) {
+      //   io.stop();
+      // } else {
+      //   // Run state check
+      //   if(m_targetPosition == ElevatorPosition.STOW) {
+      //     // Run Crossbar hit check
+      //     if(getElevatorPositionRotations() < 5.0) {
+      //       io.stop();
+      //     } else {
+      //       // Run Setpoint Motion Magic    
+      //       io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
+      //     }
+      //   } else {
+      //     // Run Setpoint Motion Magic    
+      //     io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
+      //   }
+      // }
     }
 
   }

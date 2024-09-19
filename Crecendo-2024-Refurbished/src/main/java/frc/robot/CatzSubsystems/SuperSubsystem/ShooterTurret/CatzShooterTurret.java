@@ -82,6 +82,8 @@ public class CatzShooterTurret {
       io.runPercentOutput(0.0);
     } else {
       io.runSetpointDegrees(inputs.positionDegrees, currentMotionType.getTargetMotionPosition());
+
+      System.out.println(currentMotionType.getTargetMotionPosition());
     }
 
   }

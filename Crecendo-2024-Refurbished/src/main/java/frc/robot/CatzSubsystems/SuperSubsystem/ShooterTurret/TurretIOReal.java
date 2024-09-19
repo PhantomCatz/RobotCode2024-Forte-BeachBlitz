@@ -17,7 +17,7 @@ public class TurretIOReal implements TurretIO{
     private final CANSparkMax turretNeo;
 
     //Control
-    private final PIDController turretFeedback = new PIDController(0.0, 0.0, 0.0, CatzConstants.LOOP_TIME);
+    private final PIDController turretFeedback = new PIDController(1, 0.0, 0.0, CatzConstants.LOOP_TIME);
 
     public TurretIOReal() {
         // Turret Neo hardware insantiation

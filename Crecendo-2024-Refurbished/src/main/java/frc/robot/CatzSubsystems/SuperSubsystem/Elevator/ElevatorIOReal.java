@@ -19,7 +19,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
   // Hardware
   private final TalonFX leaderTalon;
-  private final TalonFX followerTalon;
 
   // Status Signals
   private final StatusSignal<Double> internalPositionRotations;
@@ -37,8 +36,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
   public ElevatorIOReal() {
     leaderTalon = new TalonFX(leaderID);
-    followerTalon = new TalonFX(ID_FOLLOWER);
-    followerTalon.setControl(new Follower(leaderID, true));
 
     // General Talon Config
     config.TorqueCurrent.PeakForwardTorqueCurrent = 80.0;
@@ -53,6 +50,10 @@ public class ElevatorIOReal implements ElevatorIO {
     config.Slot0.kP = gains.kP();
     config.Slot0.kI = gains.kI();
     config.Slot0.kD = gains.kD();
+    config.Slot0.kP = gains.kA();
+    config.Slot0.kI = gains.kV();
+    config.Slot0.kD = gains.kG();
+
     config.MotionMagic.MotionMagicCruiseVelocity = motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
     config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
     config.MotionMagic.MotionMagicJerk           = motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
@@ -108,10 +109,11 @@ public class ElevatorIOReal implements ElevatorIO {
   //
   //-----------------------------------------------------------------------------------------
   @Override
-  public void runSetpoint(double setpointRads, double feedforward) {
+  public void runSetpoint(double setpointRotations, double feedforward) {
+    System.out.println(setpointRotations);
     leaderTalon.setControl(
         positionControl
-            .withPosition(Units.radiansToRotations(setpointRads))
+            .withPosition(setpointRotations)
             .withFeedForward(feedforward)
     );
   }
@@ -139,7 +141,6 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void setBrakeMode(boolean enabled) {
     leaderTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-    followerTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);
 
   }
 
