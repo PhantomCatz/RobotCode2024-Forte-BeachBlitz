@@ -1,6 +1,7 @@
 package frc.robot.CatzSubsystems.DriveAndRobotOrientation.vision;
 
 import org.littletonrobotics.junction.Logger;
+import org.opencv.dnn.Net;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,12 +35,17 @@ public class VisionIOLimeLight implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
+
+        LimelightHelpers.setLEDMode_PipelineControl(name);
+        LimelightHelpers.setLEDMode_ForceBlink(name);
+        
+        inputs.ty = LimelightHelpers.getTY(name); //vertical offset from crosshair to target in degrees
+        inputs.tx = LimelightHelpers.getTX(name); //horizontal offset from crosshair to target
+        inputs.tv = LimelightHelpers.getTV(name); //whether the limelight has any vaild targets
+        inputs.ta = LimelightHelpers.getTA(name); //target area of the limelight from 0%-100%...how much does the apirltage take up on the frame
+        
         //load up raw apriltag values for distance calculations
         LimelightResults llresults = LimelightHelpers.getLatestResults(name);
-        inputs.ty = NetworkTableInstance.getDefault().getTable(name).getEntry("ty").getDouble(0); //vertical offset from crosshair to target in degrees
-        inputs.tx = NetworkTableInstance.getDefault().getTable(name).getEntry("tx").getDouble(0); //horizontal offset from crosshair to target
-        inputs.tv = NetworkTableInstance.getDefault().getTable(name).getEntry("tv").getDouble(0); //whether the limelight has any vaild targets
-        inputs.ta = NetworkTableInstance.getDefault().getTable(name).getEntry("ta").getDouble(0); //target area of the limelight from 0%-100%...how much does the apirltage take up on the frame
         inputs.primaryApriltagID = NetworkTableInstance.getDefault().getTable(name).getEntry("tid").getDouble(0);
 
         // collects pose information based off network tables and orients itself depending on alliance side

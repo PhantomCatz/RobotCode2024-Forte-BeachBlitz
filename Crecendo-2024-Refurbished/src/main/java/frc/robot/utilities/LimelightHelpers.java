@@ -713,8 +713,8 @@ public class LimelightHelpers {
 
     }
 
-    public static boolean getTV(String limelightName) {
-        return 1.0 == getLimelightNTDouble(limelightName, "tv");
+    public static double getTV(String limelightName) {
+        return getLimelightNTDouble(limelightName, "tv");
     }
 
     /////
