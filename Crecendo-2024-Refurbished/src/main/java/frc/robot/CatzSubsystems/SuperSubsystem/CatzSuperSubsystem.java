@@ -186,8 +186,8 @@ public class CatzSuperSubsystem extends SubsystemBase {
     return runOnce(() -> currentSuperstructureState = newState);
   }
 
-  public Command deployIntake() {
-    return runOnce(() -> intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND));
+  public Command deployIntake(IntakePivotPosition state) {
+    return runOnce(() -> intakePivot.setIntakePivotState(state));
   }
 
   public Command setElevatorTargetPos(ElevatorPosition position) {

@@ -35,6 +35,7 @@ import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem.Superstructure
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator;
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator.ElevatorPosition;
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
+import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.IntakePivotPosition;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
 import frc.robot.Commands.AutomatedSequenceCmds;
@@ -128,9 +129,9 @@ public class RobotContainer {
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
     xboxAux.y().onTrue(superstructure.moveTurretToHome());
 
-    xboxAux.a().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.SCORE_AMP));
+    xboxAux.a().onTrue(superstructure.deployIntake(IntakePivotPosition.STOW));
     //xboxAux.a().onTrue(rollers.setRollersIn());
-    xboxAux.x().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.STOW));
+    xboxAux.x().onTrue(superstructure.deployIntake(IntakePivotPosition.PICKUP_GROUND));
     xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
 
 

@@ -56,7 +56,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    config.Feedback.SensorToMechanismRatio = 35*4/2/2.3; // TODO
+    // Gear Ratio: 17 1/3
+
+    // config.Feedback.SensorToMechanismRatio = 35*4/2/2.3; // TODO
     config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     // Controller config;
@@ -71,7 +73,10 @@ public class IntakePivotIOReal implements IntakePivotIO {
     config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
     config.MotionMagic.MotionMagicJerk           = motionMagicParameters.mmJerk(); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    pivotTalon.setPosition(164.0/360); //TODO
+    // pivotTalon.setPosition(164.0/360); //TODO
+    pivotTalon.setPosition((164.0/360.0)*IntakePivotConstants.FINAL_REDUCTION); 
+
+
     // Apply configs
     pivotTalon.getConfigurator().apply(config, 1.0);
 
@@ -82,7 +87,6 @@ public class IntakePivotIOReal implements IntakePivotIO {
     supplyCurrent = pivotTalon.getSupplyCurrent();
     torqueCurrent = pivotTalon.getTorqueCurrent();
     tempCelsius = pivotTalon.getDeviceTemp();
-
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100.0,
@@ -107,7 +111,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 tempCelsius)
             .isOK();
 
-    inputs.positionRads = Units.rotationsToRadians(position.getValueAsDouble());
+    inputs.positionRads = Units.rotationsToRadians((position.getValueAsDouble()/IntakePivotConstants.FINAL_REDUCTION));
     inputs.velocityRps = velocity.getValueAsDouble() * 60.0;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
@@ -119,7 +123,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
   public void runSetpoint(double setpointDegrees) {
     pivotTalon.setControl(
         positionControl
-            .withPosition(Units.degreesToRotations(setpointDegrees))
+            .withPosition(Units.degreesToRotations(setpointDegrees)*IntakePivotConstants.FINAL_REDUCTION)
     ); 
   }
 

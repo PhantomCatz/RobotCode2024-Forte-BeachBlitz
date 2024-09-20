@@ -47,7 +47,7 @@ public class ElevatorConstants {
         switch (CatzConstants.getRobotType()) {
             case SN2 -> new Gains(9.0, 0.0, 0.0, 10.0, 0.1, 0.0, 0.0);//TODO fix gains
             case SN1 -> new Gains(75.0, 0.0, 2.5, 0.0, 0.0, 0.0, 0.0);
-            case SN_TEST -> new Gains(7000.0, 0.0, 250.0, 8.4, 0.0, 0.0, 22.9);
+            case SN_TEST -> new Gains(7000.0, 0.0, 250.0, 8.4, 0.2, 0.2, 22.9);
         };
     public static final MotionMagicParameters motionMagicParameters =
         switch (CatzConstants.getRobotType()) {
