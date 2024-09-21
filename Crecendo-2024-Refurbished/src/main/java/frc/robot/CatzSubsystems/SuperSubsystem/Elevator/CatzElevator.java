@@ -109,7 +109,7 @@ public class CatzElevator {
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
     } else {
-      System.out.println((m_targetPosition.getTargetPositionRotations()));
+      // System.out.println((m_targetPosition.getTargetPositionRotations()));
       io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
       // // Run Softlimit check
       // if(getElevatorPositionRotations() > MAX_ROTATIONS) {

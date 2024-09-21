@@ -3,6 +3,9 @@ package frc.robot.Autonomous.commands;
 import java.rmi.server.ExportException;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.CatzConstants;
+import frc.robot.FieldConstants;
+import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 
 public class WaitUntilPassX extends Command{
@@ -19,7 +22,11 @@ public class WaitUntilPassX extends Command{
     }
 
     @Override
-    public void initialize(){}
+    public void initialize(){
+        if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
+            xCoord = FieldConstants.FIELD_LENGTH_MTRS-xCoord;
+        }
+    }
 
     @Override
     public void execute(){
@@ -32,6 +39,7 @@ public class WaitUntilPassX extends Command{
             cmd.execute();
             if(cmd.isFinished()){
                 done = true;
+                cmd.end(false);
             }
         }
     }

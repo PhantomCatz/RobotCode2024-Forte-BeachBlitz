@@ -225,6 +225,8 @@ public class Robot extends LoggedRobot {
         System.exit(0);
       }
     }
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   @Override
@@ -325,7 +327,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     // Run Driver Station Chooser
     if(DriverStation.isDSAttached()) {
-      alliance = DriverStation.getAlliance();
+      alliance = DriverStation.getAlliance(); //TODO This thing is broken
       CatzConstants.choosenAllianceColor =
           alliance
               .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)

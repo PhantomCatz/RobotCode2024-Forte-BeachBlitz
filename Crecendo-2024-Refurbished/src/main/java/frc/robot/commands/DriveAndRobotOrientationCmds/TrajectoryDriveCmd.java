@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CatzConstants;
+import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
@@ -69,11 +70,12 @@ public class TrajectoryDriveCmd extends Command {
         timer.reset();
         timer.start();
 
-
-        // Flip auton path to mirrored red side if we choose red alliance 
-        if(CatzConstants.choosenAllianceColor == CatzConstants.AllianceColor.Red) {
+        if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
             path = path.flipPath();
+            System.out.println("pathflipped");
         }
+        System.out.println("startpose: " + path.getPreviewStartingHolonomicPose().getTranslation());
+        CatzRobotTracker.getInstance().resetPosition(path.getPreviewStartingHolonomicPose());
 
         // Create pathplanner trajectory
         this.trajectory = new PathPlannerTrajectory(
@@ -95,7 +97,7 @@ public class TrajectoryDriveCmd extends Command {
             double currentTime = this.timer.get();
     
             // Getters from pathplanner and current robot pose
-            PathPlannerTrajectory.State goal = trajectory.sample(currentTime);
+            PathPlannerTrajectory.State goal = trajectory.sample(Math.min(currentTime, trajectory.getTotalTimeSeconds()));
             Rotation2d targetOrientation     = goal.targetHolonomicRotation;
             Pose2d currentPose               = CatzRobotTracker.getInstance().getEstimatedPose();
                 
@@ -160,13 +162,15 @@ public class TrajectoryDriveCmd extends Command {
         double xError =        Math.abs(desiredPosX - currentPosX);
         double yError =        Math.abs(desiredPosY - currentPosY);
         double rotationError = Math.abs(desiredRotation - currentRotation);
+        if (rotationError > 180){
+            rotationError = 360-rotationError;
+        }
 
         atTarget = (xError < ALLOWABLE_POSE_ERROR && 
                     yError < ALLOWABLE_POSE_ERROR && 
                     rotationError < ALLOWABLE_ROTATION_ERROR);
 
         return atTarget || timer.hasElapsed(pathTimeOut);
-
     } 
 
 }

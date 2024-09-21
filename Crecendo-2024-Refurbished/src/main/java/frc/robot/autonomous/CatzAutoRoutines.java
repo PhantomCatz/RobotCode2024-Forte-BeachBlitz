@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
+import frc.robot.Autonomous.commands.WaitUntilPassX;
+import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
@@ -36,6 +39,7 @@ public class CatzAutoRoutines {
         //   AUTON Priority LIST 
         //-------------------------------------------------------------------------------------------------------------------*/
         autoPathChooser.addOption("Test Auto", testAuto());
+        autoPathChooser.addOption("StraightLine", testAuto2());
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
 
 
@@ -47,14 +51,23 @@ public class CatzAutoRoutines {
     private PathPlannerPath US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
     private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
     private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("Test");
+    private PathPlannerPath straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
     private Command testAuto() {
         preloadTrajectoryClass(US_W1_3_1);
-        setAutonStartPose(testPath);
 
         return new SequentialCommandGroup(
-            
             new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
+        );
+    }
+
+    private Command testAuto2(){
+        preloadTrajectoryClass(straightLine);
+        System.out.println("testauto2");
+
+        return new ParallelCommandGroup(
+            new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain()),
+            new WaitUntilPassX(2, new PrintCommand("heheheha"))
         );
     }
 
@@ -83,16 +96,8 @@ public class CatzAutoRoutines {
         }
     }
 
-    private void setAutonStartPose(PathPlannerPath startPath){
-        PathPlannerPath path = startPath;
-        if(CatzConstants.choosenAllianceColor == CatzConstants.AllianceColor.Red) {
-            path = startPath.flipPath();
-        }
-        CatzRobotTracker.getInstance().resetPosition(path.getPreviewStartingHolonomicPose());
-    }
-
     /** Getter for final autonomous routine */
     public Command getCommand() { 
-        return testAuto();
+        return autoPathChooser.get();
     }
 }

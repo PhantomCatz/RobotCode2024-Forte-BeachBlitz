@@ -126,7 +126,7 @@ public class NoteVisualizer {
                 () -> {
                   hasNote = false;
                   final Pose3d startPose = getIndexerPose3d();
-                  System.out.println(getIndexerPose3d().getZ());
+                  // System.out.println(getIndexerPose3d().getZ());
                   final Pose3d endPose =
                       startPose.transformBy(
                           new Transform3d(2, 0, -1 + startPose.getZ(), new Rotation3d()));
