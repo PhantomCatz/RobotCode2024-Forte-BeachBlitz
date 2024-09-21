@@ -46,12 +46,11 @@ public class ModuleIOSim implements ModuleIO {
     steerSim.update(CatzConstants.LOOP_TIME);
 
     inputs.driveVelocityRPS =   driveSim.getAngularVelocityRPM()/60; //Convert to RPS
-    inputs.drivePositionUnits = driveSim.getAngularPositionRad()/(2*Math.PI);
+    inputs.drivePositionUnits = driveSim.getAngularPositionRad()/(2*Math.PI)*10; // Fudged number to get better result
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.driveSupplyCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
 
-    inputs.steerAbsolutePosition =
-        new Rotation2d(steerSim.getAngularPositionRad()).plus(steerAbsoluteInitPosition);
+    inputs.steerAbsolutePosition = new Rotation2d(steerSim.getAngularPositionRad()).plus(steerAbsoluteInitPosition);
     inputs.steerPosition = Rotation2d.fromRadians(steerSim.getAngularPositionRad());
     inputs.steerVelocityRadsPerSec = steerSim.getAngularVelocityRadPerSec();
     inputs.steerSupplyCurrentAmps = steerAppliedVolts;

@@ -12,7 +12,7 @@ public class FlywheelConstants {
     // motor id and misc qualities
     public static final FlywheelConfig flywheelConfig =
         switch (CatzConstants.getRobotType()) {
-            case SN2 ->     new FlywheelConfig(20, 21, (1.0 / 2.0), 9000.0);
+            case SN2 ->     new FlywheelConfig(21, 20, (1.0 / 2.0), 9000.0);
             case SN1 ->     new FlywheelConfig(5, 4, (1.0 / 2.0), 6000.0);
             case SN_TEST -> new FlywheelConfig(0, 0, (1.0 / 2.0), 9000.0);
         };

@@ -78,7 +78,7 @@ public class CatzSwerveModule {
     public void periodic() {
         // Process and Log Module Inputs
         io.updateInputs(inputs);
-        Logger.processInputs("Drive/M " + m_moduleName, inputs); 
+        Logger.processInputs("inputs/Drive/M " + m_moduleName, inputs); 
 
         // Update ff and controllers
         LoggedTunableNumber.ifChanged(
@@ -128,7 +128,9 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Drivetrain Power Setting methods
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public void setSteerPower(double pwr) {
         io.runSteerPercentOutput(pwr);
@@ -143,7 +145,9 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Module Util Methods
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public void setNeutralModeDrive(NeutralModeValue type) {
         io.setDriveNeutralModeIO(type);
@@ -164,11 +168,14 @@ public class CatzSwerveModule {
     }
 
     //--------------------------------------------------------------------------------------------------------------------
+    //
     //  Module getters
+    //
     //--------------------------------------------------------------------------------------------------------------------
     public SwerveModuleState getModuleState() {
         double velocityMPS = CatzMathUtils.Conversions.RPSToMPS(inputs.driveVelocityRPS);
         
+         Logger.recordOutput("Module " + m_moduleName + "/velocityMPS", velocityMPS);
         return new SwerveModuleState(velocityMPS, getCurrentRotation());
     }
 

@@ -27,8 +27,8 @@ public class IntakePivotConstants {
     private static final double INTAKE_PIVOT_MTR_REV_PER_DEG = FINAL_REDUCTION / 360.0;
     private static final double INTAKE_PIVOT_MTR_POS_OFFSET_IN_DEG = 164.09;
 
-    public static final double INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV = INTAKE_PIVOT_MTR_POS_OFFSET_IN_DEG
-                                                                        * INTAKE_PIVOT_MTR_REV_PER_DEG;
+    public static final double INTAKE_PIVOT_MTR_POS_OFFSET_IN_REV = 0.0;// INTAKE_PIVOT_MTR_POS_OFFSET_IN_DEG
+                                                                       // * INTAKE_PIVOT_MTR_REV_PER_DEG;
     
     // Motor Id and misc qualities
     public final static int PIVOT_MTR_ID =

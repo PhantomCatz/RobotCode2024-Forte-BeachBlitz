@@ -15,10 +15,10 @@ public interface ElevatorIO {
 
         public double leaderPositionRotations = 0.0;
         public double velocityRps = 0.0;
-        public double[] appliedVolts = new double[] {};
-        public double[] supplyCurrentAmps = new double[] {};
-        public double[] torqueCurrentAmps = new double[] {};
-        public double[] tempCelcius = new double[] {};
+        public double appliedVolts;
+        public double supplyCurrentAmps;
+        public double torqueCurrentAmps;
+        public double tempCelcius;
     }
 
     public default void updateInputs(ElevatorIOInputs inputs) {}

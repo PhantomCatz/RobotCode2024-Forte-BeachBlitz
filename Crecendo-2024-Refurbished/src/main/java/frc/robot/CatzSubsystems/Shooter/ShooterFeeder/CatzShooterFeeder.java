@@ -70,8 +70,8 @@ public class CatzShooterFeeder extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("ShooterFeeder/inputs ", inputs); 
-
+    Logger.processInputs("inputs/ShooterFeeder ", inputs); 
+    
     // Feeder State Change Init
     if(currentShooterFeederState != previousShooterFeederState) {
       switch(currentShooterFeederState) {
@@ -212,7 +212,6 @@ public class CatzShooterFeeder extends SubsystemBase {
                     () -> setShooterFeederState(ShooterFeederState.DISABLED))
         .withName("Feeder Shoot");
   }
-
 
 
 }

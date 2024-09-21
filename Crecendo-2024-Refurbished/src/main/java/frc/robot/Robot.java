@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.CatzConstants.AllianceColor;
+import frc.robot.CatzConstants.RobotHardwareMode;
+import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
 import frc.robot.Utilities.Alert;
@@ -198,6 +200,31 @@ public class Robot extends LoggedRobot {
     System.out.println("Enviroment: " + CatzConstants.robotSenario.toString());
     System.out.println("Mode: " + CatzConstants.hardwareMode.toString());
     System.out.println("Type: " + CatzConstants.getRobotType().toString());
+
+
+    // Run hardware mode check
+    if(Robot.isReal()) { //REAL ROBOT
+      if(CatzConstants.hardwareMode == RobotHardwareMode.SIM) {
+        System.out.println("Wrong Robot Constant selection, Check CatzConstants hardwareMode");
+        System.exit(0);
+      }
+
+      if(CatzConstants.getRobotType() == RobotID.SN_TEST) {
+        System.out.println("Wrong Robot ID selection, Check CatzConstants robotID");
+        System.exit(0);
+      }
+
+    } else { //SIM ROBOT
+      if(CatzConstants.hardwareMode == RobotHardwareMode.REAL) {
+        System.out.println("Wrong Robot Constant selection, Check CatzConstants hardwareMode");
+        System.exit(0);
+      }
+
+      if(CatzConstants.getRobotType() != RobotID.SN_TEST) {
+        System.out.println("Wrong Robot ID selection, Check CatzConstants robotID");
+        System.exit(0);
+      }
+    }
   }
 
   @Override

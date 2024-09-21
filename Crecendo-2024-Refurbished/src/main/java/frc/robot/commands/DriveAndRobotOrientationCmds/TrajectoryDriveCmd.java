@@ -30,7 +30,7 @@ public class TrajectoryDriveCmd extends Command {
     private PathPlannerTrajectory trajectory;
     
     private final Timer timer = new Timer();
-    private final double TIMEOUT_RATIO = 5;
+    private final double TIMEOUT_SCALAR = 5;
     private PathPlannerPath path;
 
     /**
@@ -64,6 +64,7 @@ public class TrajectoryDriveCmd extends Command {
 
     @Override
     public void initialize() {
+
         // Reset and begin timer
         timer.reset();
         timer.start();
@@ -83,7 +84,7 @@ public class TrajectoryDriveCmd extends Command {
                                 CatzRobotTracker.getInstance().getRobotRotation()
                                 );
                                 
-        pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_RATIO;
+        pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_SCALAR;
 
     }
 
@@ -103,11 +104,10 @@ public class TrajectoryDriveCmd extends Command {
             * Only takes in the current robot position 
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
-    
             Trajectory.State state = new Trajectory.State(currentTime, 
                                                           0.0,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
                                                           0.0, 
-                                                          new Pose2d(goal.positionMeters, new Rotation2d()),/*new Pose2d(currentPose.getTranslation().plus(displacement), new Rotation2d()*/
+                                                          new Pose2d(goal.positionMeters, new Rotation2d()),
                                                           0.0);
     
             //construct chassisspeeds
@@ -115,6 +115,8 @@ public class TrajectoryDriveCmd extends Command {
 
             //send to drivetrain
             m_driveTrain.drive(adjustedSpeeds, true);
+            CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
+
 
         }else{
             m_driveTrain.stopDriving();

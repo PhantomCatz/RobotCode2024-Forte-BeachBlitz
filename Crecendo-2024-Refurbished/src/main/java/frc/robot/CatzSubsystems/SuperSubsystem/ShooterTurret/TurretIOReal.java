@@ -17,7 +17,7 @@ public class TurretIOReal implements TurretIO{
     private final CANSparkMax turretNeo;
 
     //Control
-    private final PIDController turretFeedback = new PIDController(0.0, 0.0, 0.0, CatzConstants.LOOP_TIME);
+    private final PIDController turretFeedback = new PIDController(1, 0.0, 0.0, CatzConstants.LOOP_TIME);
 
     public TurretIOReal() {
         // Turret Neo hardware insantiation
@@ -26,7 +26,7 @@ public class TurretIOReal implements TurretIO{
         turretNeo.setSmartCurrentLimit(30);
         turretNeo.setIdleMode(IdleMode.kBrake);
         turretNeo.enableVoltageCompensation(12.0);
-        turretNeo.getEncoder().setPositionConversionFactor(1.0/TURRET_GEAR_REDUCTION); //TODO
+        turretNeo.getEncoder().setPositionConversionFactor(1/TURRET_GEAR_REDUCTION); //TODO
         turretNeo.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
 
         turretNeo.enableSoftLimit(SoftLimitDirection.kForward, true);

@@ -107,7 +107,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Flywheels", inputs);
+    Logger.processInputs("inputs/Flywheels", inputs);
 
     // Set alerts
     disconnectedAlertLT.set(!inputs.isLeftMotorConnected);
@@ -210,7 +210,7 @@ public class CatzShooterFlywheels extends SubsystemBase {
 
     // Enable close loop
     if (!isFlywheelClosedLoop) {
-      leftProfile.setGoal(targetSpeed.getTargetSpeedLT(), inputs.leftVelocityRpm);
+      leftProfile.setGoal(-targetSpeed.getTargetSpeedLT(), inputs.leftVelocityRpm);
       rightProfile.setGoal(targetSpeed.getTargetSpeedRT(), inputs.rightVelocityRpm);
       isFlywheelClosedLoop = true;
     }

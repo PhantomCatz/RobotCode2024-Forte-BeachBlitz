@@ -13,11 +13,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CatzConstants;
-import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.CatzColorConstants;
-import frc.robot.CatzConstants.RobotSenario;
-import frc.robot.CatzConstants.RobotHardwareMode;
 
 public class CatzLED extends SubsystemBase {
     private static CatzLED instance = null;
@@ -113,7 +109,7 @@ public class CatzLED extends SubsystemBase {
             allianceColor =
                 alliance
                     .map(alliance -> alliance == Alliance.Blue ? Color.kBlue : Color.kRed)
-                    .orElse(Color.kGold);
+                    .orElse(Color.kPurple);
             secondaryDisabledColor = alliance.isPresent() ? Color.kYellow : Color.kBlack;
         }
 
@@ -172,7 +168,10 @@ public class CatzLED extends SubsystemBase {
                 double fullTime = (double) length / waveFastCycleLength * waveFastDuration;
                 solid((Timer.getFPGATimestamp() - autoFinishedTime) / fullTime, Color.kGreen);
             }
-        } else { // Enabled
+        // MODE ENABLED
+        } else { 
+            wave(CatzColorConstants.PHANTOM_SAPPHIRE, Color.kWhite, waveAllianceCycleLength, waveAllianceDuration);
+
             if (trapping || isClimbing || autoDrive || isAutoShootSpeaker) {
                 rainbow(rainbowCycleLength, rainbowDuration);
             } else if(isAmping) {

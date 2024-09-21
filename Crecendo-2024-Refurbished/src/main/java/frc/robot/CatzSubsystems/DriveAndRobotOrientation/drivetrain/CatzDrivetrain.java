@@ -32,6 +32,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -67,6 +68,9 @@ public class CatzDrivetrain extends SubsystemBase {
     public final CatzSwerveModule RT_FRNT_MODULE;
     public final CatzSwerveModule RT_BACK_MODULE;
 
+    // Feild
+    private final Field2d field;
+
 
     public CatzDrivetrain() {
 
@@ -98,15 +102,29 @@ public class CatzDrivetrain extends SubsystemBase {
         // Configure logging trajectories to advantage kit
         Pathfinding.setPathfinder(new LocalADStarAK());
         
-        // // PathPlanner Debug
-        // PathPlannerLogging.setLogActivePathCallback(
-        //     (activepath)->{
-        //         Logger.recordOutput("Obometry/Trajectory", activepath.toArray(new Pose2d[activepath.size()]));
-        //     });
-        // PathPlannerLogging.setLogTargetPoseCallback(
-        //     (targetPose)-> {
-        //         Logger.recordOutput("Obometry/TrajectorySetpoint", targetPose);
-        //     });
+        // PathPlanner Debug
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
+
+        // Logging callback for current robot pose
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            field.setRobotPose(pose);
+        });
+
+        // Logging callback for target robot pose
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            Logger.recordOutput("Drive/targetPost", pose);
+            CatzRobotTracker.getInstance().addTrajectorySetpointData(pose);
+            System.out.println("debug");
+            field.getObject("target pose").setPose(pose);
+        });
+
+        // Logging callback for the active path, this is sent as a list of poses
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            // Do whatever you want with the poses here
+            field.getObject("path").setPoses(poses);
+        });
 
         gyroDisconnected = new Alert("Gyro disconnected!", Alert.AlertType.WARNING);  
     }
@@ -161,7 +179,6 @@ public class CatzDrivetrain extends SubsystemBase {
        
         // Logging
         SmartDashboard.putNumber("Heading", getGyroHeading());
-        Logger.recordOutput("Drive/Pose", CatzRobotTracker.getInstance().getEstimatedPose());
 
     }   //end of drivetrain periodic
 

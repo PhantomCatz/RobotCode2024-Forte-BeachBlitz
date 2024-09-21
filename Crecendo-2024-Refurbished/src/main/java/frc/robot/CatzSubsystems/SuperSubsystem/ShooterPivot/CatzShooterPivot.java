@@ -57,7 +57,7 @@ public class CatzShooterPivot {
   public CatzShooterPivot() {
      if(ShooterPivotConstants.isShooterPivotDisabled) {
       io = new ShooterPivotIONull();
-      System.out.println("Feeder Unconfigured");
+      System.out.println("Shooter Pivot Unconfigured");
     } else {
       switch (CatzConstants.hardwareMode) {
         case REAL:
@@ -82,7 +82,7 @@ public class CatzShooterPivot {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Superstructure/ShooterPivot", inputs);
+    Logger.processInputs("inputs/ShooterPivot", inputs);
 
     // Set Alerts
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);

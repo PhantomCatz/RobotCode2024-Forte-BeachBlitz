@@ -30,7 +30,7 @@ public class IntakeRollersIOReal implements IntakeRollersIO {
     private final VoltageOut voltageControl = new VoltageOut(0).withUpdateFreqHz(0.0);
     private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0.0);
     private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0.0);
-    private final DutyCycleOut dudtyCycleControl = new DutyCycleOut(0.0).withUpdateFreqHz(0.0);
+    private final DutyCycleOut dudtyCycleControl = new DutyCycleOut(0.0).withUpdateFreqHz(60.0);
 
     public IntakeRollersIOReal() {
         rollerTalon = new TalonFX(INTAKE_ROLLER_ID);

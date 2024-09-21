@@ -5,12 +5,12 @@ import frc.robot.Utilities.MotorUtil.Gains;
 
 public class ShooterFeederConstants {
     // Subsystem Safety Disable
-    public static final boolean isShooterDisabledFeeder = true;
+    public static final boolean isShooterDisabledFeeder = false;
 
     // Motor ID Assignment
     public static final int FEEDER_ID = 
         switch(CatzConstants.getRobotType()) {
-            case SN2 -> 30;
+            case SN2 -> 23;
             case SN1 -> 23;
             case SN_TEST -> 24;
         };

@@ -3,7 +3,8 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Choosen Alliance Color": "String Chooser",
-      "/SmartDashboard/Chosen Autonomous Path": "String Chooser"
+      "/SmartDashboard/Chosen Autonomous Path": "String Chooser",
+      "/SmartDashboard/Field": "Field2d"
     }
   },
   "NetworkTables Info": {

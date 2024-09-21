@@ -23,7 +23,7 @@ public class CatzIntakePivot {
   private final IntakePivotIOInputsAutoLogged inputs = new IntakePivotIOInputsAutoLogged();
 
   // Intake Statemachine variables
-  private IntakePivotPosition m_targetPosition;
+  private IntakePivotPosition m_targetPosition = IntakePivotPosition.STOW;
 
   // Cloased Loop variable declaration
   private ArmFeedforward ff = new ArmFeedforward(gains.kS(), gains.kG(), gains.kV());
@@ -31,14 +31,13 @@ public class CatzIntakePivot {
   // MISC variables
   private static double targetDegree = 0.0;
 
-
   @RequiredArgsConstructor
   public static enum IntakePivotPosition {
     SCORE_AMP(new LoggedTunableNumber("Intake/Pivot Score Amp", 90.0)),
     PICKUP_SOURCE(new LoggedTunableNumber("Intake/Pivot Pickup Souce", 90.0)),
     PICKUP_GROUND(new LoggedTunableNumber("Intake/Pivot Pickup Ground", -24.0)),
     HOLD(new LoggedTunableNumber("Intake/Pivot Holding Position", 90.0)),
-    STOW(() -> 0.0),
+    STOW(new LoggedTunableNumber("Intake/Pivot Stow Position", 164)),
     WAIT(()-> targetDegree);
     
     private final DoubleSupplier intakePivotSetpointSupplier;
@@ -47,7 +46,6 @@ public class CatzIntakePivot {
       return intakePivotSetpointSupplier.getAsDouble();
     }
   }
-
 
   /** Creates a new CatzIntake. */
   public CatzIntakePivot() {
@@ -58,19 +56,19 @@ public class CatzIntakePivot {
       switch (CatzConstants.hardwareMode) {
         case REAL:
           io = new IntakePivotIOReal();
-          System.out.println("Intake Configured for Real");
+          System.out.println("Intake Pivot Configured for Real");
           break;
         case REPLAY:
           io = new IntakePivotIOReal() {};
-          System.out.println("Intake Configured for Replayed simulation");
+          System.out.println("Intake Pivot Configured for Replayed simulation");
           break;
         case SIM:
           io = new IntakePivotIOSim();
-          System.out.println("IntakeRollers Configured for WPILIB simulation");
+          System.out.println("Intake Pivot Configured for WPILIB simulation");
           break;
         default:
           io = null;
-          System.out.println("Intake Unconfigured");
+          System.out.println("Intake Pivot Unconfigured");
           break;
       }
     }
@@ -78,32 +76,23 @@ public class CatzIntakePivot {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("intake/inputs", inputs);
+    Logger.processInputs("inputs/intakePivot", inputs);
+
 
     // Run Setpoint Control
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
     } else {
       // Run Softlimit check
-      if(getIntakePivotPosition() > SOFTLIMIT_STOW) {
+      if(getIntakePivotPosition() > SOFTLIMIT_STOW && m_targetPosition == IntakePivotPosition.STOW) {
         io.stop();
       } else {
-        // Run state check
-        if(m_targetPosition == IntakePivotPosition.STOW) {
-          // Run Crossbar hit check
-          if(getIntakePivotPosition() < 5.0) {
-            io.stop();
-          } else {
-            // Run Setpoint Motion Magic    
-            io.runSetpoint(m_targetPosition.getTargetDegree());
-          }
-        } else {
-          // Run Setpoint Motion Magic    
-          io.runSetpoint(m_targetPosition.getTargetDegree());
-        }
+         io.runSetpoint(m_targetPosition.getTargetDegree());
       }
     }
     
+    Logger.recordOutput("Target Degree Pivot", m_targetPosition.getTargetDegree());
+    Logger.recordOutput("Enum Intake Pivot", m_targetPosition.name());
   }
 
   //-----------------------------------------------------------------------------------------
@@ -121,6 +110,7 @@ public class CatzIntakePivot {
   //
   //-----------------------------------------------------------------------------------------
   public void setIntakePivotState(IntakePivotPosition targetPosition) {
+    System.out.println(targetPosition);
     m_targetPosition = targetPosition;
   }
 }

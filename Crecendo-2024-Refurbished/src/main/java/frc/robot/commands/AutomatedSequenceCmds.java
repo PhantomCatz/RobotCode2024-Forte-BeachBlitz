@@ -102,6 +102,7 @@ public class AutomatedSequenceCmds {
     public static Command testSequence(RobotContainer container) {
         return Commands.sequence(container.getCatzShooterFeeder().commandShootNote(),
                                  Commands.waitSeconds(3),
+                                 Commands.print("It worked"),
                                  container.getCatzShooterFeeder().commandShootNote());
     }
 
