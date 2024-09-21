@@ -24,7 +24,7 @@ public final class CatzConstants {
   public static final RobotHardwareMode hardwareMode = RobotHardwareMode.SIM;
   private static RobotID robotType = RobotID.SN_TEST;
   
-  public static AllianceColor choosenAllianceColor = AllianceColor.Red;
+  public static AllianceColor choosenAllianceColor = null;
 
   public static final double LOOP_TIME = 0.02;
 

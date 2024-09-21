@@ -10,21 +10,26 @@ import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 
 public class WaitUntilPassX extends Command{
     private double xCoord;
+    private double originalXCoord;
     private Command cmd;
     private boolean executing = false;
     private boolean done = false;
 
     private final double ERROR_RANGE = 0.2; //im pretty sure this is 20cm
 
-    public WaitUntilPassX(double xCoord, Command command){
-        this.xCoord = xCoord;
+    public WaitUntilPassX(double originalXCoord, Command command){
+        this.originalXCoord = originalXCoord;
         this.cmd = command;
     }
-
+    
     @Override
     public void initialize(){
+        executing = false;
+        done = false;
         if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
-            xCoord = FieldConstants.FIELD_LENGTH_MTRS-xCoord;
+            xCoord = FieldConstants.FIELD_LENGTH_MTRS-originalXCoord;
+        } else {
+            xCoord = originalXCoord;
         }
     }
 

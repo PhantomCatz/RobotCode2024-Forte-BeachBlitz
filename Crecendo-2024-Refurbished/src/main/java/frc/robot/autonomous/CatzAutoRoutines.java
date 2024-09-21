@@ -1,5 +1,7 @@
 package frc.robot.Autonomous;
 
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -51,7 +53,7 @@ public class CatzAutoRoutines {
     private PathPlannerPath US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
     private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
     private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("Test");
-    private PathPlannerPath straightLine = PathPlannerPath.fromPathFile("StraightLine");
+    private PathPlannerPath straightLine = PathPlannerPath.fromPathFile("StraightLine"); 
 
     private Command testAuto() {
         preloadTrajectoryClass(US_W1_3_1);
@@ -63,7 +65,6 @@ public class CatzAutoRoutines {
 
     private Command testAuto2(){
         preloadTrajectoryClass(straightLine);
-        System.out.println("testauto2");
 
         return new ParallelCommandGroup(
             new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain()),
@@ -79,7 +80,6 @@ public class CatzAutoRoutines {
         return new FeedForwardCharacterization(flywheels, flywheels::runCharacterization, flywheels::getCharacterizationVelocity)
                         .withName("Flywheels characterization");
     }
-    
 
     //---------------------------------------------------------------------------------------------------------
     //          Trajectory Helpers
