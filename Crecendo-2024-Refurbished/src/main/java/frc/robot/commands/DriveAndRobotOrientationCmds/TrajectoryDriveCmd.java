@@ -2,6 +2,8 @@ package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -105,10 +107,10 @@ public class TrajectoryDriveCmd extends Command {
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
-                                                          0.0,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
-                                                          0.0, 
+                                                          goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
+                                                          goal.accelerationMpsSq, 
                                                           new Pose2d(goal.positionMeters, new Rotation2d()),
-                                                          0.0);
+                                                          goal.curvatureRadPerMeter);
     
             //construct chassisspeeds
             ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
@@ -116,7 +118,6 @@ public class TrajectoryDriveCmd extends Command {
             //send to drivetrain
             m_driveTrain.drive(adjustedSpeeds, true);
             CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
-
 
         }else{
             m_driveTrain.stopDriving();
