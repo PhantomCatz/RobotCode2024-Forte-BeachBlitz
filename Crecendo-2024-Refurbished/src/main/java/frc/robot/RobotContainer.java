@@ -85,9 +85,6 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
-    NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(this));
-
     // Drive And Aux Command Mapping
     configureBindings();
 
@@ -131,17 +128,19 @@ public class RobotContainer {
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
     xboxAux.y().onTrue(superstructure.moveTurretToHome());
 
-    xboxAux.a().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.PICKUP_SOURCE));
+    //xboxAux.a().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.PICKUP_SOURCE));
     //xboxAux.a().onTrue(rollers.setRollersIn());
     xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
-    xboxAux.b().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.STOW));
+    //xboxAux.b().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.STOW));
 
     xboxDrv.b().onTrue(new FaceTarget(new Translation2d(0, 0), drive));
 
+    xboxDrv.y().onTrue(auto.autoFindPathSpeakerLOT());
+
+    xboxDrv.leftStick().onTrue(drive.cancelTrajectory());
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
                                                () -> xboxDrv.getLeftY(), 
-                                               () -> xboxDrv.getRightX(), 
-                                               () -> xboxDrv.a().getAsBoolean(), drive)); // TODO changes this to be in the subsystem rather than the cmd
+                                               () -> xboxDrv.getRightX(), drive));
     //TODO add triggers to put default as priority    
   }
 
