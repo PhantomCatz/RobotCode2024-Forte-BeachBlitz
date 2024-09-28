@@ -333,7 +333,6 @@ public class Robot extends LoggedRobot {
           alliance
               .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
               .orElse(AllianceColor.Red);
-      AllianceFlipUtil.determineAndApplyPathPlannerFlipping();
     } 
 
     // Driver Station Alerts

@@ -54,9 +54,11 @@ public class TrajectoryDriveCmd extends Command {
     public TrajectoryDriveCmd(List<Translation2d> bezierPoints, 
                               PathConstraints constraints, 
                               GoalEndState endRobotState,
-                              CatzDrivetrain drivetrain) {
+                              CatzDrivetrain drivetrain, boolean isTelopAutoDriving) {
         PathPlannerPath newPath = new PathPlannerPath(bezierPoints, constraints, endRobotState);
         // Flip Path for newly declared path
+                    System.out.println("made ");
+
         if(AllianceFlipUtil.shouldFlipToRed()) {
             newPath.flipPath();
             System.out.println("made it");
@@ -72,6 +74,8 @@ public class TrajectoryDriveCmd extends Command {
 
     @Override
     public void initialize() {
+
+
 
         // Reset and begin timer
         timer.reset();

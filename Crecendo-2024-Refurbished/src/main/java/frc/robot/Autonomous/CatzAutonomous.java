@@ -98,7 +98,7 @@ public class CatzAutonomous {
         //send path info to trajectory following command
         return new TrajectoryDriveCmd(bezierPoints, 
                                       DriveConstants.autoPathfindingConstraints, 
-                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain(), true);
     }
 
     //---------------------------------------------------------------------------------------------------------
