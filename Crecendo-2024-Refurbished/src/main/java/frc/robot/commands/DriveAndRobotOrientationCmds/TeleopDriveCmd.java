@@ -19,7 +19,6 @@ public class TeleopDriveCmd extends Command {
   private final Supplier<Double> m_headingPctOutput_X;
   private final Supplier<Double> m_headingPctOutput_Y;
   private final Supplier<Double> m_angVelocityPctOutput;
-  private final Supplier<Boolean> m_orientation;
 
   //drive variables
   private double m_headingAndVelocity_X;
@@ -37,16 +36,12 @@ public class TeleopDriveCmd extends Command {
   public TeleopDriveCmd(Supplier<Double> supplierLeftJoyX,
                         Supplier<Double> supplierLeftJoyY,
                         Supplier<Double> angVelocityPctOutput,
-                        Supplier<Boolean> orientation,
                         CatzDrivetrain drivetrain) {
 
     // Chassis magnatude and direction control
     this.m_headingPctOutput_X         = supplierLeftJoyX;
     this.m_headingPctOutput_Y         = supplierLeftJoyY;
     this.m_angVelocityPctOutput       = angVelocityPctOutput;
-
-    // feild orientation disabling
-    this.m_orientation                = orientation;
 
     // subsystem assignment
     this.m_drivetrain                 = drivetrain;
@@ -81,21 +76,14 @@ public class TeleopDriveCmd extends Command {
 
 
     // Construct desired chassis speeds
-    if (m_orientation.get()) {
-        // Relative to robot
-        chassisSpeeds = new ChassisSpeeds(m_headingAndVelocity_X, 
-                                          m_headingAndVelocity_Y, 
-                                          turningVelocity
-                            );
-    } else {
-        // Relative to field
-        chassisSpeeds = ChassisSpeeds
-                            .fromFieldRelativeSpeeds(m_headingAndVelocity_X, 
-                                                     m_headingAndVelocity_Y, 
-                                                     turningVelocity, 
-                                                     CatzRobotTracker.getInstance().getRobotRotation()
-                            );
-    }
+    // Relative to field
+    chassisSpeeds = ChassisSpeeds
+                        .fromFieldRelativeSpeeds(m_headingAndVelocity_X, 
+                                                  m_headingAndVelocity_Y, 
+                                                  turningVelocity, 
+                                                  CatzRobotTracker.getInstance().getRobotRotation()
+                        );
+
 
     // Send new chassisspeeds object to the drivetrain
     m_drivetrain.drive(chassisSpeeds, true);

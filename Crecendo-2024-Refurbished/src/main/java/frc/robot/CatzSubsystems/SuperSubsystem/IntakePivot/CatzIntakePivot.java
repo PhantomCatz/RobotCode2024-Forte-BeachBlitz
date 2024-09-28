@@ -110,7 +110,7 @@ public class CatzIntakePivot {
   //
   //-----------------------------------------------------------------------------------------
   public void setIntakePivotState(IntakePivotPosition targetPosition) {
-    System.out.println(targetPosition);
+    // System.out.println(targetPosition);
     m_targetPosition = targetPosition;
   }
 }

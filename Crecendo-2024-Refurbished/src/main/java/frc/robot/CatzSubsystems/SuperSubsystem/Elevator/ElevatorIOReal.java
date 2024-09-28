@@ -21,6 +21,7 @@ public class ElevatorIOReal implements ElevatorIO {
   private final TalonFX leaderTalon;
 
   // Status Signals
+  private final StatusSignal<ControlModeValue> motorState;
   private final StatusSignal<Double> internalPositionRotations;
   private final StatusSignal<Double> velocityRps;
   private final StatusSignal<Double> appliedVoltage;
@@ -50,9 +51,9 @@ public class ElevatorIOReal implements ElevatorIO {
     config.Slot0.kP = gains.kP();
     config.Slot0.kI = gains.kI();
     config.Slot0.kD = gains.kD();
-    config.Slot0.kP = gains.kA();
-    config.Slot0.kI = gains.kV();
-    config.Slot0.kD = gains.kG();
+    config.Slot0.kA = gains.kA();
+    config.Slot0.kV = gains.kV();
+    config.Slot0.kG = gains.kG();
 
     config.MotionMagic.MotionMagicCruiseVelocity = motionMagicParameters.mmCruiseVelocity(); // Target cruise velocity of 80 rps
     config.MotionMagic.MotionMagicAcceleration   = motionMagicParameters.mmAcceleration(); // Target acceleration of 400 rps/s (0.5 seconds)
@@ -63,6 +64,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     // Assign leader signals
     internalPositionRotations = leaderTalon.getPosition();
+    motorState = leaderTalon.getControlMode();
     velocityRps = leaderTalon.getVelocity();
 
     // Assign leader and Follower signals
@@ -73,6 +75,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         100,
+        motorState,
         internalPositionRotations,
         velocityRps,
         appliedVoltage,
@@ -83,9 +86,11 @@ public class ElevatorIOReal implements ElevatorIO {
     leaderTalon.optimizeBusUtilization(0, 1.0);
   }
 
+  
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.isLeaderMotorConnected =
         BaseStatusSignal.refreshAll(
+                motorState,
                 internalPositionRotations,
                 velocityRps,
                 appliedVoltage,
@@ -94,7 +99,7 @@ public class ElevatorIOReal implements ElevatorIO {
                 tempCelsius)
             .isOK();
 
-
+    inputs.motorState = motorState.getValueAsDouble();
     inputs.leaderPositionRotations = internalPositionRotations.getValueAsDouble();
     inputs.velocityRps        = velocityRps.getValue();
     inputs.appliedVolts      = appliedVoltage.getValue();

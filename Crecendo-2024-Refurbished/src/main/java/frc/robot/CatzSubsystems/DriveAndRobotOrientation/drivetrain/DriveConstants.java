@@ -1,5 +1,7 @@
 package frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -23,7 +25,6 @@ public class DriveConstants {
     public static final int INDEX_BR = 2;
     public static final int INDEX_FR = 3;
 
-
     public static final DriveConfig driveConfig =
     switch (CatzConstants.getRobotType()) {
       case SN_TEST, SN2 ->
@@ -34,9 +35,9 @@ public class DriveConstants {
               .bumperWidthX(Units.inchesToMeters(37))
               .bumperWidthY(Units.inchesToMeters(33))
               .maxLinearVelocity(Units.feetToMeters(17))
-              .maxLinearAcceleration(Units.feetToMeters(75.0))
-              .maxAngularVelocity(12.0)
-              .maxAngularAcceleration(6.0)
+              .maxLinearAcceleration(Units.feetToMeters(75.0)) 
+              .maxAngularVelocity(Units.degreesToRadians(720)) // Radians
+              .maxAngularAcceleration(Units.degreesToRadians(1000)) // Radians // TODO verify angle constraints
               .build();
       case SN1 ->
           new DriveConfig(
@@ -120,6 +121,15 @@ public class DriveConstants {
                     new ModuleConfig(7, 8, 6, 0.0, true)
                 };
         };
+
+    //-----------------------------------------------------------------------------------------------------------------------------
+    //
+    //      Drivebase controller/object definements
+    //
+    //-----------------------------------------------------------------------------------------------------------------------------
+    public static final PathConstraints autoPathfindingConstraints = new PathConstraints( // 540 // 720 
+                                                                    driveConfig.maxLinearVelocity, driveConfig.maxLinearAcceleration, 
+                                                                    driveConfig.maxAngularVelocity, driveConfig.maxAngularAcceleration);
 
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
