@@ -71,7 +71,6 @@ public class CatzAutonomous {
         
 
         return new SequentialCommandGroup(
-            
             new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
         );
     }
@@ -98,7 +97,7 @@ public class CatzAutonomous {
         //send path info to trajectory following command
         return new TrajectoryDriveCmd(bezierPoints, 
                                       DriveConstants.autoPathfindingConstraints, 
-                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain(), true);
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -116,22 +115,6 @@ public class CatzAutonomous {
                     CatzRobotTracker.getInstance().getRobotChassisSpeeds(),
                     CatzRobotTracker.getInstance().getEstimatedPose().getRotation());
         }
-    }
-
-    public void setAutonStartPose(PathPlannerPath path) {
-        if(AllianceFlipUtil.shouldFlipToRed() && 
-           AllianceFlipUtil.flippingState != PathPlannerFlippingState.FLIPPED_TO_RED) {
-            path = path.flipPath();
-            path.preventFlipping = true;
-            AllianceFlipUtil.flippingState = PathPlannerFlippingState.FLIPPED_TO_RED;
-
-        } else if(AllianceFlipUtil.shouldFlipToRed() == false && 
-                  AllianceFlipUtil.flippingState != PathPlannerFlippingState.BLUE) {
-            path = path.flipPath();
-            AllianceFlipUtil.flippingState = PathPlannerFlippingState.BLUE;
-        }
-
-        CatzRobotTracker.getInstance().resetPosition(path.getPreviewStartingHolonomicPose());
     }
 
     /** Getter for final autonomous routine */

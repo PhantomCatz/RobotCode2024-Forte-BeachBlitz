@@ -34,10 +34,12 @@ public class TrajectoryDriveCmd extends Command {
 
     private CatzDrivetrain m_driveTrain;
     private PathPlannerTrajectory trajectory;
+    private HolonomicDriveController hocontroller;
     
     private final Timer timer = new Timer();
     private final double TIMEOUT_SCALAR = 5;
     private PathPlannerPath path;
+
 
     /**
      * @param drivetrain           The coordinator between the gyro and the swerve modules.
@@ -54,18 +56,10 @@ public class TrajectoryDriveCmd extends Command {
     public TrajectoryDriveCmd(List<Translation2d> bezierPoints, 
                               PathConstraints constraints, 
                               GoalEndState endRobotState,
-                              CatzDrivetrain drivetrain, boolean isTelopAutoDriving) {
+                              CatzDrivetrain drivetrain) {
         PathPlannerPath newPath = new PathPlannerPath(bezierPoints, constraints, endRobotState);
-        // Flip Path for newly declared path
-                    System.out.println("made ");
-
-        if(AllianceFlipUtil.shouldFlipToRed()) {
-            newPath.flipPath();
-            System.out.println("made it");
-        }
         path = newPath;
         m_driveTrain = drivetrain;
-
         addRequirements(m_driveTrain);
     }
 
@@ -74,16 +68,20 @@ public class TrajectoryDriveCmd extends Command {
 
     @Override
     public void initialize() {
-
-
-
-        // Reset and begin timer
         timer.reset();
         timer.start();
+
+        hocontroller = DriveConstants.hocontroller;
         
-        // Create pathplanner trajectory
+        PathPlannerPath usePath = path;
+        if(AllianceFlipUtil.shouldFlipToRed()) {
+            usePath = path.flipPath();
+        }
+
+        //CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        
         this.trajectory = new PathPlannerTrajectory(
-            path, 
+            usePath, 
             DriveConstants.
                 swerveDriveKinematics.
                     toChassisSpeeds(CatzRobotTracker.getInstance().getRobotSwerveModuleStates()),
@@ -109,20 +107,19 @@ public class TrajectoryDriveCmd extends Command {
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
-
-                                                          goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
+                                                          0.0,//goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
                                                           goal.accelerationMpsSq, 
                                                           new Pose2d(goal.positionMeters, new Rotation2d()),
                                                           goal.curvatureRadPerMeter);
     
             //construct chassisspeeds
-            ChassisSpeeds adjustedSpeeds = DriveConstants.holonomicDriveController.calculate(currentPose, state, targetOrientation);
+            ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
 
             //send to drivetrain
             m_driveTrain.drive(adjustedSpeeds, true);
             CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
 
-            Logger.recordOutput("Desired Auto Pose", new Pose2d(state.poseMeters.getTranslation(), goal.targetHolonomicRotation));
+            Logger.recordOutput("CatzRobotTracker/Desired Auto Pose", new Pose2d(state.poseMeters.getTranslation(), goal.targetHolonomicRotation));
 
 
         }else{
@@ -151,7 +148,6 @@ public class TrajectoryDriveCmd extends Command {
         m_driveTrain.stopDriving();
         System.out.println("trajectory done");
     }
-
 
     @Override
     public boolean isFinished() {
