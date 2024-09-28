@@ -30,41 +30,47 @@ import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+import frc.robot.Utilities.AllianceFlipUtil;
+import frc.robot.Utilities.AllianceFlipUtil.PathPlannerFlippingState;
 
-public class CatzAutoRoutines {
+public class CatzAutonomous {
     
     private static LoggedDashboardChooser<Command> autoPathChooser = new LoggedDashboardChooser<>("Chosen Autonomous Path");
     private RobotContainer m_container;
 
     private boolean trajectoriesLoaded = false;
+    private boolean isPathPlannerFlipped = false;
 
-    public CatzAutoRoutines(RobotContainer container) {
-    
+    private PathPlannerPath US_W1_3_1; 
+    private PathPlannerPath US_W1_3_2; 
+    private PathPlannerPath US_W1_3_3; 
+    private PathPlannerPath testPath ; 
+
+
+    public CatzAutonomous(RobotContainer container) {
         this.m_container = container;
-        //-------------------------------------------------------------------------------------------------------------------
+        // Declare Paths
+        US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
+        US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
+        US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
+        testPath  = PathPlannerPath.fromPathFile("Test");
+
         //   AUTON Priority LIST 
-        //-------------------------------------------------------------------------------------------------------------------*/
         autoPathChooser.addOption("Test Auto", testAuto());
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
 
-
-        System.out.println("registered");
-        NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
+        NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
         NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
         
     }
 
-    private PathPlannerPath US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
-    private PathPlannerPath US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
-    private PathPlannerPath US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
-    private PathPlannerPath testPath  = PathPlannerPath.fromPathFile("Test");
 
     private Command testAuto() {
+
         preloadTrajectoryClass(US_W1_3_1);
-        setAutonStartPose(testPath);
+        
 
         return new SequentialCommandGroup(
-            
             new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
         );
     }
@@ -109,14 +115,6 @@ public class CatzAutoRoutines {
                     CatzRobotTracker.getInstance().getRobotChassisSpeeds(),
                     CatzRobotTracker.getInstance().getEstimatedPose().getRotation());
         }
-    }
-
-    private void setAutonStartPose(PathPlannerPath startPath){
-        PathPlannerPath path = startPath;
-        if(CatzConstants.choosenAllianceColor == CatzConstants.AllianceColor.Red) {
-            path = startPath.flipPath();
-        }
-        CatzRobotTracker.getInstance().resetPosition(path.getPreviewStartingHolonomicPose());
     }
 
     /** Getter for final autonomous routine */

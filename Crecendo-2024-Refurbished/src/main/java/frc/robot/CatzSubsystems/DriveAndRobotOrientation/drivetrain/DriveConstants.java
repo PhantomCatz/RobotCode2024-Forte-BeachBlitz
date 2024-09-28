@@ -131,6 +131,7 @@ public class DriveConstants {
                                                                     driveConfig.maxLinearVelocity, driveConfig.maxLinearAcceleration, 
                                                                     driveConfig.maxAngularVelocity, driveConfig.maxAngularAcceleration);
 
+
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
             new Translation2d( driveConfig.robotLengthX() , driveConfig.robotWidthY()).div(2.0),    //LT FRONT
@@ -143,16 +144,14 @@ public class DriveConstants {
     // the motion of the whole robot
     public static final SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(moduleTranslations);
 
-    public static final ProfiledPIDController autoSteerPIDController = 
-                                                new ProfiledPIDController(5, 0, 0,
-                                                                          new TrapezoidProfile.Constraints(4.8, 3)
-                                                );
-
-    public static final HolonomicDriveController holonomicDriveController = 
-                                                    new HolonomicDriveController(new PIDController(3.0, 0, 0.015),
-                                                                                    new PIDController(3.0, 0, 0.015),
-                                                                                    autoSteerPIDController
-                                                    );
+    public static final HolonomicDriveController hocontroller = new HolonomicDriveController(
+                                                                        new PIDController(18.0, 0, 0.0), // TODO Tune PID outside
+                                                                        new PIDController(18.0, 0, 0.0),
+                                                                        new ProfiledPIDController(
+                                                                            30, 0, 0,
+                                                                            new TrapezoidProfile.Constraints(4.8, 3)
+                                                                        )
+                                                                    );
                                                                             
     /****************************************************************************************
      * 

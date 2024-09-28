@@ -39,6 +39,7 @@ import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
 import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
@@ -225,6 +226,8 @@ public class Robot extends LoggedRobot {
         System.exit(0);
       }
     }
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   @Override
@@ -325,7 +328,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     // Run Driver Station Chooser
     if(DriverStation.isDSAttached()) {
-      alliance = DriverStation.getAlliance();
+      alliance = DriverStation.getAlliance(); //TODO This thing is broken
       CatzConstants.choosenAllianceColor =
           alliance
               .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Autonomous.CatzAutoRoutines;
+import frc.robot.Autonomous.CatzAutonomous;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
@@ -80,7 +80,7 @@ public class RobotContainer {
   private final LoggedDashboardNumber endgameAlert2 = new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
   // Auto Declaration
-  private CatzAutoRoutines auto = new CatzAutoRoutines(this);
+  private CatzAutonomous auto = new CatzAutonomous(this);
 
 
   public RobotContainer() {
