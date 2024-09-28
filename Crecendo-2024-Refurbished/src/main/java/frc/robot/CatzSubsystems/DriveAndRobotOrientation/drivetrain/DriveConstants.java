@@ -142,6 +142,17 @@ public class DriveConstants {
     // calculates the orientation and speed of individual swerve modules when given
     // the motion of the whole robot
     public static final SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(moduleTranslations);
+
+    public static final ProfiledPIDController autoSteerPIDController = 
+                                                new ProfiledPIDController(5, 0, 0,
+                                                                          new TrapezoidProfile.Constraints(4.8, 3)
+                                                );
+
+    public static final HolonomicDriveController holonomicDriveController = 
+                                                    new HolonomicDriveController(new PIDController(3.0, 0, 0.015),
+                                                                                    new PIDController(3.0, 0, 0.015),
+                                                                                    autoSteerPIDController
+                                                    );
                                                                             
     /****************************************************************************************
      * 

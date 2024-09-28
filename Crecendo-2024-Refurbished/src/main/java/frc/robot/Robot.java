@@ -39,6 +39,7 @@ import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
 import frc.robot.Utilities.Alert;
+import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.Alert.AlertType;
 
 public class Robot extends LoggedRobot {
@@ -332,6 +333,7 @@ public class Robot extends LoggedRobot {
           alliance
               .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
               .orElse(AllianceColor.Red);
+      AllianceFlipUtil.determineAndApplyPathPlannerFlipping();
     } 
 
     // Driver Station Alerts

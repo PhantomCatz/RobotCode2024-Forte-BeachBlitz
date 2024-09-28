@@ -25,13 +25,13 @@ import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.Utilities.AllianceFlipUtil;
 
 public class TrajectoryDriveCmd extends Command {
 
     public static final double ALLOWABLE_POSE_ERROR = 0.05;
     public static final double ALLOWABLE_ROTATION_ERROR = 5;
 
-    private HolonomicDriveController hocontroller;
     private CatzDrivetrain m_driveTrain;
     private PathPlannerTrajectory trajectory;
     
@@ -56,6 +56,11 @@ public class TrajectoryDriveCmd extends Command {
                               GoalEndState endRobotState,
                               CatzDrivetrain drivetrain) {
         PathPlannerPath newPath = new PathPlannerPath(bezierPoints, constraints, endRobotState);
+        // Flip Path for newly declared path
+        if(AllianceFlipUtil.shouldFlipToRed()) {
+            newPath.flipPath();
+            System.out.println("made it");
+        }
         path = newPath;
         m_driveTrain = drivetrain;
 
@@ -71,27 +76,10 @@ public class TrajectoryDriveCmd extends Command {
         // Reset and begin timer
         timer.reset();
         timer.start();
-
-        ProfiledPIDController autoSteerPIDController = 
-            new ProfiledPIDController(5, 0, 0,
-            new TrapezoidProfile.Constraints(4.8, 3)
-        );
-        hocontroller = new HolonomicDriveController(new PIDController(3.0, 0, 0.0),
-            new PIDController(3.0, 0, 0.0),
-            autoSteerPIDController
-        );
         
-        PathPlannerPath usePath = null;
-        if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
-            usePath = path.flipPath();
-        } else {
-            usePath = path;
-        }
-        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
-
         // Create pathplanner trajectory
         this.trajectory = new PathPlannerTrajectory(
-            usePath, 
+            path, 
             DriveConstants.
                 swerveDriveKinematics.
                     toChassisSpeeds(CatzRobotTracker.getInstance().getRobotSwerveModuleStates()),
@@ -124,7 +112,7 @@ public class TrajectoryDriveCmd extends Command {
                                                           goal.curvatureRadPerMeter);
     
             //construct chassisspeeds
-            ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
+            ChassisSpeeds adjustedSpeeds = DriveConstants.holonomicDriveController.calculate(currentPose, state, targetOrientation);
 
             //send to drivetrain
             m_driveTrain.drive(adjustedSpeeds, true);
