@@ -60,98 +60,98 @@ public class CatzSuperSubsystem extends SubsystemBase {
     isElevatorCausingDanger = elevator.getElevatorPositionRotations() > 30.0; // Elevator too high for intake to stow
     isIntakePivotCausingDanger = (intakePivot.getIntakePivotPosition() > 90.0); // Intake not extended out far enough to clear elevator
 
-    // // Init SuperstructureState change
-    // if(currentSuperstructureState != previousSuperstructureState) 
-    // {
-    //   // Run initializes for each state
-    //   switch(currentSuperstructureState) 
-    //   {
-    //     case STOW:
-    //       elevator.setTargetPosition(ElevatorPosition.STOW);
-    //       turret.setTargetPosition(TurretPosition.HOME);
-    //       //Set shooter pivot down
-    //       if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
-    //       } else 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
-    //       }
-    //     break;
+    // Init SuperstructureState change
+    if(currentSuperstructureState != previousSuperstructureState) 
+    {
+      // Run initializes for each state
+      switch(currentSuperstructureState) 
+      {
+        case STOW:
+          elevator.setTargetPosition(ElevatorPosition.STOW);
+          turret.setTargetPosition(TurretPosition.HOME);
+          //Set shooter pivot down
+          if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
+          } else 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
+          }
+        break;
 
-    //     case INTAKE_GROUND:
-    //       elevator.setTargetPosition(ElevatorPosition.STOW);
-    //       turret.setTargetPosition(TurretPosition.HOME);
-    //       if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND);
-    //       } else 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
-    //       }
+        case INTAKE_GROUND:
+          elevator.setTargetPosition(ElevatorPosition.STOW);
+          turret.setTargetPosition(TurretPosition.HOME);
+          if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND);
+          } else 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
+          }
 
-    //     break;
+        break;
 
-    //     case SCORE_AMP:
-    //       intakePivot.setIntakePivotState(IntakePivotPosition.SCORE_AMP);
-    //       turret.setTargetPosition(TurretPosition.HOME);
-    //       if(!isIntakePivotCausingDanger) 
-    //       {
-    //         elevator.setTargetPosition(ElevatorPosition.STOW);
-    //       } else 
-    //       {
-    //         elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
-    //       }
-    //     break;
+        case SCORE_AMP:
+          intakePivot.setIntakePivotState(IntakePivotPosition.SCORE_AMP);
+          turret.setTargetPosition(TurretPosition.HOME);
+          if(!isIntakePivotCausingDanger) 
+          {
+            elevator.setTargetPosition(ElevatorPosition.STOW);
+          } else 
+          {
+            elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
+          }
+        break;
 
-    //     case AUTO_AIM:
-    //       elevator.setTargetPosition(ElevatorPosition.STOW);
-    //       turret.setTargetPosition(TurretPosition.AUTO_AIM);
-    //       //Set shooter pivot to autoaim
-    //       intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
-    //     break;
+        case AUTO_AIM:
+          elevator.setTargetPosition(ElevatorPosition.STOW);
+          turret.setTargetPosition(TurretPosition.AUTO_AIM);
+          //Set shooter pivot to autoaim
+          intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
+        break;
 
-    //     default:
-    //   }
-    //   previousCommandedSuperstructureState = previousSuperstructureState;
-    //   previousSuperstructureState = currentSuperstructureState;
-    // }
+        default:
+      }
+      previousCommandedSuperstructureState = previousSuperstructureState;
+      previousSuperstructureState = currentSuperstructureState;
+    }
 
-    // // Periodic Superstructure State Change
-    // switch(currentSuperstructureState) 
-    // {
-    //   case STOW:
-    //     if(!isTurretCausingDanger) 
-    //     {
-    //       if(!isElevatorCausingDanger) 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
-    //       }
-    //     }
-    //   break;
+    // Periodic Superstructure State Change
+    switch(currentSuperstructureState) 
+    {
+      case STOW:
+        if(!isTurretCausingDanger) 
+        {
+          if(!isElevatorCausingDanger) 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
+          }
+        }
+      break;
 
-    //   case INTAKE_GROUND:
-    //     if(!isTurretCausingDanger) 
-    //     {
-    //       if(!isElevatorCausingDanger) 
-    //       {
-    //         intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND);
-    //       }
-    //     }
-    //   break;
+      case INTAKE_GROUND:
+        if(!isTurretCausingDanger) 
+        {
+          if(!isElevatorCausingDanger) 
+          {
+            intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND);
+          }
+        }
+      break;
 
-    //   case SCORE_AMP:
-    //     if(!isIntakePivotCausingDanger) 
-    //     {
-    //       elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
-    //     }
-    //   break;
+      case SCORE_AMP:
+        if(!isIntakePivotCausingDanger) 
+        {
+          elevator.setTargetPosition(ElevatorPosition.SCORE_AMP);
+        }
+      break;
 
-    //   case AUTO_AIM:
-    //   break;
+      case AUTO_AIM:
+      break;
 
-    //   default:
-    // }
+      default:
+    }
 
     Logger.recordOutput("Superstructure/dangerCheck/elevator", isElevatorCausingDanger);
     Logger.recordOutput("Superstructure/dangerCheck/intake", isIntakePivotCausingDanger);
@@ -195,6 +195,6 @@ public class CatzSuperSubsystem extends SubsystemBase {
   }
 
   public Command moveTurretToHome() {
-    return runOnce(() -> turret.setTargetPosition(TurretPosition.TEST_POSITION));
+    return runOnce(() -> turret.setTargetPosition(TurretPosition.HOME));
   }
 }

@@ -1,15 +1,21 @@
 package frc.robot.Autonomous;
 
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import java.util.List;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,6 +28,7 @@ import frc.robot.Autonomous.commands.WaitUntilPassX;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
 import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
@@ -46,6 +53,8 @@ public class CatzAutoRoutines {
 
 
         System.out.println("registered");
+        NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
+        NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
         
     }
 
@@ -73,7 +82,9 @@ public class CatzAutoRoutines {
     }
 
     //---------------------------------------------------------------------------------------------------------
+    //
     //          Characteration Routines
+    //
     //---------------------------------------------------------------------------------------------------------
     public Command flywheelCharacterization() {
         CatzShooterFlywheels flywheels = m_container.getCatzShooterFlywheels();
@@ -81,8 +92,23 @@ public class CatzAutoRoutines {
                         .withName("Flywheels characterization");
     }
 
+    //Automatic pathfinding command
+    public Command autoFindPathSpeakerLOT() {
+        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+                new Pose2d(2.0, 2.0, Rotation2d.fromDegrees(180)),
+                new Pose2d(1.50, 0.69, Rotation2d.fromDegrees(235))
+                    );
+
+        //send path info to trajectory following command
+        return new TrajectoryDriveCmd(bezierPoints, 
+                                      DriveConstants.autoPathfindingConstraints, 
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
+    }
+
     //---------------------------------------------------------------------------------------------------------
+    //
     //          Trajectory Helpers
+    //
     //---------------------------------------------------------------------------------------------------------
     private void preloadTrajectoryClass(PathPlannerPath segment) {
         // This is done because Java loads classes lazily. Calling this here loads the trajectory pathplanner class which

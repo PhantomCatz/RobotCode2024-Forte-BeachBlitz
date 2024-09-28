@@ -42,9 +42,9 @@ public class TurretConstants {
     // -----------------------------------------------------------------------------------------------
     //  Turret Closed Loop Processing (PIDF, etc)
     // -----------------------------------------------------------------------------------------------
-    private static final double TURRET_kP = 0.02;
-    private static final double TURRET_kI = 0.0;
-    private static final double TURRET_kD = 0.0;
+    public static final double TURRET_kP = 0.02;
+    public static final double TURRET_kI = 0.0;
+    public static final double TURRET_kD = 0.0;
     
     private static final double LIMELIGHT_kP = 0.01;//0.013;
     private static final double LIMELIGHT_kI = 0.0;

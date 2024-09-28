@@ -304,7 +304,9 @@ public class CatzDrivetrain extends SubsystemBase {
 
     /** command to cancel running auto trajectories */
     public Command cancelTrajectory() {
-        return new InstantCommand();
+        Command cancel = new InstantCommand();
+        cancel.addRequirements(this);
+        return cancel;
     }
 
     public void resetDriveEncs() {

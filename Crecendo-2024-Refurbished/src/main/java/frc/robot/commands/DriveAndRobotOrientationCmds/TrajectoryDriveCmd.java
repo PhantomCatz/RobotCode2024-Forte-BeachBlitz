@@ -117,10 +117,11 @@ public class TrajectoryDriveCmd extends Command {
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
-                                                          0.0,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
-                                                          0.0, 
-                                                          new Pose2d(goal.positionMeters, targetOrientation),
-                                                          0.0);
+
+                                                          goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
+                                                          goal.accelerationMpsSq, 
+                                                          new Pose2d(goal.positionMeters, new Rotation2d()),
+                                                          goal.curvatureRadPerMeter);
     
             //construct chassisspeeds
             ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
@@ -130,6 +131,7 @@ public class TrajectoryDriveCmd extends Command {
             CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
 
             Logger.recordOutput("Desired Auto Pose", new Pose2d(state.poseMeters.getTranslation(), goal.targetHolonomicRotation));
+
 
         }else{
             m_driveTrain.stopDriving();
