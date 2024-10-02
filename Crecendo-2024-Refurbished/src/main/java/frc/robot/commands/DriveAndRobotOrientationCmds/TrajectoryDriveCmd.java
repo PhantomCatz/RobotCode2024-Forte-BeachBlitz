@@ -25,19 +25,21 @@ import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.Utilities.AllianceFlipUtil;
 
 public class TrajectoryDriveCmd extends Command {
 
     public static final double ALLOWABLE_POSE_ERROR = 0.05;
     public static final double ALLOWABLE_ROTATION_ERROR = 5;
 
-    private HolonomicDriveController hocontroller;
     private CatzDrivetrain m_driveTrain;
     private PathPlannerTrajectory trajectory;
+    private HolonomicDriveController hocontroller;
     
     private final Timer timer = new Timer();
     private final double TIMEOUT_SCALAR = 5;
     private PathPlannerPath path;
+
 
     /**
      * @param drivetrain           The coordinator between the gyro and the swerve modules.
@@ -58,7 +60,6 @@ public class TrajectoryDriveCmd extends Command {
         PathPlannerPath newPath = new PathPlannerPath(bezierPoints, constraints, endRobotState);
         path = newPath;
         m_driveTrain = drivetrain;
-
         addRequirements(m_driveTrain);
     }
 
@@ -67,29 +68,18 @@ public class TrajectoryDriveCmd extends Command {
 
     @Override
     public void initialize() {
-
-        // Reset and begin timer
         timer.reset();
         timer.start();
 
-        ProfiledPIDController autoSteerPIDController = 
-            new ProfiledPIDController(5, 0, 0,
-            new TrapezoidProfile.Constraints(4.8, 3)
-        );
-        hocontroller = new HolonomicDriveController(new PIDController(3.0, 0, 0.0),
-            new PIDController(3.0, 0, 0.0),
-            autoSteerPIDController
-        );
+        hocontroller = DriveConstants.hocontroller;
         
-        PathPlannerPath usePath = null;
-        if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
+        PathPlannerPath usePath = path;
+        if(AllianceFlipUtil.shouldFlipToRed()) {
             usePath = path.flipPath();
-        } else {
-            usePath = path;
         }
-        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
 
-        // Create pathplanner trajectory
+        //CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        
         this.trajectory = new PathPlannerTrajectory(
             usePath, 
             DriveConstants.
@@ -117,10 +107,10 @@ public class TrajectoryDriveCmd extends Command {
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
-                                                          0.0,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
-                                                          0.0, 
-                                                          new Pose2d(goal.positionMeters, targetOrientation),
-                                                          0.0);
+                                                          0.0,//goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
+                                                          goal.accelerationMpsSq, 
+                                                          new Pose2d(goal.positionMeters, new Rotation2d()),
+                                                          goal.curvatureRadPerMeter);
     
             //construct chassisspeeds
             ChassisSpeeds adjustedSpeeds = hocontroller.calculate(currentPose, state, targetOrientation);
@@ -129,7 +119,8 @@ public class TrajectoryDriveCmd extends Command {
             m_driveTrain.drive(adjustedSpeeds, true);
             CatzRobotTracker.getInstance().addTrajectorySetpointData(goal.getTargetHolonomicPose());
 
-            Logger.recordOutput("Desired Auto Pose", new Pose2d(state.poseMeters.getTranslation(), goal.targetHolonomicRotation));
+            Logger.recordOutput("CatzRobotTracker/Desired Auto Pose", new Pose2d(state.poseMeters.getTranslation(), goal.targetHolonomicRotation));
+
 
         }else{
             m_driveTrain.stopDriving();
@@ -157,7 +148,6 @@ public class TrajectoryDriveCmd extends Command {
         m_driveTrain.stopDriving();
         System.out.println("trajectory done");
     }
-
 
     @Override
     public boolean isFinished() {

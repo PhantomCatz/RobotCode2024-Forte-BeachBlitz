@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import com.google.flatbuffers.Constants;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -40,6 +41,7 @@ import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.Intak
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
 import frc.robot.Commands.AutomatedSequenceCmds;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.FaceTarget;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TeleopDriveCmd;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
 import frc.robot.Utilities.Alert;
@@ -84,9 +86,6 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
-    NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(this));
-
     // Drive And Aux Command Mapping
     configureBindings();
 
@@ -130,16 +129,19 @@ public class RobotContainer {
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
     xboxAux.y().onTrue(superstructure.moveTurretToHome());
 
-    xboxAux.a().onTrue(superstructure.deployIntake(IntakePivotPosition.STOW));
+    //xboxAux.a().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.PICKUP_SOURCE));
     //xboxAux.a().onTrue(rollers.setRollersIn());
-    xboxAux.x().onTrue(superstructure.deployIntake(IntakePivotPosition.PICKUP_GROUND));
-    xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
+    xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
+    //xboxAux.b().onTrue(superstructure.setElevatorTargetPos(ElevatorPosition.STOW));
 
+    xboxDrv.b().onTrue(new FaceTarget(new Translation2d(0, 0), drive));
 
+    xboxDrv.y().onTrue(auto.autoFindPathSpeakerLOT());
+
+    xboxDrv.leftStick().onTrue(drive.cancelTrajectory());
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
                                                () -> xboxDrv.getLeftY(), 
-                                               () -> xboxDrv.getRightX(), 
-                                               () -> xboxDrv.a().getAsBoolean(), drive)); // TODO changes this to be in the subsystem rather than the cmd
+                                               () -> xboxDrv.getRightX(), drive));
     //TODO add triggers to put default as priority    
   }
 
@@ -220,8 +222,6 @@ public class RobotContainer {
   public CatzIntakePivot getCatzIntakePivot() {
     return intakePivot;
   }
-
-
 
   public Command getAutonomousCommand() {
     return auto.getCommand();

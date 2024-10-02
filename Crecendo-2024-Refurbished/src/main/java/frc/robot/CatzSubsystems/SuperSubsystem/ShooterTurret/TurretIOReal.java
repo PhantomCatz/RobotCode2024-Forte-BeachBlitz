@@ -17,7 +17,7 @@ public class TurretIOReal implements TurretIO{
     private final CANSparkMax turretNeo;
 
     //Control
-    private final PIDController turretFeedback = new PIDController(1, 0.0, 0.0, CatzConstants.LOOP_TIME);
+    private final PIDController turretFeedback = new PIDController(TurretConstants.TURRET_kP, TurretConstants.TURRET_kI, TurretConstants.TURRET_kD, CatzConstants.LOOP_TIME);
 
     public TurretIOReal() {
         // Turret Neo hardware insantiation
@@ -43,7 +43,7 @@ public class TurretIOReal implements TurretIO{
     public void updateInputs(TurretIOInputs inputs) {
         inputs.velocityRps             = turretNeo.getEncoder().getVelocity()/60; // In rotations of Output shaft
         inputs.appliedVolts            = turretNeo.getBusVoltage();
-        inputs.positionDegrees         = turretNeo.getEncoder().getPosition();
+        inputs.positionDegrees         = turretNeo.getEncoder().getPosition()*5*180/Math.PI;
         inputs.tempCelsius             = turretNeo.getMotorTemperature();
 
     }
