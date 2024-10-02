@@ -7,6 +7,7 @@ import frc.robot.CatzConstants;
 import frc.robot.FieldConstants;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.Utilities.AllianceFlipUtil;
 
 public class WaitUntilPassX extends Command{
     private double xCoord;
@@ -26,7 +27,7 @@ public class WaitUntilPassX extends Command{
     public void initialize(){
         executing = false;
         done = false;
-        if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
+        if(AllianceFlipUtil.shouldFlipToRed()) {
             xCoord = FieldConstants.FIELD_LENGTH_MTRS-originalXCoord;
         } else {
             xCoord = originalXCoord;
