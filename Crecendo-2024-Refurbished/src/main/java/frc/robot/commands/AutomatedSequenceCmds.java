@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
+import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.CatzSubsystems.IntakeRollers.CatzIntakeRollers;
 import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem;
 import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
@@ -38,11 +39,12 @@ public class AutomatedSequenceCmds {
      */
     public static Command NoteDetectIntakeToAmpScoring(RobotContainer container) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+        CatzIntakeRollers rollers = container.getCatzIntakeRollers();
 
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND), // Until Intake has made it to final ground pos
-                Commands.print("Run Rollers")
+                rollers.setRollersIn()
             ).until(()->true), // Until Intake Rollers have detected note,
             superstructure.setSuperStructureState(SuperstructureState.STOW) // Until Intake has stowed 
         );
@@ -53,14 +55,15 @@ public class AutomatedSequenceCmds {
      */
     public static Command TransferNoteToIntake(RobotContainer container) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+        CatzIntakeRollers rollers = container.getCatzIntakeRollers();
 
         return new SequentialCommandGroup(
             superstructure.setSuperStructureState(SuperstructureState.STOW).until(()->true),
             new ParallelCommandGroup(
-                Commands.print("Run Rollers To Intake"),
+                rollers.setRollersHandoffOut(),
                 container.getCatzShooterFeeder().commandToIntake()
             ).until(()->container.getCatzShooterFeeder()
-                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position  
+                                    .isNoteInShooterPosition()) // Until intake finalizes note position  
         );
     }
 
@@ -69,11 +72,12 @@ public class AutomatedSequenceCmds {
      */
     public static Command TransferNoteToShooter(RobotContainer container) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+        CatzIntakeRollers rollers = container.getCatzIntakeRollers();
 
         return new SequentialCommandGroup(
             superstructure.setSuperStructureState(SuperstructureState.STOW).until(()->true), // Until Intake has stowed 
             new ParallelCommandGroup(
-                Commands.print("Run Rollers"),
+                rollers.setRollersHandoffIn(),
                 container.getCatzShooterFeeder().commandToShooter()
             ).until(()->container.getCatzShooterFeeder()
                                     .isNoteInShooterPosition()) // Until Shooter finalizes note position
@@ -85,6 +89,7 @@ public class AutomatedSequenceCmds {
      */
     public static Command AutoAimShootNote(RobotContainer container, Supplier<Boolean> driverOveride) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+        CatzShooterFlywheels flywheels = container.getCatzShooterFlywheels();
 
         return new SequentialCommandGroup(
             TransferNoteToShooter(container).unless(()->true),// Note is already in shooter

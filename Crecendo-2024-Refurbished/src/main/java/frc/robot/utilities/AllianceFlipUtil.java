@@ -77,15 +77,9 @@ public class AllianceFlipUtil {
 
   public static boolean shouldFlipToRed() {
     return DriverStation.getAlliance().isPresent()
-        && CatzConstants.choosenAllianceColor == AllianceColor.Red;
+        && DriverStation.getAlliance().get() == Alliance.Red;
   }
 
-  public static void determineAndApplyPathPlannerFlipping() {
-    if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
-      flippingState = PathPlannerFlippingState.FLIPPED_TO_RED;
-    } else {
-      flippingState = PathPlannerFlippingState.BLUE;
-    }
-  }
+
 
 }

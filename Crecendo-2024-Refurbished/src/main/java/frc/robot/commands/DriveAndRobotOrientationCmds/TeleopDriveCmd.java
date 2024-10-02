@@ -10,6 +10,7 @@ import frc.robot.CatzConstants.XboxInterfaceConstants;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.Utilities.AllianceFlipUtil;
 
 public class TeleopDriveCmd extends Command {
   // Subsystem declaration
@@ -60,7 +61,7 @@ public class TeleopDriveCmd extends Command {
     turningVelocity =               m_angVelocityPctOutput.get(); //alliance flip shouldn't change for turing speed when switching alliances
 
     // Flip Directions for left joystick if alliance is red
-    if(CatzConstants.choosenAllianceColor == AllianceColor.Red) {
+    if(AllianceFlipUtil.shouldFlipToRed()) {
       m_headingAndVelocity_X = -m_headingAndVelocity_X;
       m_headingAndVelocity_Y = -m_headingAndVelocity_Y;
     }

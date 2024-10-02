@@ -326,15 +326,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    // Run Driver Station Chooser
-    if(DriverStation.isDSAttached()) {
-      alliance = DriverStation.getAlliance(); //TODO This thing is broken
-      CatzConstants.choosenAllianceColor =
-          alliance
-              .map(alliance -> alliance == Alliance.Blue ? AllianceColor.Blue : AllianceColor.Red)
-              .orElse(AllianceColor.Red);
-    } 
-
     // Driver Station Alerts
     driverStationDisconnectAlert.set(!DriverStation.isDSAttached());
     fmsDisconnectAlert.set(!DriverStation.isFMSAttached());
