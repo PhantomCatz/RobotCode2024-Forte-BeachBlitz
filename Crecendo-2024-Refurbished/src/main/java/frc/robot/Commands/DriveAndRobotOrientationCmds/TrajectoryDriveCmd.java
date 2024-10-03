@@ -71,14 +71,14 @@ public class TrajectoryDriveCmd extends Command {
         timer.reset();
         timer.start();
 
-        hocontroller = DriveConstants.hocontroller;
+        hocontroller = DriveConstants.getNewHolController(); //it is very necessary to make a new instance of holonomic controller to clear the memory so kD doesn't explode in the first frame due to discontinuous function
         
         PathPlannerPath usePath = path;
         if(AllianceFlipUtil.shouldFlipToRed()) {
             usePath = path.flipPath();
         }
 
-        //CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
         
         this.trajectory = new PathPlannerTrajectory(
             usePath, 
@@ -107,7 +107,7 @@ public class TrajectoryDriveCmd extends Command {
             * Does not take acceleration to be used with the internal WPILIB trajectory library
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
-                                                          0.0,//goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
+                                                          goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
                                                           goal.accelerationMpsSq, 
                                                           new Pose2d(goal.positionMeters, new Rotation2d()),
                                                           goal.curvatureRadPerMeter);

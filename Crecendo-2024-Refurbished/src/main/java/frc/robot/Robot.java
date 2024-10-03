@@ -343,8 +343,8 @@ public class Robot extends LoggedRobot {
     // deployment benchmark
     lastDeploymentAlert.set(true);
     autoStart = Timer.getFPGATimestamp();
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_autonomousCommand = m_robotContainer.getQuestionaire().getSelectedPath();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getQuestionaire().getSelectedPath();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

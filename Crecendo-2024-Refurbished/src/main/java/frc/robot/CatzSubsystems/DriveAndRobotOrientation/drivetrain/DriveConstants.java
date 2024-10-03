@@ -144,14 +144,16 @@ public class DriveConstants {
     // the motion of the whole robot
     public static final SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(moduleTranslations);
 
-    public static final HolonomicDriveController hocontroller = new HolonomicDriveController(
-                                                                        new PIDController(18.0, 0, 0.0), // TODO Tune PID outside
-                                                                        new PIDController(18.0, 0, 0.0),
-                                                                        new ProfiledPIDController(
-                                                                            50, 0, 0,
-                                                                            new TrapezoidProfile.Constraints(driveConfig.maxAngularVelocity, driveConfig.maxAngularAcceleration)
-                                                                        )
-                                                                    );
+    public static HolonomicDriveController getNewHolController(){
+        return new HolonomicDriveController(
+            new PIDController(10.0, 0, 0.1), // TODO Tune PID outside
+            new PIDController(10.0, 0, 0.1),
+            new ProfiledPIDController(
+                10, 0, 0,
+                new TrapezoidProfile.Constraints(driveConfig.maxAngularVelocity, driveConfig.maxAngularAcceleration)
+            )
+        );
+    }
                                                                             
     /****************************************************************************************
      * 

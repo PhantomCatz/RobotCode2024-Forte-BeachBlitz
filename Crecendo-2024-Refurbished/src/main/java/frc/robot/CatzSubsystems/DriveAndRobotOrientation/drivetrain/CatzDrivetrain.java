@@ -148,13 +148,15 @@ public class CatzDrivetrain extends SubsystemBase {
             gyroDisconnected.set(!gyroInputs.gyroConnected);
         }
 
-        // Swerve drive Odometry
+        // Swerve drive Odometry    
         SwerveDriveWheelPositions wheelPositions = new SwerveDriveWheelPositions(getModulePositions());
         // Grab latest gyro measurments
         Rotation2d gyroAngle2d = 
                         (CatzConstants.hardwareMode == CatzConstants.RobotHardwareMode.SIM)
                             ? null
                             : getRotation2d();
+        
+        
         // Add observations to robot tracker
         CatzRobotTracker.getInstance()
                             .addOdometryObservation(

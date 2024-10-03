@@ -1,5 +1,7 @@
 package frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -19,6 +21,7 @@ public class GyroIONavX implements GyroIO {
 
       inputs.gyroAngle        = navX.getAngle(); //Acumulated Yaw no rollover
       inputs.gyroYawDegrees   = navX.getYaw();
+      Logger.recordOutput("GyroYaw", navX.getYaw());
       inputs.gyroRollDegrees  = navX.getRoll(); 
            
       inputs.gyroAngleVel     = navX.getRate();
