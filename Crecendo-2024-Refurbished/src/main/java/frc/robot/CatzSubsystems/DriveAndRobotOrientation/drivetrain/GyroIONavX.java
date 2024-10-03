@@ -21,7 +21,6 @@ public class GyroIONavX implements GyroIO {
 
       inputs.gyroAngle        = navX.getAngle(); //Acumulated Yaw no rollover
       inputs.gyroYawDegrees   = navX.getYaw();
-      Logger.recordOutput("GyroYaw", navX.getYaw());
       inputs.gyroRollDegrees  = navX.getRoll(); 
            
       inputs.gyroAngleVel     = navX.getRate();

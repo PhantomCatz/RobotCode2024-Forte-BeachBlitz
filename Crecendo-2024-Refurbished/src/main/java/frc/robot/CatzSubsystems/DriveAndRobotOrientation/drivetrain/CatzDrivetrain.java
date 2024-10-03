@@ -142,7 +142,8 @@ public class CatzDrivetrain extends SubsystemBase {
         } catch (Exception e) {
 
         }
-       // Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
+        Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
+        // NOTE Gyro needs to be firmly mounted to rio for accurate results.
         // Set Gyro Disconnect alert
         if (Robot.isReal()) {
             gyroDisconnected.set(!gyroInputs.gyroConnected);
@@ -328,7 +329,7 @@ public class CatzDrivetrain extends SubsystemBase {
      * @return The Heading of the robot dependant on where it's been instantiated
      */
     private double getGyroHeading() {
-        return -gyroInputs.gyroYawDegrees; //- for atlas //TODO need to verify on forte again
+        return -gyroInputs.gyroYawDegrees; // Negative on Forte due to instalation, gyro's left is not robot left
     }
 
     /** Get the Rotation2d object based on the gyro angle */

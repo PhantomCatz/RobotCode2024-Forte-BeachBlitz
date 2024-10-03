@@ -71,7 +71,8 @@ public class TrajectoryDriveCmd extends Command {
         timer.reset();
         timer.start();
 
-        hocontroller = DriveConstants.getNewHolController(); //it is very necessary to make a new instance of holonomic controller to clear the memory so kD doesn't explode in the first frame due to discontinuous function
+        //it is necessary to make a new instance of holonomic controller to clear the memory so kD doesn't explode in the first frame due to discontinuous function
+        hocontroller = DriveConstants.getNewHolController();
         
         PathPlannerPath usePath = path;
         if(AllianceFlipUtil.shouldFlipToRed()) {

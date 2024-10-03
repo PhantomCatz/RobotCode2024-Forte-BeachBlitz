@@ -146,7 +146,7 @@ public class DriveConstants {
 
     public static HolonomicDriveController getNewHolController(){
         return new HolonomicDriveController(
-            new PIDController(10.0, 0, 0.1), // TODO Tune PID outside
+            new PIDController(10.0, 0, 0.1), 
             new PIDController(10.0, 0, 0.1),
             new ProfiledPIDController(
                 10, 0, 0,
