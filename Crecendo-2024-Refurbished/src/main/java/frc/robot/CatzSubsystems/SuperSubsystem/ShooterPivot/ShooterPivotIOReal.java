@@ -29,7 +29,6 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
     private final CANSparkMax elevationNeoMtr;
 
     // Control
-    //TBD
     private final PIDController ShooterPivotFeedback = new PIDController(gains.kP(), gains.kI(), gains.kD(), CatzConstants.LOOP_TIME);
 
     public ShooterPivotIOReal() {
@@ -42,6 +41,7 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
         elevationNeoMtr.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
     }
 
+    @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.positionDegrees = Units.rotationsToDegrees(elevationNeoMtr.getEncoder().getPosition());
         inputs.velocityRpm = elevationNeoMtr.getEncoder().getVelocity();

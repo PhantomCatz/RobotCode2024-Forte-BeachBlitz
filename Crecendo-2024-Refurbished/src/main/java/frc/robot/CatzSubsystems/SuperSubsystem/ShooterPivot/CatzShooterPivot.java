@@ -103,7 +103,6 @@ public class CatzShooterPivot {
   }
 
   public void setNeutralMode() {
-
     io.stop();
   }
 
