@@ -86,21 +86,9 @@ public class CatzShooterPivot {
 
     // Set Alerts
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);
-
-    // Update controllers when user specifies
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setPID(kP.get(), kI.get(), kD.get()), kP, kI, kD);
-    LoggedTunableNumber.ifChanged(hashCode(), 
-        ()-> io.setMotionMagicParameters(mmCruiseVelocity.get(), mmAcceleration.get(), mmJerk.get()), 
-        mmCruiseVelocity,
-        mmAcceleration,
-        mmJerk);
-
     // Run Setpoint Control
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
-    } else if(isCharacterizing == false){
-      io.runMotionMagicSetpoint(m_targetPosition.getTargetMotionPosition());
     }
 
   }
@@ -114,9 +102,9 @@ public class CatzShooterPivot {
     return inputs.positionDegrees;
   }
 
-  public void setNeutralMode(NeutralModeValue neutralMode) {
+  public void setNeutralMode() {
 
-    io.setNeutralMode(neutralMode);
+    io.stop();
   }
 
   public double getCharacterizationVelocity() {

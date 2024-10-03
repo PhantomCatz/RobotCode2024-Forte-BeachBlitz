@@ -24,20 +24,5 @@ public interface ShooterPivotIO {
 
     public default void stop() {}
 
-    public default void runMotionMagicSetpoint(double position) {}
-
-    /** Config PID values for both motors */
-    public default void setPID(double kP, double kI, double kD) {}
-
-    /** Config FF values for both motors */
-    public default void setFF(double kS, double kV, double kA) {}
-
-    /** Run left flywheels at voltage */
-    public default void runCharacterization(double input) {}
-
-    public default void setNeutralMode(NeutralModeValue mode) {}
-
-    public default void setMotionMagicParameters(double cruiseVelocity, double acceleration, double jerk) {}
-
-
+    public default void runSetpointDegrees(double currentAngleDegrees,double setpointAngleDegrees) {}
 }
