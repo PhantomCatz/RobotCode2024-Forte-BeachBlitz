@@ -2,6 +2,8 @@ package frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot;
 
 import static frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.ShooterPivotConstants.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -29,7 +31,7 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
     private final CANSparkMax elevationNeoMtr;
 
     // Control
-    private final PIDController ShooterPivotFeedback = new PIDController(gains.kP(), gains.kI(), gains.kD(), CatzConstants.LOOP_TIME);
+    private PIDController shooterPivotFeedback = new PIDController(gains.kP(), gains.kI(), gains.kD(), CatzConstants.LOOP_TIME);
 
     public ShooterPivotIOReal() {
         elevationNeoMtr = new CANSparkMax(0, MotorType.kBrushless);
@@ -43,8 +45,7 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
 
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
-        inputs.positionDegrees = Units.rotationsToDegrees(elevationNeoMtr.getEncoder().getPosition());
-        inputs.velocityRpm = elevationNeoMtr.getEncoder().getVelocity();
+        inputs.positionTicks = elevationNeoMtr.getEncoder().getPosition();
         inputs.appliedVolts = elevationNeoMtr.getBusVoltage();
         inputs.tempCelcius = elevationNeoMtr.getMotorTemperature();
     }
@@ -55,16 +56,23 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
     //
     //-----------------------------------------------------------------------------------------
     @Override
-    public void runSetpointDegrees(double currentAngleDegrees,double setpointAngleDegrees) {
-        double percentOutput = ShooterPivotFeedback.calculate(currentAngleDegrees, setpointAngleDegrees);
+    public void runSetpointTicks(double currentPositionTicks,double setpointTicks) {
+        double percentOutput = shooterPivotFeedback.calculate(currentPositionTicks, setpointTicks);
         elevationNeoMtr.set(percentOutput);
+        Logger.recordOutput("shooterPivot/PercentOutput", percentOutput);
+        Logger.recordOutput("shooterPivot/currentPositionTicks", currentPositionTicks);
+        Logger.recordOutput("shooterPivot/setpointTicks", setpointTicks);
     }
   
     @Override
-    public void runVolts(double volts) {
-      elevationNeoMtr.setVoltage(volts);
+    public void runPercentOutput(double percentOutput) {
+      elevationNeoMtr.set(percentOutput);
     }
 
+    @Override
+    public void setPID(double p, double i, double d) {
+      shooterPivotFeedback = new PIDController(p, i, d, CatzConstants.LOOP_TIME);
+    }
   
     @Override
     public void stop() {

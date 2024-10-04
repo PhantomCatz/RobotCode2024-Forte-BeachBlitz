@@ -40,6 +40,7 @@ import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator.ElevatorPos
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.IntakePivotPosition;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
+import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot.ShooterPivotPositionType;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.FaceTarget;
@@ -128,8 +129,11 @@ public class RobotContainer {
 
     // xboxAux.y().onTrue(superstructure.deployIntake());
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
-    xboxAux.y().onTrue(superstructure.moveTurretToHome());
+    
+    xboxAux.y().onTrue(superstructure.setShooterPosition(ShooterPivotPositionType.TEST));
+    xboxAux.rightStick().onTrue(superstructure.setShooterPivotManualPower(-xboxAux.getRightY()));
 
+    
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
     xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
     xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
@@ -139,6 +143,7 @@ public class RobotContainer {
     xboxDrv.y().onTrue(auto.autoFindPathSpeakerLOT());
 
     xboxDrv.leftStick().onTrue(drive.cancelTrajectory());
+    
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 
                                                () -> xboxDrv.getLeftY(), 
                                                () -> xboxDrv.getRightX(), drive));

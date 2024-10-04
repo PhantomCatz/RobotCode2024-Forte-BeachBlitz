@@ -44,8 +44,10 @@ public class CatzShooterPivot {
     AUTO_AIM(()-> AutoAimingParametersUtil.getAutoAimSpeakerParemeters()
                                           .shooterPivotAngle()
                                           .getDegrees()), // TODO add auto aim parameters
-    HOME(()->0.0),
-    MANUAL(() -> 0.0);
+    MANUAL(() -> 0.0),
+    HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 202)),
+    SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 10)),
+    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 7));
 
     private final DoubleSupplier motionType;
     private double getTargetMotionPosition() {
@@ -83,12 +85,21 @@ public class CatzShooterPivot {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("inputs/ShooterPivot", inputs);
+    
+    // Update Controllers when User Specifies
+    LoggedTunableNumber.ifChanged(
+      hashCode(), () -> io.setPID(kP.get(), kI.get(), kD.get()), kP, kI, kD);
 
     // Set Alerts
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);
     // Run Setpoint Control
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
+      m_targetPosition = null;
+    } else if(m_targetPosition == ShooterPivotPositionType.MANUAL) {
+      io.runPercentOutput(manualPwr);
+    } else {
+      io.runSetpointTicks(getPositionTicks(), m_targetPosition.getTargetMotionPosition());
     }
 
   }
@@ -98,16 +109,17 @@ public class CatzShooterPivot {
   //    Misc Methods
   //
   //-----------------------------------------------------------------------------------------
-  public double getPositionDegrees() {
-    return inputs.positionDegrees;
+  public double getPositionTicks() {
+    return inputs.positionTicks;
   }
 
   public void setNeutralMode() {
     io.stop();
   }
 
-  public double getCharacterizationVelocity() {
-    return inputs.velocityRpm;
+  public void setPercentOutput(double percentOutput) {
+    m_targetPosition = ShooterPivotPositionType.MANUAL;
+    manualPwr = percentOutput;
   }
 
 

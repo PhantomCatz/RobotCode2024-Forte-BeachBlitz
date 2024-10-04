@@ -16,6 +16,7 @@ import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator.ElevatorPos
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot;
 import frc.robot.CatzSubsystems.SuperSubsystem.IntakePivot.CatzIntakePivot.IntakePivotPosition;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot;
+import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot.ShooterPivotPositionType;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.CatzShooterTurret.TurretPosition;
 
@@ -43,6 +44,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
   private boolean isTurretCausingDanger = false;
   private boolean isShooterPivotCausingDanger = false;
   private boolean isIntakePivotCausingDanger = false;
+  private boolean isIntakeCausingDanger = false; 
 
   /** Creates a new Superstructure. */
   public CatzSuperSubsystem(CatzElevator elevator, CatzShooterTurret turret, CatzShooterPivot shooterPivot, CatzIntakePivot intakePivot) {
@@ -56,10 +58,15 @@ public class CatzSuperSubsystem extends SubsystemBase {
   public void periodic() {
     //Run Danger Checks for stow
     isTurretCausingDanger = (Math.abs(turret.getTurretPosition()) > 20.0); //Turret turned too far to left or right
-    isShooterPivotCausingDanger = false; //TBD change this later //Shooter extended to high
+    isShooterPivotCausingDanger = shooterPivot.getPositionTicks() > 0; //TBD TODO fix after you've defined shooter positions //Shooter extended to high
     isElevatorCausingDanger = elevator.getElevatorPositionRotations() > 30.0; // Elevator too high for intake to stow
     isIntakePivotCausingDanger = (intakePivot.getIntakePivotPosition() > 90.0); // Intake not extended out far enough to clear elevator
 
+    //----------------------------------------   
+
+    //  Comment out when testing \/ \/ \/
+
+    //----------------------------------------
     // Init SuperstructureState change
     if(currentSuperstructureState != previousSuperstructureState) 
     {
@@ -69,7 +76,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
         case STOW:
           elevator.setTargetPosition(ElevatorPosition.STOW);
           turret.setTargetPosition(TurretPosition.HOME);
-          //Set shooter pivot down
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME);
           if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
           {
             intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
@@ -82,6 +89,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
         case INTAKE_GROUND:
           elevator.setTargetPosition(ElevatorPosition.STOW);
           turret.setTargetPosition(TurretPosition.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME);
           if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
           {
             intakePivot.setIntakePivotState(IntakePivotPosition.PICKUP_GROUND);
@@ -95,6 +103,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
         case SCORE_AMP:
           intakePivot.setIntakePivotState(IntakePivotPosition.SCORE_AMP);
           turret.setTargetPosition(TurretPosition.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME); //TODO Might change
           if(!isIntakePivotCausingDanger) 
           {
             elevator.setTargetPosition(ElevatorPosition.STOW);
@@ -106,8 +115,8 @@ public class CatzSuperSubsystem extends SubsystemBase {
 
         case AUTO_AIM:
           elevator.setTargetPosition(ElevatorPosition.STOW);
-          turret.setTargetPosition(TurretPosition.AUTO_AIM);
-          //Set shooter pivot to autoaim
+          turret.setTargetPosition(TurretPosition.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.AUTO_AIM);
           intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
         break;
 
@@ -153,6 +162,12 @@ public class CatzSuperSubsystem extends SubsystemBase {
       default:
     }
 
+    //----------------------------------------
+
+    // End of Comment
+    
+    //----------------------------------------
+
     Logger.recordOutput("Superstructure/dangerCheck/elevator", isElevatorCausingDanger);
     Logger.recordOutput("Superstructure/dangerCheck/intake", isIntakePivotCausingDanger);
     Logger.recordOutput("Superstructure/dangerCheck/shooterpivot", isShooterPivotCausingDanger);
@@ -196,5 +211,13 @@ public class CatzSuperSubsystem extends SubsystemBase {
 
   public Command moveTurretToHome() {
     return runOnce(() -> turret.setTargetPosition(TurretPosition.HOME));
+  }
+
+  public Command setShooterPosition(ShooterPivotPositionType position) {
+    return runOnce(() -> shooterPivot.setTargetMotionMethod(position));
+  }
+
+  public Command setShooterPivotManualPower(double power) {
+    return run(() -> shooterPivot.setPercentOutput(power));
   }
 }
