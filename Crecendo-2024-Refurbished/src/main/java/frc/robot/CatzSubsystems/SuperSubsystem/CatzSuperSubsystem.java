@@ -58,7 +58,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
   public void periodic() {
     //Run Danger Checks for stow
     isTurretCausingDanger = (Math.abs(turret.getTurretPosition()) > 20.0); //Turret turned too far to left or right
-    isShooterPivotCausingDanger = shooterPivot.getPositionTicks() > 0; //TBD TODO fix after you've defined shooter positions //Shooter extended to high
+    isShooterPivotCausingDanger = shooterPivot.getPositionTicks() > 0.0; //TBD TODO fix after you've defined shooter positions //Shooter extended to high
     isElevatorCausingDanger = elevator.getElevatorPositionRotations() > 30.0; // Elevator too high for intake to stow
     isIntakePivotCausingDanger = (intakePivot.getIntakePivotDegree() > 90.0); // Intake not extended out far enough to clear elevator
 

@@ -113,6 +113,10 @@ public class CatzShooterPivot {
     return inputs.positionTicks;
   }
 
+  public double isShooterPivotInPosition() {
+    return inputs.positionTicks; // DO math
+  }
+
   public void setNeutralMode() {
     io.stop();
   }

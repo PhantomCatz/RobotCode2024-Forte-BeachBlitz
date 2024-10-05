@@ -6,13 +6,18 @@ import static frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.ShooterPivotC
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import frc.robot.CatzConstants;
 
 public class ShooterPivotIOSim implements ShooterPivotIO {
 
     private final DCMotorSim elevationSimMotor;
 
-        private final PIDController shooterPivotFeedback = new PIDController(gains.kP(), gains.kI(), gains.kD(), CatzConstants.LOOP_TIME);
+    Mechanism2d shooterPivotVisualizer = new Mechanism2d(3, 3);
+    MechanismRoot2d root = shooterPivotVisualizer.getRoot("PivotPoint", 0, 0);
+
+    private final PIDController shooterPivotFeedback = new PIDController(2,0,0, CatzConstants.LOOP_TIME);
 
     
     public ShooterPivotIOSim() {
@@ -23,6 +28,18 @@ public class ShooterPivotIOSim implements ShooterPivotIO {
 
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
+        inputs.positionTicks = elevationSimMotor.getAngularPositionRotations();
+    }
 
+    @Override
+    public void runPercentOutput(double percentOutput) {
+
+    }
+
+    @Override
+    public void runSetpointTicks(double currentPosition, double setPointTicks) {
+        elevationSimMotor.setInput(
+            shooterPivotFeedback.calculate(currentPosition, setPointTicks)
+        );
     }
 }
