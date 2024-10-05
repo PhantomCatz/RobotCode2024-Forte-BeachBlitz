@@ -109,6 +109,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   //-----------------------------------------------------------------------------------------
   /** Feeder TOSHOOTER state on state change */
   private void handleToShooterInit() {
+    System.out.println("1");
     io.loadFoward();
     isAdjustStateDetermined = false;
     isNoteInPosition = false;
@@ -117,6 +118,7 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOSHOOTER state Periodic */
   private void handleToShooterPeriodic() {
+        System.out.println("2");
     // Determine which direction to adjust note to
     if(isAdjustStateDetermined == false) {
       if(inputs.isLoadBeamBreakBroken) { 
@@ -151,7 +153,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   /** Feeder TOINTAKE state state change */
   private void handleToIntakeInit() {
     io.resetLoadEnc();
-    io.loadFoward();
+    io.loadBackward();
     hasNoteClearedIntake = false;
     isNoteInPosition = false;
   }
@@ -180,6 +182,8 @@ public class CatzShooterFeeder extends SubsystemBase {
       io.feedDisabled();
     }
   }
+
+  
   //-----------------------------------------------------------------------------------------
   //    Feeder MISC
   //-----------------------------------------------------------------------------------------
@@ -198,7 +202,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   public Command commandToShooter() {
     return startEnd(() -> setShooterFeederState(ShooterFeederState.TO_SHOOTER), 
                     () -> setShooterFeederState(ShooterFeederState.DISABLED))
-        .withName("Feeder TOSHOOTER");
+        .withName("Feeder TO SHOOTER");
   }
 
   public Command commandToIntake() {

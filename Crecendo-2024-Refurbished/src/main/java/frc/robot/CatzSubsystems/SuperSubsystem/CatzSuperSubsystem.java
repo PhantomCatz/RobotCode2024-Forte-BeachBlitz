@@ -60,7 +60,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
     isTurretCausingDanger = (Math.abs(turret.getTurretPosition()) > 20.0); //Turret turned too far to left or right
     isShooterPivotCausingDanger = shooterPivot.getPositionTicks() > 0; //TBD TODO fix after you've defined shooter positions //Shooter extended to high
     isElevatorCausingDanger = elevator.getElevatorPositionRotations() > 30.0; // Elevator too high for intake to stow
-    isIntakePivotCausingDanger = (intakePivot.getIntakePivotPosition() > 90.0); // Intake not extended out far enough to clear elevator
+    isIntakePivotCausingDanger = (intakePivot.getIntakePivotDegree() > 90.0); // Intake not extended out far enough to clear elevator
 
     //----------------------------------------   
 
@@ -74,16 +74,17 @@ public class CatzSuperSubsystem extends SubsystemBase {
       switch(currentSuperstructureState) 
       {
         case STOW:
-          elevator.setTargetPosition(ElevatorPosition.STOW);
-          turret.setTargetPosition(TurretPosition.HOME);
-          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME);
           if(!isElevatorCausingDanger && !isTurretCausingDanger && !isShooterPivotCausingDanger) 
           {
             intakePivot.setIntakePivotState(IntakePivotPosition.STOW);
           } else 
           {
             intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
-          }
+          } 
+          elevator.setTargetPosition(ElevatorPosition.STOW);
+          turret.setTargetPosition(TurretPosition.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME);
+        
         break;
 
         case INTAKE_GROUND:
@@ -191,7 +192,15 @@ public class CatzSuperSubsystem extends SubsystemBase {
 
   } // - End of Superstructure Periodic
 
+  //-----------------------------------------------------------------------------------------
+  //
+  //    Superstructure Getters
+  //
+  //-----------------------------------------------------------------------------------------
 
+  public boolean isIntakeInPosition() {
+    return intakePivot.isIntakeInPosition();
+  }
   //-----------------------------------------------------------------------------------------
   //
   //    Superstructure Instance Factory Command Wrapper

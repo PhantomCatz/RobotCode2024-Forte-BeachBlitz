@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.CatzConstants;
 import frc.robot.Utilities.LoggedTunableNumber;
@@ -84,15 +85,16 @@ public class CatzIntakePivot {
       io.stop();
     } else {
       // Run Softlimit check
-      if(getIntakePivotPosition() > SOFTLIMIT_STOW && m_targetPosition == IntakePivotPosition.STOW) {
+      if(getIntakePivotDegree() > SOFTLIMIT_STOW && m_targetPosition == IntakePivotPosition.STOW) {
         io.stop();
       } else {
          io.runSetpoint(m_targetPosition.getTargetDegree());
       }
     }
     
-    Logger.recordOutput("Target Degree Pivot", m_targetPosition.getTargetDegree());
-    Logger.recordOutput("Enum Intake Pivot", m_targetPosition.name());
+    Logger.recordOutput("IntakePivot/Target Degree Pivot", m_targetPosition.getTargetDegree());
+    Logger.recordOutput("IntakePivot/Enum Intake Pivot", m_targetPosition.name());
+    Logger.recordOutput("IntakePivot/isIntakeInPosition", isIntakeInPosition());
   }
 
   //-----------------------------------------------------------------------------------------
@@ -100,8 +102,16 @@ public class CatzIntakePivot {
   //    Pivot Misc Methods
   //
   //-----------------------------------------------------------------------------------------
-  public double getIntakePivotPosition() {
-    return inputs.positionRads;
+  public double getIntakePivotDegree() {
+    return Units.radiansToDegrees(inputs.positionRads);
+  }
+
+
+  public boolean isIntakeInPosition() {
+    double intakePosition = Math.abs(getIntakePivotDegree());
+    double target = Math.abs(m_targetPosition.getTargetDegree());
+    boolean finalBool = Math.abs(target - intakePosition) < 2.0;
+    return finalBool;
   }
 
   //-----------------------------------------------------------------------------------------
@@ -110,7 +120,6 @@ public class CatzIntakePivot {
   //
   //-----------------------------------------------------------------------------------------
   public void setIntakePivotState(IntakePivotPosition targetPosition) {
-    // System.out.println(targetPosition);
     m_targetPosition = targetPosition;
   }
 }
