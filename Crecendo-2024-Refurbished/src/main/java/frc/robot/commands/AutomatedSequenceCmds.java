@@ -78,7 +78,6 @@ public class AutomatedSequenceCmds {
 
         return new SequentialCommandGroup(
             superstructure.setSuperStructureState(SuperstructureState.STOW).until(()->superstructure.isIntakeInPosition()), // Until Intake has stowed 
-            Commands.print(""),
             Commands.waitSeconds(0.2),
             new ParallelCommandGroup(
                 rollers.setRollersHandofftoShooter(),

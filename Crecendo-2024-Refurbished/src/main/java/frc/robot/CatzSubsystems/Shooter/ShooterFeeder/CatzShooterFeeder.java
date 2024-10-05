@@ -109,7 +109,6 @@ public class CatzShooterFeeder extends SubsystemBase {
   //-----------------------------------------------------------------------------------------
   /** Feeder TOSHOOTER state on state change */
   private void handleToShooterInit() {
-    System.out.println("1");
     io.loadFoward();
     isAdjustStateDetermined = false;
     isNoteInPosition = false;
@@ -118,7 +117,6 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOSHOOTER state Periodic */
   private void handleToShooterPeriodic() {
-        System.out.println("2");
     // Determine which direction to adjust note to
     if(isAdjustStateDetermined == false) {
       if(inputs.isLoadBeamBreakBroken) { 

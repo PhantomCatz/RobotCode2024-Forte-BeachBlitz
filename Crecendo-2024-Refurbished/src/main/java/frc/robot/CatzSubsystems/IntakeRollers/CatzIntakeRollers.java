@@ -74,7 +74,6 @@ public class CatzIntakeRollers extends SubsystemBase {
     Logger.processInputs("inputs/IntakeRollers", inputs);
   }
 
-
   //-----------------------------------------------------------------------------------------
   //
   //    Intake hardware methods
@@ -85,11 +84,13 @@ public class CatzIntakeRollers extends SubsystemBase {
   }
 
   private void setTargetRollerSpeed(TargetSpeed targetSpeed) {
-    if(getBeamBreak() == true && ((recordTargetSpeed == TargetSpeed.INTAKE) || (recordTargetSpeed == TargetSpeed.HANDOFF_IN) )) {
-      io.runDutycycle(TargetSpeed.IDLE.getRollerSpeed());
-    } else {
-      io.runDutycycle(targetSpeed.getRollerSpeed());
-    }
+    // if(getBeamBreak() == true && ((recordTargetSpeed == TargetSpeed.INTAKE) || (recordTargetSpeed == TargetSpeed.HANDOFF_IN) )) {
+    //   io.runDutycycle(TargetSpeed.IDLE.getRollerSpeed());
+    // } else {
+    //   io.runDutycycle(targetSpeed.getRollerSpeed());
+    // }
+
+    io.runDutycycle(targetSpeed.getRollerSpeed());
   }
 
   //-----------------------------------------------------------------------------------------
@@ -111,19 +112,22 @@ public class CatzIntakeRollers extends SubsystemBase {
               .withName("Rollers Eject");
   }
 
-  public Command setRolelrsOff() {
+  public Command setRollersOff() {
+    recordTargetSpeed = TargetSpeed.IDLE;  
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.IDLE),
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers Off");
   }
 
   public Command setRollersHandofftoShooter() {
+    recordTargetSpeed = TargetSpeed.HANDOFF_IN;  
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_IN), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers HandoffIn");
   }
   
   public Command setRollersHandofftoIntake() {
+    recordTargetSpeed = TargetSpeed.HANDOFF_OUT;  
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_OUT), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers HandoffOut");
