@@ -115,6 +115,12 @@ public class AutomatedSequenceCmds {
                                  container.getCatzShooterFeeder().commandShootNote());
     }
 
+    public static Command ShooterToScoreAmp(RobotContainer container) {
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
-    
+        return new SequentialCommandGroup(
+            transferNoteToIntake(container),
+            superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isIntakeInPosition())
+        );
+    }
 }

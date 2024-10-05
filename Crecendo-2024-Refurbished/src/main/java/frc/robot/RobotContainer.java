@@ -126,7 +126,7 @@ public class RobotContainer {
   
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
     xboxAux.leftBumper().whileTrue(rollers.setRollersOut());
-    xboxAux.leftBumper().and(xboxAux.rightBumper()).whileTrue(rollers.setRollersOff());
+    //xboxAux.leftBumper().and(xboxAux.rightBumper()).whileTrue(rollers.setRollersOff());
 
     // xboxAux.y().onTrue(superstructure.deployIntake());
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
