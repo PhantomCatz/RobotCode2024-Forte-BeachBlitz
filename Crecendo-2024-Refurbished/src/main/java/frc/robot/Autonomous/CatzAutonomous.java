@@ -48,6 +48,7 @@ public class CatzAutonomous {
 
 
     public CatzAutonomous(RobotContainer container) {
+
         this.m_container = container;
         // Declare Paths
         US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
@@ -60,7 +61,6 @@ public class CatzAutonomous {
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
 
         NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
-        NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
         
     }
 

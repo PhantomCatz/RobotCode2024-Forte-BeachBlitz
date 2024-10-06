@@ -4,11 +4,14 @@
 
 package frc.robot.CatzSubsystems.SuperSubsystem;
 
+import java.util.function.Supplier;
+
 import javax.lang.model.element.ElementKind;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzSubsystems.Shooter.ShooterFeeder.CatzShooterFeeder.ShooterFeederState;
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator;
@@ -226,7 +229,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
     return runOnce(() -> shooterPivot.setTargetMotionMethod(position));
   }
 
-  public Command setShooterPivotManualPower(double power) {
-    return run(() -> shooterPivot.setPercentOutput(power));
+  public Command setShooterPivotManualPower(Supplier<Double> power) {
+    return run(() -> shooterPivot.setPercentOutput(power)).alongWith(Commands.print(power.get().toString()));
   }
 }

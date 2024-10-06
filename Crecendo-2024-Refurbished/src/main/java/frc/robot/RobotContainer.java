@@ -83,6 +83,7 @@ public class RobotContainer {
   private final LoggedDashboardNumber endgameAlert2 = new LoggedDashboardNumber("Endgame Alert #2", 15.0);
 
   // Auto Declaration
+  private AutomatedSequenceCmds autosequence = new AutomatedSequenceCmds();
   private CatzAutonomous auto = new CatzAutonomous(this);
   private Questionaire questionaire = new Questionaire(this);
 
@@ -132,7 +133,7 @@ public class RobotContainer {
     // xboxAux.leftTrigger().onTrue(superstructure.deployIntake());
     
     xboxAux.y().onTrue(superstructure.setShooterPosition(ShooterPivotPositionType.TEST));
-    xboxAux.rightStick().onTrue(superstructure.setShooterPivotManualPower(-xboxAux.getRightY()));
+    xboxAux.rightStick().onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getRightY()));
 
     
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
@@ -144,7 +145,8 @@ public class RobotContainer {
      xboxAux.povUp().onTrue(AutomatedSequenceCmds.noteDetectIntakeToShooter(this));
      xboxAux.povRight().onTrue(AutomatedSequenceCmds.transferNoteToIntake(this));
      xboxAux.povLeft().onTrue(AutomatedSequenceCmds.AutoAimShootNote(this, ()->xboxAux.povDown().getAsBoolean()));
-    // xboxAux.povDown().onTrue(AutomatedSequenceCmds.NoteDetectIntakeToAmpScoring(this));
+    xboxAux.povDown().onTrue(AutomatedSequenceCmds.noteDetectIntakeToAmpScoring(this));
+
 
     /* XBOX DRIVE */
 

@@ -8,7 +8,7 @@ import frc.robot.Utilities.MotorUtil.MotionMagicParameters;
 public class ShooterPivotConstants {
     
     // Subsystem safety disable
-    public static final boolean isShooterPivotDisabled = true;
+    public static final boolean isShooterPivotDisabled = false;
 
     // Initial PIDF and motion magic assignment
     public static final Gains gains =

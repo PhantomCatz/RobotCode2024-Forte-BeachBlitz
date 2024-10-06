@@ -37,7 +37,7 @@ public class AutomatedSequenceCmds {
     /** 
      * Runs the Auto Note detect in telop to feed note into Intake for amp Scoring
      */
-    public static Command NoteDetectIntakeToAmpScoring(RobotContainer container) {
+    public static Command noteDetectIntakeToAmpScoring(RobotContainer container) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
         CatzIntakeRollers rollers = container.getCatzIntakeRollers();
 
@@ -115,12 +115,12 @@ public class AutomatedSequenceCmds {
                                  container.getCatzShooterFeeder().commandShootNote());
     }
 
-    public static Command ShooterToScoreAmp(RobotContainer container) {
-        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+    // public static Command ShooterToScoreAmp(RobotContainer container) {
+    //     CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
-        return new SequentialCommandGroup(
-            transferNoteToIntake(container),
-            superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isIntakeInPosition())
-        );
-    }
+    //     return new SequentialCommandGroup(
+    //         transferNoteToIntake(container),
+    //         superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isIntakeInPosition())
+    //     );
+    // }
 }
