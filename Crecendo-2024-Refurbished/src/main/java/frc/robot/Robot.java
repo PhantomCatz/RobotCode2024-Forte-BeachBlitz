@@ -99,6 +99,7 @@ public class Robot extends LoggedRobot {
 
   // Garbage Collection Alerts
   private final Alert gcAlert = new Alert("Please wait to enable, collecting garbage. 🗑️", AlertType.WARNING);
+  private int garbageCollectionCounter = 0;
 
   // DriverStation related alerts
   private final Alert driverStationDisconnectAlert = new Alert("Driverstation is not online, alliance selection will not work", AlertType.ERROR);
@@ -278,6 +279,11 @@ public class Robot extends LoggedRobot {
 
     // Garbage Collection alert
     gcAlert.set(Timer.getFPGATimestamp() < 45.0);
+    if((garbageCollectionCounter > 5*60*2)) {
+      System.gc();
+      garbageCollectionCounter = 0;
+    }
+    garbageCollectionCounter++;
 
     // Update battery logging
     String batteryName = batteryNameSubscriber.get();

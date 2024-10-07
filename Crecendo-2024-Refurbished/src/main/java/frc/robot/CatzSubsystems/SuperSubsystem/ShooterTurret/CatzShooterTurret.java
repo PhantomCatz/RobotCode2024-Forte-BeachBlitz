@@ -98,6 +98,13 @@ public class CatzShooterTurret {
     return inputs.positionDegrees;
   }
 
+  public boolean isTurretInPosition() {
+    double currentPosition = Math.abs(getTurretPosition());
+    double target = Math.abs(currentMotionType.getTargetMotionPosition());
+    boolean isIntakeInPos = Math.abs(target - currentPosition) < 5.0;
+    return isIntakeInPos;
+  }
+
 
   //-----------------------------------------------------------------------------------------
   //

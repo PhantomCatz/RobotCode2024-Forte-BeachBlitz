@@ -182,7 +182,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
     Logger.recordOutput("Superstructure/lastCommandedState", previousCommandedSuperstructureState.toString());
     Logger.recordOutput("Superstructure/previousLoopState", previousSuperstructureState.toString());
 
-
+    Logger.recordOutput("Supersture/isElevatorInposition", isElevatorInPosition());
 
     // Run Member Mechanism periodics
     elevator.periodic();
@@ -203,6 +203,14 @@ public class CatzSuperSubsystem extends SubsystemBase {
 
   public boolean isIntakeInPosition() {
     return intakePivot.isIntakeInPosition();
+  }
+
+  public boolean isElevatorInPosition() {
+    return elevator.isElevatorInPosition();
+  }
+
+  public boolean isTurretAndPivotInPosition() {
+    return (shooterPivot.isShooterPivotInPosition() && turret.isTurretInPosition());
   }
   //-----------------------------------------------------------------------------------------
   //
@@ -230,6 +238,6 @@ public class CatzSuperSubsystem extends SubsystemBase {
   }
 
   public Command setShooterPivotManualPower(Supplier<Double> power) {
-    return run(() -> shooterPivot.setPercentOutput(power)).alongWith(Commands.print(power.get().toString()));
+    return run(() -> shooterPivot.setPercentOutput(power));
   }
 }

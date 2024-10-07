@@ -40,7 +40,7 @@ public class CatzElevator {
 
   @RequiredArgsConstructor
   public static enum ElevatorPosition {
-      SCORE_AMP(new LoggedTunableNumber("Elevator/ScoreAmpSetpoint",90.0)),
+      SCORE_AMP(new LoggedTunableNumber("Elevator/ScoreAmpSetpoint",50.0)),
       PICKUP_SOURCE(new LoggedTunableNumber("Elevator/ScoreSourceSetpoint",100.0)),
       STOW(() -> 0.0),
       WAIT(() -> targetElevatorRotations);

@@ -34,7 +34,7 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
     private PIDController shooterPivotFeedback = new PIDController(gains.kP(), gains.kI(), gains.kD(), CatzConstants.LOOP_TIME);
 
     public ShooterPivotIOReal() {
-        elevationNeoMtr = new CANSparkMax(0, MotorType.kBrushless);
+        elevationNeoMtr = new CANSparkMax(61, MotorType.kBrushless);
 
         elevationNeoMtr.restoreFactoryDefaults();
         elevationNeoMtr.setSmartCurrentLimit(30);

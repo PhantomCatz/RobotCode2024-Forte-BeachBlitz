@@ -99,12 +99,21 @@ public class AutomatedSequenceCmds {
             transferNoteToShooter(container).unless(()->feeder.isNoteInShooterPosition()),// Note is already in shooter
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM),
-                //flywheels.shootCommand(),
+                //flywheels.revCommand(),
                 new SequentialCommandGroup(
-                    Commands.waitUntil(()->(flywheels.atGoal() && true)).unless(()->driverOveride.get()), // Until flywheels and shootersuperstructure are in position or driveroverride
+                    Commands.waitUntil(()->(flywheels.atGoal() && superstructure.isTurretAndPivotInPosition())).unless(()->driverOveride.get()), // Until flywheels and shootersuperstructure are in position or driveroverride
                     container.getCatzShooterFeeder().commandShootNote()
                 )
             )
+        );
+    }
+
+    public static Command ShooterToScoreAmp(RobotContainer container) {
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+
+        return new SequentialCommandGroup(
+            transferNoteToIntake(container),
+            superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isElevatorInPosition())
         );
     }
 
@@ -114,13 +123,4 @@ public class AutomatedSequenceCmds {
                                  Commands.print("It worked"),
                                  container.getCatzShooterFeeder().commandShootNote());
     }
-
-    // public static Command ShooterToScoreAmp(RobotContainer container) {
-    //     CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
-
-    //     return new SequentialCommandGroup(
-    //         transferNoteToIntake(container),
-    //         superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isIntakeInPosition())
-    //     );
-    // }
 }

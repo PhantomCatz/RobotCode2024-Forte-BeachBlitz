@@ -137,15 +137,13 @@ public class RobotContainer {
 
     
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
-    xboxAux.x().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
+    xboxAux.y().onTrue(superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND));
     xboxAux.b().onTrue(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP));
 
     /* AUTONOMOUSE SEQUENCE TESTING */
 
-     xboxAux.povUp().onTrue(AutomatedSequenceCmds.noteDetectIntakeToShooter(this));
-     xboxAux.povRight().onTrue(AutomatedSequenceCmds.transferNoteToIntake(this));
-     xboxAux.povLeft().onTrue(AutomatedSequenceCmds.AutoAimShootNote(this, ()->xboxAux.povDown().getAsBoolean()));
-    xboxAux.povDown().onTrue(AutomatedSequenceCmds.noteDetectIntakeToAmpScoring(this));
+    xboxAux.povRight().onTrue(AutomatedSequenceCmds.ShooterToScoreAmp(this));
+    xboxAux.povUp().onTrue(AutomatedSequenceCmds.AutoAimShootNote(this, ()->xboxAux.povDown().getAsBoolean()));
 
 
     /* XBOX DRIVE */

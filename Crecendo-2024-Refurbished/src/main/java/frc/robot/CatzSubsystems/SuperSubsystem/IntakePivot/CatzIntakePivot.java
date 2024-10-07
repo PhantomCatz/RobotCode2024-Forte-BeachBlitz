@@ -110,8 +110,8 @@ public class CatzIntakePivot {
   public boolean isIntakeInPosition() {
     double intakePosition = Math.abs(getIntakePivotDegree());
     double target = Math.abs(m_targetPosition.getTargetDegree());
-    boolean finalBool = Math.abs(target - intakePosition) < 2.0;
-    return finalBool;
+    boolean isIntakeInPos = Math.abs(target - intakePosition) < 2.0;
+    return isIntakeInPos;
   }
 
   //-----------------------------------------------------------------------------------------
