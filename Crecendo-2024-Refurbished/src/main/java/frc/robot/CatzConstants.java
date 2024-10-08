@@ -21,8 +21,8 @@ public final class CatzConstants {
   //
   //--------------------------------------------------/
   public static final RobotSenario robotSenario = RobotSenario.PRACTICE;
-  public static final RobotHardwareMode hardwareMode = RobotHardwareMode.REAL;
-  private static RobotID robotType = RobotID.SN2;
+  public static final RobotHardwareMode hardwareMode = RobotHardwareMode.SIM;
+  private static RobotID robotType = RobotID.SN_TEST;
   
   public static final double LOOP_TIME = 0.02;
 
@@ -34,11 +34,8 @@ public final class CatzConstants {
   }
 
   public static enum RobotHardwareMode {
-    /** Running on a real robot. */
     REAL,
-    /** Running a physics simulator. */
     SIM,
-    /** Replaying from a log file. */
     REPLAY
   }
 

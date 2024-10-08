@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzSubsystems.Shooter.ShooterFeeder.CatzShooterFeeder.ShooterFeederState;
 import frc.robot.CatzSubsystems.SuperSubsystem.Elevator.CatzElevator;
@@ -239,5 +240,11 @@ public class CatzSuperSubsystem extends SubsystemBase {
 
   public Command setShooterPivotManualPower(Supplier<Double> power) {
     return run(() -> shooterPivot.setPercentOutput(power));
+  }
+
+  public Command cancelSuperStructureCommands() {
+    Command cancel = new InstantCommand();
+    cancel.addRequirements(this);
+    return cancel;
   }
 }

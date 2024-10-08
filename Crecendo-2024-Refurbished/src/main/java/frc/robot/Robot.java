@@ -38,6 +38,7 @@ import frc.robot.CatzConstants.RobotHardwareMode;
 import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
+import frc.robot.Commands.ControllerModeAbstraction;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.Alert.AlertType;
@@ -279,7 +280,7 @@ public class Robot extends LoggedRobot {
 
     // Garbage Collection alert
     gcAlert.set(Timer.getFPGATimestamp() < 45.0);
-    if((garbageCollectionCounter > 5*60*2)) {
+    if((garbageCollectionCounter > 5*60*2)) { // 1 second * 60sec * 2 min
       System.gc();
       garbageCollectionCounter = 0;
     }
@@ -377,6 +378,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     teleElapsedTime = Timer.getFPGATimestamp() - teleStart;
+
+    ControllerModeAbstraction.periodicDebug();
   }
 
   @Override

@@ -83,20 +83,30 @@ public class AutomatedSequenceCmds {
                 rollers.setRollersHandofftoShooter(),
                 feeder.commandToShooter()
             ).until(()->container.getCatzShooterFeeder()
-                                    .isNoteInShooterPosition()) // Until Shooter finalizes note position
+                                    .isNoteInRestingPosition()) // Until Shooter finalizes note position
+        );
+    }
+
+    public static Command scoreAmp(RobotContainer container) {
+        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
+        CatzIntakeRollers rollers = container.getCatzIntakeRollers();
+
+        return new SequentialCommandGroup(
+            transferNoteToIntake(container).unless(()->rollers.getBeamBreak()),
+            superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isElevatorInPosition())
         );
     }
 
     /** 
      * Runs a Simple auto aim to the speaker that can be overriden by driver
      */
-    public static Command AutoAimShootNote(RobotContainer container, Supplier<Boolean> driverOveride) {
+    public static Command scoreSpeakerAutoAim(RobotContainer container, Supplier<Boolean> driverOveride) {
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
         CatzShooterFlywheels flywheels = container.getCatzShooterFlywheels();
         CatzShooterFeeder feeder = container.getCatzShooterFeeder();
 
         return new SequentialCommandGroup(
-            transferNoteToShooter(container).unless(()->feeder.isNoteInShooterPosition()),// Note is already in shooter
+            transferNoteToShooter(container).unless(()->feeder.isNoteBeamBreakBroken()),// Note is already in shooter
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM),
                 //flywheels.revCommand(),
@@ -108,14 +118,7 @@ public class AutomatedSequenceCmds {
         );
     }
 
-    public static Command ShooterToScoreAmp(RobotContainer container) {
-        CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
 
-        return new SequentialCommandGroup(
-            transferNoteToIntake(container),
-            superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isElevatorInPosition())
-        );
-    }
 
     public static Command testSequence(RobotContainer container) {
         return Commands.sequence(container.getCatzShooterFeeder().commandShootNote(),

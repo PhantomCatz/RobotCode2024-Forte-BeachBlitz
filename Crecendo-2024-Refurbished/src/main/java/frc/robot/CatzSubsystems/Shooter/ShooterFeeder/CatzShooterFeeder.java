@@ -185,8 +185,12 @@ public class CatzShooterFeeder extends SubsystemBase {
   //-----------------------------------------------------------------------------------------
   //    Feeder MISC
   //-----------------------------------------------------------------------------------------
-  public boolean isNoteInShooterPosition() {
+  public boolean isNoteInRestingPosition() {
     return isNoteInPosition;
+  }
+
+  public boolean isNoteBeamBreakBroken() {
+    return inputs.isAdjustBeamBreakBroken;
   }
 
   //-----------------------------------------------------------------------------------------
