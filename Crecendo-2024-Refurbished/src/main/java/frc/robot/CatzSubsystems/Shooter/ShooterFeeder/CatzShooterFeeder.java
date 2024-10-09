@@ -100,6 +100,7 @@ public class CatzShooterFeeder extends SubsystemBase {
 
     previousShooterFeederState = currentShooterFeederState;
 
+    Logger.recordOutput("ShooterFeeder/State", determinedAdjustState);
   } //-End of feeder Periodic
 
   //-----------------------------------------------------------------------------------------

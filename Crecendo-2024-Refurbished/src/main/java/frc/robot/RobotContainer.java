@@ -130,9 +130,9 @@ public class RobotContainer {
   private void configureBindings() { // TODO organize by function
     
     /* XBOX AUX */
-    xboxAux.povRight().onTrue(ControllerModeAbstraction.sortModes(true));
-    xboxAux.povLeft().onTrue(ControllerModeAbstraction.sortModes(false));
-    xboxAux.rightTrigger().onTrue(ControllerModeAbstraction.cancelController(this));
+    xboxAux.povRight().onTrue(ControllerModeAbstraction.sortModes(true)); // speaker
+    xboxAux.povLeft().onTrue(ControllerModeAbstraction.sortModes(false)); // amp
+    xboxAux.rightTrigger().onTrue(ControllerModeAbstraction.cancelController(this));    
 
     xboxAux.y().onTrue(ControllerModeAbstraction.robotHandoff(this)); // Handoff between shooter and intake
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW)); // ResetPosition
@@ -142,8 +142,8 @@ public class RobotContainer {
     leftStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getLeftY()));
     xboxAux.leftStick().onTrue(new InstantCommand());
 
-    Trigger rightStickTrigger = new Trigger(()->(xboxAux.getRightY() > XboxInterfaceConstants.kDeadband)); // Manual Turret
-    rightStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getRightY()));
+    Trigger rightStickTrigger = new Trigger(()->(xboxAux.getRightX() > XboxInterfaceConstants.kDeadband)); // Manual Turret
+    rightStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getRightX()));
     
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
     xboxAux.leftBumper().whileTrue(rollers.setRollersOut());
