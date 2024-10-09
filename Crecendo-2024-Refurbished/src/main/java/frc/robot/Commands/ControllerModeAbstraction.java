@@ -28,8 +28,8 @@ public class ControllerModeAbstraction {
 
     public static Command robotScore(RobotContainer container, Supplier<Boolean> override) {
         return Commands.either(
-            AutomatedSequenceCmds.scoreSpeakerAutoAim(container, override).alongWith(Commands.print("In Auto")), 
-            AutomatedSequenceCmds.scoreAmp(container).alongWith(Commands.print("IN AMp")),
+            AutomatedSequenceCmds.scoreSpeakerAutoAim(container, override), 
+            AutomatedSequenceCmds.scoreAmp(container),
             ()->isModeSpeaker());
     }
 

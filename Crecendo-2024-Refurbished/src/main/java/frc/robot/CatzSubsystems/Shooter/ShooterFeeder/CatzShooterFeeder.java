@@ -6,6 +6,7 @@ package frc.robot.CatzSubsystems.Shooter.ShooterFeeder;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
@@ -24,6 +25,9 @@ public class CatzShooterFeeder extends SubsystemBase {
   private boolean isAdjustStateDetermined;
   private boolean hasNoteClearedIntake;
   private boolean isNoteInPosition;
+
+  // Counter delays
+  private Timer stateTimerDelay = new Timer();
 
   // Access Feeder State Enums
   public enum ShooterFeederState{
@@ -65,6 +69,7 @@ public class CatzShooterFeeder extends SubsystemBase {
           break;
       }
     }
+    stateTimerDelay.start();
   }
 
   @Override
@@ -100,7 +105,7 @@ public class CatzShooterFeeder extends SubsystemBase {
 
     previousShooterFeederState = currentShooterFeederState;
 
-    Logger.recordOutput("ShooterFeeder/State", determinedAdjustState);
+    Logger.recordOutput("ShooterFeeder/determinedAdjustState", determinedAdjustState);
   } //-End of feeder Periodic
 
   //-----------------------------------------------------------------------------------------
@@ -110,6 +115,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   //-----------------------------------------------------------------------------------------
   /** Feeder TOSHOOTER state on state change */
   private void handleToShooterInit() {
+    stateTimerDelay.restart();
     io.loadFoward();
     isAdjustStateDetermined = false;
     isNoteInPosition = false;
@@ -121,14 +127,17 @@ public class CatzShooterFeeder extends SubsystemBase {
     // Determine which direction to adjust note to
     if(isAdjustStateDetermined == false) {
       if(inputs.isLoadBeamBreakBroken) { 
-        if(inputs.isAdjustBeamBreakBroken) {
-          io.fineAdjustBck();
-          determinedAdjustState = AdjustState.BCK;
-          isAdjustStateDetermined = true; //Logic exit
-        } else {
-          io.fineAdjustFwd();
-          determinedAdjustState = AdjustState.FWD;
-          isAdjustStateDetermined = true; //Logic exit
+        io.feedDisabled(); 
+        if(stateTimerDelay.hasElapsed(0.06)) {
+          if(inputs.isAdjustBeamBreakBroken) {
+            io.fineAdjustBck();
+            determinedAdjustState = AdjustState.BCK;
+            isAdjustStateDetermined = true; //Logic exit
+          } else {
+            io.fineAdjustFwd();
+            determinedAdjustState = AdjustState.FWD;
+            isAdjustStateDetermined = true; //Logic exit
+          }
         }
       }
     }
@@ -151,6 +160,7 @@ public class CatzShooterFeeder extends SubsystemBase {
 
   /** Feeder TOINTAKE state state change */
   private void handleToIntakeInit() {
+    stateTimerDelay.restart();
     io.resetLoadEnc();
     io.loadBackward();
     hasNoteClearedIntake = false;
@@ -161,7 +171,7 @@ public class CatzShooterFeeder extends SubsystemBase {
   private void handleToIntakePeriodic() {
     // Measure how far note travels
     if(hasNoteClearedIntake == false) {
-      if(inputs.noteMovementUpInches > 2.0) {
+      if(inputs.noteMovementUpInches > 2.0) { //TODO do we still need this?
         io.loadBackward();
         hasNoteClearedIntake = true; //Logic Exit
       }

@@ -78,7 +78,7 @@ public class TrajectoryDriveCmd extends Command {
             usePath = path.flipPath();
         }
 
-        //CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
         
         this.trajectory = new PathPlannerTrajectory(
             usePath, 
