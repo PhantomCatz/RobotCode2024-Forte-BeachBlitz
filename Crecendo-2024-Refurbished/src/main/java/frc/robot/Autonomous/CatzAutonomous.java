@@ -1,5 +1,6 @@
 package frc.robot.Autonomous;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -26,7 +27,9 @@ import frc.robot.RobotContainer;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.CatzDrivetrain;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstants;
+import frc.robot.CatzSubsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
+import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
@@ -72,13 +75,19 @@ public class CatzAutonomous {
 
     private Command upperSpeakerWing1Center1() {
         CatzDrivetrain drivetrain = m_container.getCatzDrivetrain();
+        CatzSuperSubsystem superSubsystem = m_container.getCatzSuperstructure();
+        CatzShooterFeeder feeder = m_container.getCatzShooterFeeder();
+
+        List<Double> waypoints = Arrays.asList(0.1,0.2);
+
+        List<Command> commandSequenceOne = Arrays.asList(AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false));
+
         return new SequentialCommandGroup(
+                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypoints, commandSequenceOne)
+                    .until(()->true)//feeder.isNoteInRestingPosition())
+                    .andThen(Commands.print("Intaking")).alongWith(Commands.print("Scoring")),
             new ParallelCommandGroup(
-                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain),
-                AutomatedSequenceCmds.noteDetectIntakeToShooter(m_container).alongWith(Commands.print("Intaking"))
-            ),
-            new ParallelCommandGroup(
-                new TrajectoryDriveCmd(UpperSpeakerGamepiece2, drivetrain),
+                //new TrajectoryDriveCmd(UpperSpeakerGamepiece2, drivetrain),
                 AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()-> false).alongWith(Commands.print("shooting"))
             )
         );
@@ -88,10 +97,13 @@ public class CatzAutonomous {
     private Command testAuto() {
 
         preloadTrajectoryClass(testPath);
-        
+        List<Double> waypoints = Arrays.asList(0.3,0.8);
+
+        List<Command> commandSequenceOne = Arrays.asList(Commands.print("HI"), Commands.print("2+2"));
+
 
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
+            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain(), waypoints, commandSequenceOne))
         );
     }
 
@@ -99,7 +111,6 @@ public class CatzAutonomous {
         preloadTrajectoryClass(straightLine);
 
         return new SequentialCommandGroup(
-            new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain())
         );
     }
 

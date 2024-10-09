@@ -40,12 +40,28 @@ public class TrajectoryDriveCmd extends Command {
     private final double TIMEOUT_SCALAR = 5;
     private PathPlannerPath path;
 
+    private boolean atTarget = false;
+    public static double pathTimeOut;
+
+
+    //Command inside trajectory helper variables
+    private List<Double> waypointsRatios;
+    private List<Command> m_commands;
+    private int numConsecutiveWaypointCounter = 0;
+    private double totalTime;
+
+
+    private boolean executing = false;
+    private boolean done = false;
+
 
     /**
      * @param drivetrain           The coordinator between the gyro and the swerve modules.
      * @param trajectory          The trajectory to follow.
      */
-    public TrajectoryDriveCmd(PathPlannerPath newPath, CatzDrivetrain drivetrain) {
+    public TrajectoryDriveCmd(PathPlannerPath newPath, CatzDrivetrain drivetrain, List<Double> waypoints, List<Command> commands) {
+        waypointsRatios = waypoints;
+        this.m_commands = commands;
         path = newPath;
         m_driveTrain = drivetrain;
         addRequirements(m_driveTrain);
@@ -62,9 +78,6 @@ public class TrajectoryDriveCmd extends Command {
         m_driveTrain = drivetrain;
         addRequirements(m_driveTrain);
     }
-
-    private boolean atTarget = false;
-    private double pathTimeOut;
 
     @Override
     public void initialize() {
@@ -89,13 +102,17 @@ public class TrajectoryDriveCmd extends Command {
             CatzRobotTracker.getInstance().getRobotRotation()
         );
                                                
-        pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_SCALAR;
+        pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_SCALAR; //TODO do we still need this
+        totalTime = trajectory.getTotalTimeSeconds();
+        numConsecutiveWaypointCounter = 0;
+        executing = false;
     }
 
     @Override
     public void execute() {
+        double currentTime = this.timer.get();
+
         if(!atTarget){
-            double currentTime = this.timer.get();
     
             // Getters from pathplanner and current robot pose
             PathPlannerTrajectory.State goal = trajectory.sample(Math.min(currentTime, trajectory.getTotalTimeSeconds()));
@@ -126,6 +143,30 @@ public class TrajectoryDriveCmd extends Command {
         }else{
             m_driveTrain.stopDriving();
         }
+
+
+        if(!waypointsRatios.isEmpty()) {
+            double scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter)*totalTime;            
+            Command cmd = m_commands.get(numConsecutiveWaypointCounter);
+            if(executing == false) {
+                if(currentTime > scaledWaypointTime){
+                    executing = true;
+                    cmd.initialize();
+                }
+            }
+
+            if(executing) {
+                m_commands.get(numConsecutiveWaypointCounter).execute();
+                if(cmd.isFinished() || scaledWaypointTime > 3.0){
+                    done = true;
+                    cmd.end(true);
+                    executing = false;
+                    numConsecutiveWaypointCounter++;
+                }
+            }
+        }
+
+
 
     }
 
