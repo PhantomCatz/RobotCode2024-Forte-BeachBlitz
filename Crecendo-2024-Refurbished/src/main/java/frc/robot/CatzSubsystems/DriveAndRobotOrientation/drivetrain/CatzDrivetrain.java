@@ -142,19 +142,22 @@ public class CatzDrivetrain extends SubsystemBase {
         } catch (Exception e) {
 
         }
-       // Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
+        Logger.processInputs("Drive/gyroinputs ", gyroInputs);    
+        // NOTE Gyro needs to be firmly mounted to rio for accurate results.
         // Set Gyro Disconnect alert
         if (Robot.isReal()) {
             gyroDisconnected.set(!gyroInputs.gyroConnected);
         }
 
-        // Swerve drive Odometry
+        // Swerve drive Odometry    
         SwerveDriveWheelPositions wheelPositions = new SwerveDriveWheelPositions(getModulePositions());
         // Grab latest gyro measurments
         Rotation2d gyroAngle2d = 
                         (CatzConstants.hardwareMode == CatzConstants.RobotHardwareMode.SIM)
                             ? null
                             : getRotation2d();
+        
+        
         // Add observations to robot tracker
         CatzRobotTracker.getInstance()
                             .addOdometryObservation(
@@ -326,7 +329,7 @@ public class CatzDrivetrain extends SubsystemBase {
      * @return The Heading of the robot dependant on where it's been instantiated
      */
     private double getGyroHeading() {
-        return -gyroInputs.gyroYawDegrees; //- for atlas //TODO need to verify on forte again
+        return -gyroInputs.gyroYawDegrees; // Negative on Forte due to instalation, gyro's left is not robot left
     }
 
     /** Get the Rotation2d object based on the gyro angle */

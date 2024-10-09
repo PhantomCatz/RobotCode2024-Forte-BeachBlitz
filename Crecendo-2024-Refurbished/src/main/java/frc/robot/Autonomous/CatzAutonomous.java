@@ -45,6 +45,7 @@ public class CatzAutonomous {
     private PathPlannerPath US_W1_3_2; 
     private PathPlannerPath US_W1_3_3; 
     private PathPlannerPath testPath ; 
+    private PathPlannerPath straightLine;
 
 
     public CatzAutonomous(RobotContainer container) {
@@ -54,10 +55,12 @@ public class CatzAutonomous {
         US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
         US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
         testPath  = PathPlannerPath.fromPathFile("Test");
+        straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
         //   AUTON Priority LIST 
         autoPathChooser.addOption("Test Auto", testAuto());
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
+        autoPathChooser.addOption("StraightLine", straightLine());
 
         NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
         NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
@@ -72,6 +75,14 @@ public class CatzAutonomous {
 
         return new SequentialCommandGroup(
             new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
+        );
+    }
+
+    private Command straightLine(){
+        preloadTrajectoryClass(straightLine);
+
+        return new SequentialCommandGroup(
+            new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain())
         );
     }
 
@@ -119,6 +130,6 @@ public class CatzAutonomous {
 
     /** Getter for final autonomous routine */
     public Command getCommand() { 
-        return testAuto();
+        return autoPathChooser.get();
     }
 }
