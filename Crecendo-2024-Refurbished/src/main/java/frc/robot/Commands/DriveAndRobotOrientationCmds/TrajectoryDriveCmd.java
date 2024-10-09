@@ -146,12 +146,16 @@ public class TrajectoryDriveCmd extends Command {
 
 
         if(!waypointsRatios.isEmpty()) {
-            double scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter)*totalTime;            
-            Command cmd = m_commands.get(numConsecutiveWaypointCounter);
-            if(executing == false) {
-                if(currentTime > scaledWaypointTime){
-                    executing = true;
-                    cmd.initialize();
+            double scaledWaypointTime = 0.0;
+            Command cmd = new Command() {};
+            if(numConsecutiveWaypointCounter <= waypointsRatios.size()) {
+                scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter)*totalTime;            
+                cmd = m_commands.get(numConsecutiveWaypointCounter);
+                if(executing == false) {
+                    if(currentTime > scaledWaypointTime){
+                        executing = true;
+                        cmd.initialize();
+                    }
                 }
             }
 
