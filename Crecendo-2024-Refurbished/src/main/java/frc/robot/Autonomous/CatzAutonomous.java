@@ -45,6 +45,7 @@ public class CatzAutonomous {
     private PathPlannerPath testPath;
     private PathPlannerPath UpperSpeakerGamepiece1;
     private PathPlannerPath UpperSpeakerGamepiece2; 
+    private PathPlannerPath straightLine;
 
 
     public CatzAutonomous(RobotContainer container) {
@@ -54,6 +55,7 @@ public class CatzAutonomous {
         testPath  = PathPlannerPath.fromPathFile("Test");
         UpperSpeakerGamepiece1 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece1");
         UpperSpeakerGamepiece2 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece2");
+        straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
         //   AUTON Priority LIST 
         autoPathChooser.addOption("Test Auto", testAuto());
@@ -62,6 +64,7 @@ public class CatzAutonomous {
 
 
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
+        autoPathChooser.addOption("StraightLine", straightLine());
 
         NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
         
@@ -89,6 +92,14 @@ public class CatzAutonomous {
 
         return new SequentialCommandGroup(
             new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
+        );
+    }
+
+    private Command straightLine(){
+        preloadTrajectoryClass(straightLine);
+
+        return new SequentialCommandGroup(
+            new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain())
         );
     }
 
@@ -136,6 +147,6 @@ public class CatzAutonomous {
 
     /** Getter for final autonomous routine */
     public Command getCommand() { 
-        return testAuto();
+        return autoPathChooser.get();
     }
 }

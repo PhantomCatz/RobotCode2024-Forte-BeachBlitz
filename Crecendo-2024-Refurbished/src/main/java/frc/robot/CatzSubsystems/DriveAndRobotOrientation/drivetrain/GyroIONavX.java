@@ -1,5 +1,7 @@
 package frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.I2C.Port;
