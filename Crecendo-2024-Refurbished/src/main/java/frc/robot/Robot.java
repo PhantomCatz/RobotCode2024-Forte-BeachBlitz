@@ -38,6 +38,7 @@ import frc.robot.CatzConstants.RobotHardwareMode;
 import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
+import frc.robot.Commands.ControllerModeAbstraction;
 import frc.robot.Utilities.Alert;
 import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.Alert.AlertType;
@@ -99,6 +100,7 @@ public class Robot extends LoggedRobot {
 
   // Garbage Collection Alerts
   private final Alert gcAlert = new Alert("Please wait to enable, collecting garbage. 🗑️", AlertType.WARNING);
+  private int garbageCollectionCounter = 0;
 
   // DriverStation related alerts
   private final Alert driverStationDisconnectAlert = new Alert("Driverstation is not online, alliance selection will not work", AlertType.ERROR);
@@ -114,6 +116,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+
+    System.gc(); //TBD TODO 
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -278,6 +283,11 @@ public class Robot extends LoggedRobot {
 
     // Garbage Collection alert
     gcAlert.set(Timer.getFPGATimestamp() < 45.0);
+    if((garbageCollectionCounter > 5*60*2)) { // 1 second * 60sec * 2 min
+      System.gc();
+      garbageCollectionCounter = 0;
+    }
+    garbageCollectionCounter++;
 
     // Update battery logging
     String batteryName = batteryNameSubscriber.get();
@@ -371,6 +381,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     teleElapsedTime = Timer.getFPGATimestamp() - teleStart;
+
+    ControllerModeAbstraction.periodicDebug();
   }
 
   @Override

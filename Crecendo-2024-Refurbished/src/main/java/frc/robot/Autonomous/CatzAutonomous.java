@@ -30,6 +30,7 @@ import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
+import frc.robot.Commands.DriveAndRobotOrientationCmds.WaitUntilPassX;
 import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.AllianceFlipUtil.PathPlannerFlippingState;
 
@@ -41,36 +42,52 @@ public class CatzAutonomous {
     private boolean trajectoriesLoaded = false;
     private boolean isPathPlannerFlipped = false;
 
-    private PathPlannerPath US_W1_3_1; 
-    private PathPlannerPath US_W1_3_2; 
-    private PathPlannerPath US_W1_3_3; 
-    private PathPlannerPath testPath ; 
+    private PathPlannerPath testPath;
+    private PathPlannerPath UpperSpeakerGamepiece1;
+    private PathPlannerPath UpperSpeakerGamepiece2; 
     private PathPlannerPath straightLine;
 
 
     public CatzAutonomous(RobotContainer container) {
+
         this.m_container = container;
         // Declare Paths
-        US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
-        US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
-        US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
         testPath  = PathPlannerPath.fromPathFile("Test");
+        UpperSpeakerGamepiece1 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece1");
+        UpperSpeakerGamepiece2 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece2");
         straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
         //   AUTON Priority LIST 
         autoPathChooser.addOption("Test Auto", testAuto());
+        autoPathChooser.addOption("UpperSpeakerWing1center1", upperSpeakerWing1Center1());
+
+
+
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
         autoPathChooser.addOption("StraightLine", straightLine());
 
         NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
-        NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
         
+    }
+
+    private Command upperSpeakerWing1Center1() {
+        CatzDrivetrain drivetrain = m_container.getCatzDrivetrain();
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain),
+                AutomatedSequenceCmds.noteDetectIntakeToShooter(m_container).alongWith(Commands.print("Intaking"))
+            ),
+            new ParallelCommandGroup(
+                new TrajectoryDriveCmd(UpperSpeakerGamepiece2, drivetrain),
+                AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()-> false).alongWith(Commands.print("shooting"))
+            )
+        );
     }
 
 
     private Command testAuto() {
 
-        preloadTrajectoryClass(US_W1_3_1);
+        preloadTrajectoryClass(testPath);
         
 
         return new SequentialCommandGroup(

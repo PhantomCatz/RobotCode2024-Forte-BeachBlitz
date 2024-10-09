@@ -33,26 +33,37 @@ public class AutoAimingParametersUtil {
      * 
      */
     public static AimingParameters getAutoAimSpeakerParemeters() {
+        if (latestParameters != null) {
+            // Cache previously calculated aiming parameters. Cache is invalidated whenever new
+            // observations are added.
+            return latestParameters;
+        
+        }
+        // Collect Given Variables
         double vx = CatzRobotTracker.getInstance().getRobotChassisSpeeds().vxMetersPerSecond;
         double vy = CatzRobotTracker.getInstance().getRobotChassisSpeeds().vyMetersPerSecond;
         Translation2d robotPose = new Translation2d(CatzRobotTracker.getInstance().getEstimatedPose().getX(), 
                                                     CatzRobotTracker.getInstance().getEstimatedPose().getY());
-        double shooter_velocity = 0.0;
+
+        // Contstruct translation objects for vector addition
         Translation3d targetPose3d = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening);
         Translation2d targetPose = new Translation2d(targetPose3d.getX(), targetPose3d.getY()); 
-        if (latestParameters != null) {
-        // Cache previously calculated aiming parameters. Cache is invalidated whenever new
-        // observations are added.
-        return latestParameters;
-        }
+        Logger.recordOutput("AutoAim/targetpose3d", targetPose3d);
+        Logger.recordOutput("AutoAim/targetPose", targetPose);
+    
 
 
         // Target Robot Shooting Horizontal Angle
         Vector<N2> addedVelocity = VecBuilder.fill(vx , vy); 
         Vector<N2> robotToTarget = VecBuilder.fill(targetPose.getX() - robotPose.getX()  , targetPose.getY() - robotPose.getY());
         //Vector<N2> scaledRobotToTarget = robotToTarget.times(shooter_velocity/robotToTarget.norm());
-        Vector<N2> correctVector = robotToTarget.minus(addedVelocity); // Account for robot velocity by subtracting vectors
+        Vector<N2> correctVector = robotToTarget;//.minus(addedVelocity); // Account for robot velocity by subtracting vectors TODO fix later
         double feildRelTargetRad = Math.atan(correctVector.get(1,0)/correctVector.get(0,0)); // Take arctangent to find feild relative target rotation
+        
+        Logger.recordOutput("AutoAim/targetAngle", Math.toDegrees(feildRelTargetRad));
+       
+       
+       // Conversion to Turret Angle
         double targetTurretDegree = Math.toDegrees(feildRelTargetRad);    //Convert from radians to deg
         if(targetTurretDegree > 180) {         // Roll back if angle is past the softlimit
           targetTurretDegree = targetTurretDegree - 360;
@@ -62,7 +73,6 @@ public class AutoAimingParametersUtil {
         Logger.recordOutput("AutoAim/added velocity Vector", addedVelocity.norm());
         Logger.recordOutput("AutoAim/robotToTarget Vector", robotToTarget.norm());
         Logger.recordOutput("AutoAim/Final Vector", correctVector.norm());
-        Logger.recordOutput("AutoAim/targetAngle", Math.toDegrees(feildRelTargetRad));
         Logger.recordOutput("AutoAim/After Rollback targetAngle", targetTurretDegree);
 
 

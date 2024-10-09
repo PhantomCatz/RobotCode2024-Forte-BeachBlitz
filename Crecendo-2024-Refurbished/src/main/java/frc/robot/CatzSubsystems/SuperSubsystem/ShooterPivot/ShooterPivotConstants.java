@@ -8,7 +8,7 @@ import frc.robot.Utilities.MotorUtil.MotionMagicParameters;
 public class ShooterPivotConstants {
     
     // Subsystem safety disable
-    public static final boolean isShooterPivotDisabled = true;
+    public static final boolean isShooterPivotDisabled = false;
 
     // Initial PIDF and motion magic assignment
     public static final Gains gains =
@@ -31,7 +31,4 @@ public class ShooterPivotConstants {
     public static final LoggedTunableNumber kV = new LoggedTunableNumber("ShooterPivot/Gains/kV", gains.kV());
     public static final LoggedTunableNumber kA = new LoggedTunableNumber("ShooterPivot/Gains/kA", gains.kA());
     public static final LoggedTunableNumber kG = new LoggedTunableNumber("ShooterPivot/Gains/kG", gains.kG());
-    public static final LoggedTunableNumber mmCruiseVelocity = new LoggedTunableNumber("ShooterPivot/Gains/kV", motionMagicParameters.mmCruiseVelocity());
-    public static final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("ShooterPivot/Gains/kA", motionMagicParameters.mmAcceleration());
-    public static final LoggedTunableNumber mmJerk = new LoggedTunableNumber("ShooterPivot/Gains/kG", motionMagicParameters.mmJerk());
 }

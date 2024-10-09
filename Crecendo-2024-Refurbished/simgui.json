@@ -1,12 +1,20 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/ShooterPivot/pivot": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Choose End Position": "String Chooser",
       "/SmartDashboard/Choose Start Position": "String Chooser",
       "/SmartDashboard/Choosen Alliance Color": "String Chooser",
       "/SmartDashboard/Chosen Autonomous Path": "String Chooser",
       "/SmartDashboard/Field": "Field2d"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "AdvantageKit": {
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {

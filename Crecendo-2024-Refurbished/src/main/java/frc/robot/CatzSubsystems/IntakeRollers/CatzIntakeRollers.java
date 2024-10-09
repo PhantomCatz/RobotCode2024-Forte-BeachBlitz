@@ -6,6 +6,7 @@ package frc.robot.CatzSubsystems.IntakeRollers;
 
 import static frc.robot.CatzSubsystems.IntakeRollers.IntakeRollersConstants.*;
 
+import java.lang.annotation.Target;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -23,6 +24,7 @@ public class CatzIntakeRollers extends SubsystemBase {
   private final IntakeRollersIOInputsAutoLogged inputs = new IntakeRollersIOInputsAutoLogged();
 
   // MISC variables
+  public TargetSpeed recordTargetSpeed = TargetSpeed.IDLE;
 
   // State Machine Variables
   @RequiredArgsConstructor // TODO change intake speed to seperate
@@ -30,8 +32,8 @@ public class CatzIntakeRollers extends SubsystemBase {
     IDLE(() ->  0.0),
     INTAKE(intakeSpeed),
     EJECT(() -> -0.6),
-    HANDOFF_IN(() -> 0.1),
-    HANDOFF_OUT(() -> -0.1);
+    HANDOFF_IN(() -> -0.1),
+    HANDOFF_OUT(() -> 0.1);
 
     private final DoubleSupplier requestedRollerSpeed;
     private double getRollerSpeed() {
@@ -72,7 +74,6 @@ public class CatzIntakeRollers extends SubsystemBase {
     Logger.processInputs("inputs/IntakeRollers", inputs);
   }
 
-
   //-----------------------------------------------------------------------------------------
   //
   //    Intake hardware methods
@@ -83,6 +84,12 @@ public class CatzIntakeRollers extends SubsystemBase {
   }
 
   private void setTargetRollerSpeed(TargetSpeed targetSpeed) {
+    // if(getBeamBreak() == true && ((recordTargetSpeed == TargetSpeed.INTAKE) || (recordTargetSpeed == TargetSpeed.HANDOFF_IN) )) {
+    //   io.runDutycycle(TargetSpeed.IDLE.getRollerSpeed());
+    // } else {
+    //   io.runDutycycle(targetSpeed.getRollerSpeed());
+    // }
+
     io.runDutycycle(targetSpeed.getRollerSpeed());
   }
 
@@ -92,28 +99,39 @@ public class CatzIntakeRollers extends SubsystemBase {
   //
   //-----------------------------------------------------------------------------------------
   public Command setRollersIn() {
+    recordTargetSpeed = TargetSpeed.INTAKE;
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.INTAKE), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers Intake");
   }
   
   public Command setRollersOut() {
+    recordTargetSpeed = TargetSpeed.EJECT;    
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.EJECT), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers Eject");
   }
 
+  public Command setRollersOff() {
+    recordTargetSpeed = TargetSpeed.IDLE;  
+    return startEnd(() -> setTargetRollerSpeed(TargetSpeed.IDLE),
+                    () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+              .withName("Rollers Off");
+  }
 
-
-  public Command setRollersHandoffIn() {
+  public Command setRollersHandofftoShooter() {
+    recordTargetSpeed = TargetSpeed.HANDOFF_IN;  
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_IN), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers HandoffIn");
   }
   
-  public Command setRollersHandoffOut() {
+  public Command setRollersHandofftoIntake() {
+    recordTargetSpeed = TargetSpeed.HANDOFF_OUT;  
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.HANDOFF_OUT), 
                     () -> setTargetRollerSpeed(TargetSpeed.IDLE))
               .withName("Rollers HandoffOut");
   }
+
+
 }
