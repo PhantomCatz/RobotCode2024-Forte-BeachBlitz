@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.CatzConstants;
-import frc.robot.Utilities.AutoAimingParametersUtil;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import lombok.RequiredArgsConstructor;
 
 
@@ -31,7 +31,7 @@ public class CatzShooterTurret {
   // State amchine
   @RequiredArgsConstructor
   public enum TurretPosition {
-    AUTO_AIM(()-> AutoAimingParametersUtil.getAutoAimSpeakerParemeters()
+    AUTO_AIM(()-> CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters()
                                           .turretHeading()
                                           .getDegrees()), 
     HOME(()->0.0),

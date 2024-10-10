@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -23,8 +24,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.Utilities.Alert;
-import frc.robot.Utilities.AutoAimingParametersUtil;
 import frc.robot.Utilities.LoggedTunableNumber;
 import lombok.RequiredArgsConstructor;
 
@@ -53,13 +54,13 @@ public class CatzShooterPivot {
   //State machine
   @RequiredArgsConstructor
   public enum ShooterPivotPositionType {
-    AUTO_AIM(()-> AutoAimingParametersUtil.getAutoAimSpeakerParemeters()
-                                          .shooterPivotAngle()
+    AUTO_AIM(()-> CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters()
+                                          .shooterPivotTicks()
                                           .getDegrees()), // TODO add auto aim parameters
     MANUAL(() -> 0.0),
-    HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 202)),
-    SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 10)),
-    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 7));
+    HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.1)),
+    SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 11)),
+    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 5));
 
     private final DoubleSupplier motionType;
     private double getTargetMotionPosition() {
@@ -105,14 +106,23 @@ public class CatzShooterPivot {
     // Set Alerts
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);
 
+    // Softlimits
+    // if(inputs.positionTicks > 000 && manualPwr < 0) { //TODO change number
+    //   manualPwr = 0;
+
+    // } else if (inputs.positionTicks < 000 && manualPwr > 0) {
+    //   manualPwr = 0;
+
+    // }
+
     // Run Setpoint Control
     if(DriverStation.isDisabled()) {
       io.stop();
     } else if(m_targetPosition == ShooterPivotPositionType.MANUAL) {
       io.runPercentOutput(manualPwr);
-    } else {
-      io.runSetpointTicks(getPositionTicks(), m_targetPosition.getTargetMotionPosition());
-    }
+     } //else {
+    //   io.runSetpointTicks(getPositionTicks(), m_targetPosition.getTargetMotionPosition());
+    // }
 
     //simulator logic
     pivot.setAngle(Rotation2d.fromDegrees(inputs.positionTicks));

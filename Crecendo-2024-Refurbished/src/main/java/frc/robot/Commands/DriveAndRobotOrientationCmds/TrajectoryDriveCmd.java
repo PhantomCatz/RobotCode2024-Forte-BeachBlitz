@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.CatzConstants;
 import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
@@ -49,6 +50,8 @@ public class TrajectoryDriveCmd extends Command {
     private List<Command> m_commands;
     private int numConsecutiveWaypointCounter = 0;
     private double totalTime;
+    private double scaledWaypointTime = 0.0;
+    private Command cmd = new InstantCommand();
 
 
     private boolean executing = false;
@@ -105,6 +108,7 @@ public class TrajectoryDriveCmd extends Command {
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_SCALAR; //TODO do we still need this
         totalTime = trajectory.getTotalTimeSeconds();
         numConsecutiveWaypointCounter = 0;
+        scaledWaypointTime = 0.0;
         executing = false;
     }
 
@@ -146,10 +150,8 @@ public class TrajectoryDriveCmd extends Command {
 
 
         if(!waypointsRatios.isEmpty()) {
-            double scaledWaypointTime = 0.0;
-            Command cmd = new Command() {};
-            if(numConsecutiveWaypointCounter <= waypointsRatios.size()) {
-                scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter)*totalTime;            
+            if(numConsecutiveWaypointCounter < waypointsRatios.size()) {
+                scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter) * totalTime;            
                 cmd = m_commands.get(numConsecutiveWaypointCounter);
                 if(executing == false) {
                     if(currentTime > scaledWaypointTime){
@@ -157,15 +159,16 @@ public class TrajectoryDriveCmd extends Command {
                         cmd.initialize();
                     }
                 }
-            }
+            
 
-            if(executing) {
-                m_commands.get(numConsecutiveWaypointCounter).execute();
-                if(cmd.isFinished() || scaledWaypointTime > 3.0){
-                    done = true;
-                    cmd.end(true);
-                    executing = false;
-                    numConsecutiveWaypointCounter++;
+                if(executing) {
+                    m_commands.get(numConsecutiveWaypointCounter).execute();
+                    if(cmd.isFinished() || scaledWaypointTime > 3.0){
+                        done = true;
+                        cmd.end(true);
+                        executing = false;
+                        numConsecutiveWaypointCounter++;
+                    }
                 }
             }
         }

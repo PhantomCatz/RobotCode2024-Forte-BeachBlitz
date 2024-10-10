@@ -39,6 +39,7 @@ public class CatzIntakePivot {
     PICKUP_GROUND(new LoggedTunableNumber("Intake/Pivot Pickup Ground", -24.0)),
     HOLD(new LoggedTunableNumber("Intake/Pivot Holding Position", 90.0)),
     STOW(new LoggedTunableNumber("Intake/Pivot Stow Position", 164)),
+    ANTI_STUCK(new LoggedTunableNumber("Intake/Pivot Anti Stuck Position", 110)),
     WAIT(()-> targetDegree);
     
     private final DoubleSupplier intakePivotSetpointSupplier;

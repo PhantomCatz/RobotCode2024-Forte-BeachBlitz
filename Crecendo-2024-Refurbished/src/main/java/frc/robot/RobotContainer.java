@@ -138,7 +138,7 @@ public class RobotContainer {
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW)); // ResetPosition
     xboxAux.x().onTrue(ControllerModeAbstraction.robotScore(this, ()->xboxAux.b().getAsBoolean()));  // Score // Override
 
-    Trigger leftStickTrigger = new Trigger(()->(xboxAux.getLeftY() > XboxInterfaceConstants.kDeadband)); // Manual Shooter
+    Trigger leftStickTrigger = new Trigger(()->(xboxAux.getLeftY() > XboxInterfaceConstants.kDeadband)); // Manual ShooterPivot
     leftStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getLeftY()));
     xboxAux.leftStick().onTrue(new InstantCommand());
 
@@ -146,7 +146,7 @@ public class RobotContainer {
     rightStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getRightX()));
     
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
-    xboxAux.leftBumper().whileTrue(rollers.setRollersOut());
+    xboxAux.leftBumper().onTrue(rollers.setRollersOut().withTimeout(0.2).andThen(superstructure.deployIntake(IntakePivotPosition.ANTI_STUCK)));
     xboxAux.leftBumper().and(xboxAux.rightBumper()).whileTrue(rollers.setRollersOff());
 
 

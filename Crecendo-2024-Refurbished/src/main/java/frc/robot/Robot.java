@@ -37,6 +37,7 @@ import frc.robot.CatzConstants.AllianceColor;
 import frc.robot.CatzConstants.RobotHardwareMode;
 import frc.robot.CatzConstants.RobotID;
 import frc.robot.CatzConstants.RobotSenario;
+import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.LEDs.CatzLED;
 import frc.robot.Commands.ControllerModeAbstraction;
 import frc.robot.Utilities.Alert;
@@ -329,6 +330,7 @@ public class Robot extends LoggedRobot {
         }
       }
     }
+    CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters();
   }
 
   @Override

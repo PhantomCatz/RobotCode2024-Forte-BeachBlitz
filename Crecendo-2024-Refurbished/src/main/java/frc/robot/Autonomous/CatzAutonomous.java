@@ -47,7 +47,6 @@ public class CatzAutonomous {
 
     private PathPlannerPath testPath;
     private PathPlannerPath UpperSpeakerGamepiece1;
-    private PathPlannerPath UpperSpeakerGamepiece2; 
     private PathPlannerPath straightLine;
 
 
@@ -57,7 +56,6 @@ public class CatzAutonomous {
         // Declare Paths
         testPath  = PathPlannerPath.fromPathFile("Test");
         UpperSpeakerGamepiece1 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece1");
-        UpperSpeakerGamepiece2 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece2");
         straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
         //   AUTON Priority LIST 
@@ -78,14 +76,14 @@ public class CatzAutonomous {
         CatzSuperSubsystem superSubsystem = m_container.getCatzSuperstructure();
         CatzShooterFeeder feeder = m_container.getCatzShooterFeeder();
 
-        List<Double> waypoints = Arrays.asList(0.1,0.2);
+        List<Double> waypoints = Arrays.asList(0.4,0.7);
 
         List<Command> commandSequenceOne = Arrays.asList(AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false));
 
         return new SequentialCommandGroup(
                 new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypoints, commandSequenceOne)
-                    .until(()->true)//feeder.isNoteInRestingPosition())
-                    .andThen(Commands.print("Intaking")).alongWith(Commands.print("Scoring")),
+                    .until(()->feeder.isNoteInRestingPosition())
+                    .andThen(Commands.print("Intaking")),
             new ParallelCommandGroup(
                 //new TrajectoryDriveCmd(UpperSpeakerGamepiece2, drivetrain),
                 AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()-> false).alongWith(Commands.print("shooting"))
