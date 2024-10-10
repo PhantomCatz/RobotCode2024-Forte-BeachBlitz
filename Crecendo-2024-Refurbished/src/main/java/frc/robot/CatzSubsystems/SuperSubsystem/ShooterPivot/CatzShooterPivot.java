@@ -55,8 +55,7 @@ public class CatzShooterPivot {
   @RequiredArgsConstructor
   public enum ShooterPivotPositionType {
     AUTO_AIM(()-> CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters()
-                                          .shooterPivotTicks()
-                                          .getDegrees()), // TODO add auto aim parameters
+                                                .shooterPivotTicks()), // TODO add auto aim parameters
     MANUAL(() -> 0.0),
     HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.1)),
     SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 11)),
@@ -120,9 +119,9 @@ public class CatzShooterPivot {
       io.stop();
     } else if(m_targetPosition == ShooterPivotPositionType.MANUAL) {
       io.runPercentOutput(manualPwr);
-     } //else {
-    //   io.runSetpointTicks(getPositionTicks(), m_targetPosition.getTargetMotionPosition());
-    // }
+    } else {
+      io.runSetpointTicks(getPositionTicks(), m_targetPosition.getTargetMotionPosition());
+    }
 
     //simulator logic
     pivot.setAngle(Rotation2d.fromDegrees(inputs.positionTicks));

@@ -146,7 +146,9 @@ public class RobotContainer {
     rightStickTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getRightX()));
     
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
-    xboxAux.leftBumper().onTrue(rollers.setRollersOut().withTimeout(0.2).andThen(superstructure.deployIntake(IntakePivotPosition.ANTI_STUCK)));
+    xboxAux.leftBumper().onTrue(rollers.setRollersOut().withTimeout(0.3)
+                                                       .andThen(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP_PART_2))
+                                                       .unless(()->superstructure.isPreviousSuperSubsystemStateScoreAmp()));
     xboxAux.leftBumper().and(xboxAux.rightBumper()).whileTrue(rollers.setRollersOff());
 
 
@@ -156,8 +158,11 @@ public class RobotContainer {
     xboxDrv.start().onTrue(drive.cancelTrajectory());
 
     // Auto Driving
-    xboxDrv.b().onTrue(new FaceTarget(new Translation2d(0, 0), drive));
-    xboxDrv.y().onTrue(auto.autoFindPathSpeakerLOT());
+    xboxDrv.y().onTrue(new FaceTarget(new Translation2d(0, 0), drive));
+    xboxDrv.b().onTrue(auto.autoFindPathAmp());
+    xboxDrv.x().onTrue(auto.autoFindPathSpeaker());
+    xboxDrv.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW));
+
 
     
     drive.setDefaultCommand(new TeleopDriveCmd(() -> xboxDrv.getLeftX(), 

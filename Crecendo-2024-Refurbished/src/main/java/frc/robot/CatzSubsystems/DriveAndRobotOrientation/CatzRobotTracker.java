@@ -362,15 +362,15 @@ public class CatzRobotTracker {
 
         // Target Robot Shooter Elevation Angle
         double targetDistance = targetPose.getDistance(robotPose.getTranslation());
-        double elevationAngle = shooterPivotTable.get(targetDistance);
+        double elevationTicks = shooterPivotTable.get(targetDistance);
 
         Logger.recordOutput("AutoAim/targetDistance", targetDistance);
-        Logger.recordOutput("AutoAim/TargetElevationAngle", elevationAngle);
+        Logger.recordOutput("AutoAim/TargetElevationAngle", elevationTicks);
 
         latestParameters =
             new AimingParameters(
                 Rotation2d.fromDegrees(targetTurretDegree),
-                Rotation2d.fromDegrees(elevationAngle),
+                elevationTicks,
                 targetDistance,
                 new FlywheelSpeeds(0, 0));
        // if (latestParameters != null) {
@@ -384,7 +384,7 @@ public class CatzRobotTracker {
 
     public record AimingParameters(
         Rotation2d turretHeading,
-        Rotation2d shooterPivotTicks,
+        double shooterPivotTicks,
         double effectiveDistance,
         FlywheelSpeeds flywheelSpeeds) {}
 

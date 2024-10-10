@@ -332,7 +332,7 @@ public class Robot extends LoggedRobot {
     }
     CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters();
   }
-
+  
   @Override
   public void disabledInit() {}
 

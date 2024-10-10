@@ -151,7 +151,7 @@ public class TrajectoryDriveCmd extends Command {
 
         if(!waypointsRatios.isEmpty()) {
             if(numConsecutiveWaypointCounter < waypointsRatios.size()) {
-                scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter) * totalTime;            
+                scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter);            
                 cmd = m_commands.get(numConsecutiveWaypointCounter);
                 if(executing == false) {
                     if(currentTime > scaledWaypointTime){

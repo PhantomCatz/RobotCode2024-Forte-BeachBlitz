@@ -72,22 +72,20 @@ public class CatzAutonomous {
     }
 
     private Command upperSpeakerWing1Center1() {
+        preloadTrajectoryClass(UpperSpeakerGamepiece1);
         CatzDrivetrain drivetrain = m_container.getCatzDrivetrain();
         CatzSuperSubsystem superSubsystem = m_container.getCatzSuperstructure();
         CatzShooterFeeder feeder = m_container.getCatzShooterFeeder();
 
-        List<Double> waypoints = Arrays.asList(0.4,0.7);
+        List<Double> waypointTimes = Arrays.asList(3.4,5.0);
 
-        List<Command> commandSequenceOne = Arrays.asList(AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false));
+        List<Command> commandSequenceOne = Arrays.asList(
+                                                    AutomatedSequenceCmds.noteDetectIntakeToShooter(m_container),
+                                                    AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false)
+                                                    );
 
         return new SequentialCommandGroup(
-                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypoints, commandSequenceOne)
-                    .until(()->feeder.isNoteInRestingPosition())
-                    .andThen(Commands.print("Intaking")),
-            new ParallelCommandGroup(
-                //new TrajectoryDriveCmd(UpperSpeakerGamepiece2, drivetrain),
-                AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()-> false).alongWith(Commands.print("shooting"))
-            )
+                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypointTimes, commandSequenceOne)
         );
     }
 
@@ -125,10 +123,22 @@ public class CatzAutonomous {
     
 
     //Automatic pathfinding command
-    public Command autoFindPathSpeakerLOT() {
+    public Command autoFindPathAmp() {
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-                new Pose2d(2.0, 2.0, Rotation2d.fromDegrees(180)),
-                new Pose2d(1.50, 0.69, Rotation2d.fromDegrees(235))
+                new Pose2d(1.89, 6.29, Rotation2d.fromDegrees(90)),
+                new Pose2d(1.89, 7.76, Rotation2d.fromDegrees(90))
+                    );
+
+        //send path info to trajectory following command
+        return new TrajectoryDriveCmd(bezierPoints, 
+                                      DriveConstants.autoPathfindingConstraints, 
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
+    }
+
+    public Command autoFindPathSpeaker() {
+        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+                new Pose2d(4.36, 6.14, Rotation2d.fromDegrees(180)),
+                new Pose2d(2.74, 6.14, Rotation2d.fromDegrees(180))
                     );
 
         //send path info to trajectory following command

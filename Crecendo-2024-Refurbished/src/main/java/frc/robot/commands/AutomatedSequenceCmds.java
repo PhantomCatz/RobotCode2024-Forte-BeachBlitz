@@ -29,7 +29,7 @@ public class AutomatedSequenceCmds {
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND), // Until Intake has made it to final ground pos
                 rollers.setRollersIn()
-            ).until(() -> rollers.getBeamBreak()), // Until Intake Rollers have detected note,
+            ).until(() -> rollers.isNoteInIntake()), // Until Intake Rollers have detected note,
             transferNoteToShooter(container) //Stow is already called in method
         );
     }
@@ -45,7 +45,7 @@ public class AutomatedSequenceCmds {
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.INTAKE_GROUND), // Until Intake has made it to final ground pos
                 rollers.setRollersIn()
-            ).until(()-> rollers.getBeamBreak()), // Until Intake Rollers have detected note,
+            ).until(()-> rollers.isNoteInIntake()), // Until Intake Rollers have detected note,
             superstructure.setSuperStructureState(SuperstructureState.STOW) // Until Intake has stowed 
         );
     }
@@ -64,7 +64,7 @@ public class AutomatedSequenceCmds {
             new ParallelCommandGroup(
                 rollers.setRollersHandofftoIntake(),
                 feeder.commandToIntake()
-            ).until(()->rollers.getBeamBreak()) // Until intake finalizes note position  
+            ).until(()->rollers.isNoteInIntake()) // Until intake finalizes note position  
         );
     }
 
@@ -92,7 +92,7 @@ public class AutomatedSequenceCmds {
         CatzIntakeRollers rollers = container.getCatzIntakeRollers();
 
         return new SequentialCommandGroup(
-            transferNoteToIntake(container).unless(()->rollers.getBeamBreak()),
+            transferNoteToIntake(container).unless(()->rollers.isNoteInIntake()),
             superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP).until(()->superstructure.isElevatorInPosition())
         );
     }

@@ -128,7 +128,7 @@ public class DriveConstants {
     //
     //-----------------------------------------------------------------------------------------------------------------------------
     public static final PathConstraints autoPathfindingConstraints = new PathConstraints( // 540 // 720 
-                                                                    driveConfig.maxLinearVelocity, driveConfig.maxLinearAcceleration, 
+                                                                    1.0, driveConfig.maxLinearAcceleration, 
                                                                     driveConfig.maxAngularVelocity, driveConfig.maxAngularAcceleration);
 
 
