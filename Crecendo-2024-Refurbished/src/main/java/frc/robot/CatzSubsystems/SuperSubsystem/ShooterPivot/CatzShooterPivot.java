@@ -36,7 +36,7 @@ public class CatzShooterPivot {
   private final ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
 
   // Misc variables
-  private ShooterPivotPositionType m_targetPosition = ShooterPivotPositionType.MANUAL;
+  private ShooterPivotPositionType m_targetPosition = ShooterPivotPositionType.HOME;
   private double targetShooterPivotPosition = 0.0;
   private double manualPwr = 0.0;
   private boolean isCharacterizing = false;
