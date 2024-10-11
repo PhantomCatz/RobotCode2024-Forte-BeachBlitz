@@ -41,11 +41,14 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
         elevationNeoMtr.setIdleMode(IdleMode.kBrake);
         elevationNeoMtr.enableVoltageCompensation(12.0);
         elevationNeoMtr.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
-        elevationNeoMtr.getEncoder().setPosition(0.0);
+        elevationNeoMtr.getEncoder().setPosition(25.0); //TODO need to fix
+
+        elevationNeoMtr.burnFlash();
     }
 
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
+
         inputs.positionTicks = elevationNeoMtr.getEncoder().getPosition();
         inputs.appliedVolts = elevationNeoMtr.getBusVoltage();
         inputs.tempCelcius = elevationNeoMtr.getMotorTemperature();

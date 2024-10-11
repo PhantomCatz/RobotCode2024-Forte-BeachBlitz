@@ -55,9 +55,9 @@ public class CatzShooterPivot {
   @RequiredArgsConstructor
   public enum ShooterPivotPositionType {
     AUTO_AIM(()-> CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters()
-                                                .shooterPivotTicks()), // TODO add auto aim parameters
+                                                .shooterPivotTicks()), 
     MANUAL(() -> 0.0),
-    HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.1)),
+    HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.0)),
     SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 11)),
     TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 5));
 
