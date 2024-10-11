@@ -1,5 +1,6 @@
 package frc.robot.Commands.DriveAndRobotOrientationCmds;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
@@ -42,14 +43,13 @@ public class TrajectoryDriveCmd extends Command {
     private PathPlannerPath path;
 
     private boolean atTarget = false;
-    public static double pathTimeOut;
+    public static double pathTimeOut = -999.0;
 
 
     //Command inside trajectory helper variables
-    private List<Double> waypointsRatios;
-    private List<Command> m_commands;
+    private List<Double> waypointsRatios = Arrays.asList();
+    private List<Command> m_commands     = Arrays.asList();
     private int numConsecutiveWaypointCounter = 0;
-    private double totalTime;
     private double scaledWaypointTime = 0.0;
     private Command cmd = new InstantCommand();
 
@@ -57,16 +57,20 @@ public class TrajectoryDriveCmd extends Command {
     private boolean executing = false;
     private boolean done = false;
 
+    //Constructor Logger
+    private int m_constructorLogger = 0; // For determining if the command is auto path find or autonomous
+
 
     /**
      * @param drivetrain           The coordinator between the gyro and the swerve modules.
      * @param trajectory          The trajectory to follow.
      */
-    public TrajectoryDriveCmd(PathPlannerPath newPath, CatzDrivetrain drivetrain, List<Double> waypoints, List<Command> commands) {
+    public TrajectoryDriveCmd(PathPlannerPath newPath, CatzDrivetrain drivetrain, List<Double> waypoints, List<Command> commands, int constructorLogger) {
         waypointsRatios = waypoints;
-        this.m_commands = commands;
+        m_commands = commands;
         path = newPath;
         m_driveTrain = drivetrain;
+        m_constructorLogger = constructorLogger;
         addRequirements(m_driveTrain);
     }
     
@@ -75,10 +79,12 @@ public class TrajectoryDriveCmd extends Command {
     public TrajectoryDriveCmd(List<Translation2d> bezierPoints, 
                               PathConstraints constraints, 
                               GoalEndState endRobotState,
-                              CatzDrivetrain drivetrain) {
+                              CatzDrivetrain drivetrain,
+                              int constructorLogger) {
         PathPlannerPath newPath = new PathPlannerPath(bezierPoints, constraints, endRobotState);
         path = newPath;
         m_driveTrain = drivetrain;
+        m_constructorLogger = constructorLogger;
         addRequirements(m_driveTrain);
     }
 
@@ -95,8 +101,9 @@ public class TrajectoryDriveCmd extends Command {
             usePath = path.flipPath();
         }
 
-        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
-        
+        if(m_constructorLogger == 1) {
+            CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        }
         this.trajectory = new PathPlannerTrajectory(
             usePath, 
             DriveConstants.
@@ -106,7 +113,6 @@ public class TrajectoryDriveCmd extends Command {
         );
                                                
         pathTimeOut = trajectory.getTotalTimeSeconds() * TIMEOUT_SCALAR; //TODO do we still need this
-        totalTime = trajectory.getTotalTimeSeconds();
         numConsecutiveWaypointCounter = 0;
         scaledWaypointTime = 0.0;
         executing = false;
@@ -116,6 +122,7 @@ public class TrajectoryDriveCmd extends Command {
     public void execute() {
         double currentTime = this.timer.get();
 
+        // Trajectory Executor
         if(!atTarget){
     
             // Getters from pathplanner and current robot pose
@@ -149,6 +156,7 @@ public class TrajectoryDriveCmd extends Command {
         }
 
 
+        // Command Executer
         if(!waypointsRatios.isEmpty()) {
             if(numConsecutiveWaypointCounter < waypointsRatios.size()) {
                 scaledWaypointTime = waypointsRatios.get(numConsecutiveWaypointCounter);            

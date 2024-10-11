@@ -105,14 +105,14 @@ public class CatzShooterPivot {
     // Set Alerts
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);
 
-    // Softlimits
-    // if(inputs.positionTicks > 000 && manualPwr < 0) { //TODO change number
-    //   manualPwr = 0;
-
-    // } else if (inputs.positionTicks < 000 && manualPwr > 0) {
-    //   manualPwr = 0;
-
-    // }
+    // Manual softlimits
+    if(inputs.positionTicks > 11.0 && manualPwr > 0) { //TODO test values
+      manualPwr = 0;
+      m_targetPosition = ShooterPivotPositionType.SUBWOOFER;
+    } else if (inputs.positionTicks < 0.0 && manualPwr < 0) {
+      manualPwr = 0;
+      m_targetPosition = ShooterPivotPositionType.HOME;
+    }
 
     // Run Setpoint Control
     if(DriverStation.isDisabled()) {

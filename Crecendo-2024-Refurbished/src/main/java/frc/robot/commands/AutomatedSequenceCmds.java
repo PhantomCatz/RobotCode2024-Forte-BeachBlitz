@@ -109,7 +109,7 @@ public class AutomatedSequenceCmds {
             transferNoteToShooter(container).unless(()->feeder.isNoteBeamBreakBroken()),// Note is already in shooter
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM),
-                //flywheels.revCommand(),
+                flywheels.revCommand(),
                 new SequentialCommandGroup(
                     Commands.waitUntil(()->(flywheels.atGoal() && superstructure.isTurretAndPivotInPosition())).unless(()->driverOveride.get()), // Until flywheels and shootersuperstructure are in position or driveroverride
                     container.getCatzShooterFeeder().commandShootNote()

@@ -45,9 +45,11 @@ public class CatzAutonomous {
     private boolean trajectoriesLoaded = false;
     private boolean isPathPlannerFlipped = false;
 
+    // Auto Paths
     private PathPlannerPath testPath;
     private PathPlannerPath UpperSpeakerGamepiece1;
     private PathPlannerPath straightLine;
+
 
 
     public CatzAutonomous(RobotContainer container) {
@@ -85,7 +87,7 @@ public class CatzAutonomous {
                                                     );
 
         return new SequentialCommandGroup(
-                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypointTimes, commandSequenceOne)
+                new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypointTimes, commandSequenceOne, 1)
         );
     }
 
@@ -99,7 +101,7 @@ public class CatzAutonomous {
 
 
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain(), waypoints, commandSequenceOne))
+            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain(), waypoints, commandSequenceOne, 1))
         );
     }
 
@@ -132,7 +134,7 @@ public class CatzAutonomous {
         //send path info to trajectory following command
         return new TrajectoryDriveCmd(bezierPoints, 
                                       DriveConstants.autoPathfindingConstraints, 
-                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(90)), m_container.getCatzDrivetrain(), 2);
     }
 
     public Command autoFindPathSpeaker() {
@@ -144,7 +146,7 @@ public class CatzAutonomous {
         //send path info to trajectory following command
         return new TrajectoryDriveCmd(bezierPoints, 
                                       DriveConstants.autoPathfindingConstraints, 
-                                      new GoalEndState(0.0, Rotation2d.fromDegrees(235)), m_container.getCatzDrivetrain());
+                                      new GoalEndState(0.0, Rotation2d.fromDegrees(200)), m_container.getCatzDrivetrain(), 2);
     }
 
     //---------------------------------------------------------------------------------------------------------

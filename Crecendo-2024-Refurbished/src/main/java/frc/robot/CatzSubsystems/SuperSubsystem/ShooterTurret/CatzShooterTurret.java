@@ -7,12 +7,14 @@ package frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret;
 import static frc.robot.CatzSubsystems.SuperSubsystem.ShooterTurret.TurretConstants.*;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.CatzConstants;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
+import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot.ShooterPivotPositionType;
 import lombok.RequiredArgsConstructor;
 
 
@@ -78,12 +80,19 @@ public class CatzShooterTurret {
     io.updateInputs(inputs);
     Logger.processInputs("inputs/Turret", inputs);
 
+    // Manual softlimits
+    if((Math.abs(inputs.positionDegrees) > 11.0) && Math.abs(manualPwr) > 0) { //TODO test values
+      manualPwr = 0;
+      currentMotionType = TurretPosition.HOME;
+    } 
+
+    // Run Setpoint Control
     if(DriverStation.isDisabled()) {
       io.runPercentOutput(0.0);
+    } else if(currentMotionType == TurretPosition.MANUAL) {
+      io.runPercentOutput(manualPwr); 
     } else {
       io.runSetpointDegrees(inputs.positionDegrees, currentMotionType.getTargetMotionPosition());
-
-      // System.out.println(currentMotionType.getTargetMotionPosition());
     }
 
   }
@@ -103,6 +112,11 @@ public class CatzShooterTurret {
     double target = Math.abs(currentMotionType.getTargetMotionPosition());
     boolean isIntakeInPos = Math.abs(target - currentPosition) < 5.0;
     return isIntakeInPos;
+  }
+
+  public void setPercentOutput(Supplier<Double> percentOutput) {
+    currentMotionType = TurretPosition.MANUAL;
+    manualPwr = percentOutput.get();
   }
 
 

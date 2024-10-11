@@ -248,6 +248,10 @@ public class CatzSuperSubsystem extends SubsystemBase {
     return runOnce(() -> turret.setTargetPosition(TurretPosition.HOME));
   }
 
+  public Command setTurretManual(Supplier<Double> power) {
+    return runOnce(() -> turret.setPercentOutput(power));
+  }
+
   public Command setShooterPosition(ShooterPivotPositionType position) {
     return runOnce(() -> shooterPivot.setTargetMotionMethod(position));
   }
