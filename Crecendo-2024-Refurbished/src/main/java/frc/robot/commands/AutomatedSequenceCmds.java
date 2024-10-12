@@ -110,8 +110,8 @@ public class AutomatedSequenceCmds {
             new ParallelCommandGroup(
                 superstructure.setSuperStructureState(SuperstructureState.AUTO_AIM),
                 flywheels.revCommand(),
-                new SequentialCommandGroup(
-                    Commands.waitUntil(()->(flywheels.atGoal() && superstructure.isTurretAndPivotInPosition())).unless(()->driverOveride.get()), // Until flywheels and shootersuperstructure are in position or driveroverride
+                new SequentialCommandGroup (
+                    Commands.waitUntil((()->driverOveride.get())), // Until flywheels and shootersuperstructure are in position or driveroverride
                     container.getCatzShooterFeeder().commandShootNote()
                 )
             )

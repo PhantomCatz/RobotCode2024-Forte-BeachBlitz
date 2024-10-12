@@ -57,7 +57,7 @@ public class CatzRobotTracker {
 
 
   // Pose Estimation Members
-  private Pose2d odometryPose = new Pose2d();
+  private Pose2d odometryPose = new Pose2d(1.33, 5.54, Rotation2d.fromDegrees(0));
 
   private final TimeInterpolatableBuffer<Pose2d> poseBuffer =
           TimeInterpolatableBuffer.createBuffer(POSE_BUFFER_SIZE_SECONDS);
@@ -341,7 +341,7 @@ public class CatzRobotTracker {
         Vector<N2> robotToTarget = VecBuilder.fill(targetPose.getX() - robotPose.getX()  , targetPose.getY() - robotPose.getY());
         //Vector<N2> scaledRobotToTarget = robotToTarget.times(shooter_velocity/robotToTarget.norm());
         Vector<N2> correctVector = robotToTarget;//.minus(addedVelocity); // Account for robot velocity by subtracting vectors TODO fix later
-        double feildRelTargetRad = Math.atan(correctVector.get(1,0)/correctVector.get(0,0)); // Take arctangent to find feild relative target rotation
+        double feildRelTargetRad = -Math.atan(correctVector.get(1,0)/correctVector.get(0,0)); // Take arctangent to find feild relative target rotation
         
         Logger.recordOutput("AutoAim/targetAngle", Math.toDegrees(feildRelTargetRad));
        

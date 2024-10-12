@@ -58,8 +58,8 @@ public class CatzShooterPivot {
                                                 .shooterPivotTicks()), 
     MANUAL(() -> 0.0),
     HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.0)),
-    SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 11)),
-    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 5));
+    SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 36.1)),
+    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 8.5));
 
     private final DoubleSupplier motionType;
     private double getTargetMotionPosition() {
@@ -106,13 +106,13 @@ public class CatzShooterPivot {
     disconnectedAlertShooterPivot.set(!inputs.isElevationMotorConnected);
 
     // Manual softlimits
-    if(inputs.positionTicks > 11.0 && manualPwr > 0) { //TODO test values
-      manualPwr = 0;
-      m_targetPosition = ShooterPivotPositionType.SUBWOOFER;
-    } else if (inputs.positionTicks < 0.0 && manualPwr < 0) {
-      manualPwr = 0;
-      m_targetPosition = ShooterPivotPositionType.HOME;
-    }
+    // if(inputs.positionTicks > 11.0 && manualPwr > 0) { //TODO test values
+    //   manualPwr = 0;
+    //   m_targetPosition = ShooterPivotPositionType.SUBWOOFER;
+    // } else if (inputs.positionTicks < 0.0 && manualPwr < 0) {
+    //   manualPwr = 0;
+    //   m_targetPosition = ShooterPivotPositionType.HOME;
+    // }
 
     // Run Setpoint Control
     if(DriverStation.isDisabled()) {

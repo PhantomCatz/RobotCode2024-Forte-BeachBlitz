@@ -82,8 +82,8 @@ public class CatzShooterTurret {
 
     // Manual softlimits
     if((Math.abs(inputs.positionDegrees) > 11.0) && Math.abs(manualPwr) > 0) { //TODO test values
-      manualPwr = 0;
-      currentMotionType = TurretPosition.HOME;
+      // manualPwr = 0;
+      // currentMotionType = TurretPosition.HOME;
     } 
 
     // Run Setpoint Control
@@ -94,6 +94,11 @@ public class CatzShooterTurret {
     } else {
       io.runSetpointDegrees(inputs.positionDegrees, currentMotionType.getTargetMotionPosition());
     }
+
+    Logger.recordOutput("Turret/ motion type", currentMotionType.getTargetMotionPosition());
+    Logger.recordOutput("Turret/angle", CatzRobotTracker.getInstance().getAutoAimSpeakerParemeters()
+                                          .turretHeading()
+                                          .getDegrees());
 
   }
 

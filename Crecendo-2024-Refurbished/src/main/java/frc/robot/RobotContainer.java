@@ -148,9 +148,9 @@ public class RobotContainer {
     xboxAux.rightBumper().whileTrue(rollers.setRollersIn());
 
     xboxAux.leftBumper().onTrue(rollers.setRollersOut().withTimeout(0.3)
-                                                       .andThen(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP_PART_2)
-                                                       .unless(()->!superstructure.isPreviousSuperSubsystemStateScoreAmp()))
-                                                        );
+                                                       .andThen(superstructure.setSuperStructureState(SuperstructureState.SCORE_AMP_PART_2)));
+                                                      //  .unless(()->!superstructure.isPreviousSuperSubsystemStateScoreAmp()))
+                                                      //   );
     xboxAux.leftBumper().and(xboxAux.rightBumper()).whileTrue(rollers.setRollersOff());
 
 

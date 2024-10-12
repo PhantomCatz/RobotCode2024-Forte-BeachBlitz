@@ -36,7 +36,8 @@ public class CatzSuperSubsystem extends SubsystemBase {
     SCORE_AMP,
     SCORE_AMP_PART_2,
     INTAKE_GROUND,
-    INTAKE_SOURCE
+    INTAKE_SOURCE,
+    SUBWOOFER
   }
 
   private final CatzElevator elevator;
@@ -118,13 +119,20 @@ public class CatzSuperSubsystem extends SubsystemBase {
           intakePivot.setIntakePivotState(IntakePivotPosition.ANTI_STUCK);
           elevator.setTargetPosition(ElevatorPosition.SCORE_AMP_PART_2);
 
-        break;
+        break;  
 
         case AUTO_AIM:
+          intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
           elevator.setTargetPosition(ElevatorPosition.STOW);
           turret.setTargetPosition(TurretPosition.HOME);
           shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.AUTO_AIM);
+        break;
+
+        case SUBWOOFER:
           intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
+          elevator.setTargetPosition(ElevatorPosition.STOW);
+          turret.setTargetPosition(TurretPosition.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.SUBWOOFER);
         break;
 
         default:
@@ -170,10 +178,15 @@ public class CatzSuperSubsystem extends SubsystemBase {
         {
           intakePivot.setIntakePivotState(IntakePivotPosition.SCORE_AMP);
         }
-
-      case AUTO_AIM:
       break;
 
+      case AUTO_AIM:
+        if(!isIntakePivotCausingDanger)
+        {
+          turret.setTargetPosition(TurretPosition.AUTO_AIM);
+        }
+        
+      break;
       default:
     }
 

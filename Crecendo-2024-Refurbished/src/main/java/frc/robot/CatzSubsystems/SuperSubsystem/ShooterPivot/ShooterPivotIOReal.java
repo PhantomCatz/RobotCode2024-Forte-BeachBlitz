@@ -41,7 +41,7 @@ public class ShooterPivotIOReal implements ShooterPivotIO {
         elevationNeoMtr.setIdleMode(IdleMode.kBrake);
         elevationNeoMtr.enableVoltageCompensation(12.0);
         elevationNeoMtr.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
-        elevationNeoMtr.getEncoder().setPosition(25.0); //TODO need to fix
+        elevationNeoMtr.getEncoder().setPosition(43); //TODO need to fix
 
         elevationNeoMtr.burnFlash();
     }
