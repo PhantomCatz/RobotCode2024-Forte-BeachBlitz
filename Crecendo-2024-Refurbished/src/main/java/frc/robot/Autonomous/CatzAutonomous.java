@@ -1,5 +1,6 @@
 package frc.robot.Autonomous;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class CatzAutonomous {
     private PathPlannerPath testPath;
     private PathPlannerPath UpperSpeakerGamepiece1;
     private PathPlannerPath straightLine;
+    private PathPlannerPath drivestraightBack;
 
 
 
@@ -60,17 +62,18 @@ public class CatzAutonomous {
         testPath  = PathPlannerPath.fromPathFile("Test");
         UpperSpeakerGamepiece1 = PathPlannerPath.fromPathFile("UpperSpeakerGamepiece1");
         straightLine = PathPlannerPath.fromPathFile("StraightLine");
+        drivestraightBack = PathPlannerPath.fromPathFile("DriveStraightBack");
 
         //   AUTON Priority LIST 
         autoPathChooser.addOption("Test Auto", testAuto());
         autoPathChooser.addOption("UpperSpeakerWing1center1", upperSpeakerWing1Center1());
+        autoPathChooser.addOption("DriveStraight back", driveStraightBackScore2());
 
 
 
         autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
         autoPathChooser.addOption("StraightLine", straightLine());
 
-        NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
         
     }
 
@@ -93,6 +96,28 @@ public class CatzAutonomous {
                 Commands.waitSeconds(1),
                 AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false).withTimeout(2),
                 new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypointTimes, commandSequenceOne, 1)
+        );
+    }
+
+    private Command driveStraightBackScore2() {
+        preloadTrajectoryClass(UpperSpeakerGamepiece1);
+        CatzDrivetrain drivetrain = m_container.getCatzDrivetrain();
+        CatzSuperSubsystem superSubsystem = m_container.getCatzSuperstructure();
+        CatzShooterFeeder feeder = m_container.getCatzShooterFeeder();
+
+        List<Double> waypointTimes = Arrays.asList(2.66, 4.76);
+
+        List<Command> commandSequence = Arrays.asList(
+                                                    AutomatedSequenceCmds.noteDetectIntakeToShooter(m_container).alongWith(Commands.print("intaking")),
+                                                    AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false).alongWith(Commands.print("Speaker auot aim"))
+                                                    );
+
+        return new SequentialCommandGroup(
+            Commands.runOnce(()->CatzRobotTracker.getInstance().resetPosition(drivestraightBack.getPreviewStartingHolonomicPose())),
+            superSubsystem.setSuperStructureState(SuperstructureState.STOW).withTimeout(1),
+            Commands.waitSeconds(1),
+            AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false).withTimeout(2).alongWith(Commands.print("hid")),
+            new TrajectoryDriveCmd(drivestraightBack, drivetrain, waypointTimes, commandSequence, 1)
         );
     }
 

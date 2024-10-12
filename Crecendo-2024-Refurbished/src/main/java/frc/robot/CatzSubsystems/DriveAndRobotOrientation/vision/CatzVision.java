@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
@@ -47,7 +48,8 @@ public class CatzVision extends SubsystemBase {
                 // Continue
             } else {
                 if (inputs[i].hasTarget &&
-                    inputs[i].maxDistance < LOWEST_DISTANCE) {
+                    inputs[i].maxDistance < LOWEST_DISTANCE && // Process vision only when in teleop and in range of apriltag
+                    !DriverStation.isAutonomous()) {
                     processVision(i);
                 }
             }
