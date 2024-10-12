@@ -406,29 +406,10 @@ public class CatzRobotTracker {
     private static final InterpolatingDoubleTreeMap shooterPivotTable = new InterpolatingDoubleTreeMap();
 
     static {
-        shooterPivotTable.put(1.478, 11.0);
+        shooterPivotTable.put(1.478, 36.1);
 
-        shooterPivotTable.put(1.875, 8.5);
-        // newShooterPivotTable.put(1.875, 0.82);
-        // newShooterPivotTable.put(1.875, 0.95);
 
-        shooterPivotTable.put(2.875, 6.0);
-        // newShooterPivotTable.put(2.875, 0.42);
-        // newShooterPivotTable.put(2.875, 0.55);
-        
-        shooterPivotTable.put(3.875, 4.5);
-        // newShooterPivotTable.put(3.875, 0.21);
-        // newShooterPivotTable.put(3.875, 0.31);
-        
-        shooterPivotTable.put(4.875, 3.5);
-        // newShooterPivotTable.put(4.875, 0.09);
-        // newShooterPivotTable.put(4.875, 0.1);
-
-        shooterPivotTable.put(5.875, 2.0);
-        // newShooterPivotTable.put(5.875, 0.0);
-        // newShooterPivotTable.put(5.875, 0.04);
-
-        shooterPivotTable.put(6.813, 0.0);
+        shooterPivotTable.put(2.6, 0.0);
     }
 
 

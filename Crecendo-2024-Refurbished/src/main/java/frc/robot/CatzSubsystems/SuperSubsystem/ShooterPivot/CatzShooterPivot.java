@@ -59,7 +59,7 @@ public class CatzShooterPivot {
     MANUAL(() -> 0.0),
     HOME(new LoggedTunableNumber("shooterPivot/tunnable/home", 0.0)),
     SUBWOOFER(new LoggedTunableNumber("shooterPivot/Tunnable/subwoofer", 36.1)),
-    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 8.5));
+    TEST(new LoggedTunableNumber("shooterPivot/Tunnable/TestingTicks", 33));
 
     private final DoubleSupplier motionType;
     private double getTargetMotionPosition() {

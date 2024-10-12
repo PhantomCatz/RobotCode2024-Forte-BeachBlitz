@@ -30,6 +30,7 @@ import frc.robot.CatzSubsystems.DriveAndRobotOrientation.drivetrain.DriveConstan
 import frc.robot.CatzSubsystems.Shooter.ShooterFeeder.CatzShooterFeeder;
 import frc.robot.CatzSubsystems.Shooter.ShooterFlywheels.CatzShooterFlywheels;
 import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem;
+import frc.robot.CatzSubsystems.SuperSubsystem.CatzSuperSubsystem.SuperstructureState;
 import frc.robot.Commands.AutomatedSequenceCmds;
 import frc.robot.Commands.CharacterizationCmds.FeedForwardCharacterization;
 import frc.robot.Commands.DriveAndRobotOrientationCmds.TrajectoryDriveCmd;
@@ -79,7 +80,7 @@ public class CatzAutonomous {
         CatzSuperSubsystem superSubsystem = m_container.getCatzSuperstructure();
         CatzShooterFeeder feeder = m_container.getCatzShooterFeeder();
 
-        List<Double> waypointTimes = Arrays.asList(3.4,5.0);
+        List<Double> waypointTimes = Arrays.asList(1.3, 4.0);
 
         List<Command> commandSequenceOne = Arrays.asList(
                                                     AutomatedSequenceCmds.noteDetectIntakeToShooter(m_container),
@@ -87,6 +88,10 @@ public class CatzAutonomous {
                                                     );
 
         return new SequentialCommandGroup(
+                Commands.runOnce(()->CatzRobotTracker.getInstance().resetPosition(UpperSpeakerGamepiece1.getPreviewStartingHolonomicPose())),
+                superSubsystem.setSuperStructureState(SuperstructureState.STOW).withTimeout(1),
+                Commands.waitSeconds(1),
+                AutomatedSequenceCmds.scoreSpeakerAutoAim(m_container, ()->false).withTimeout(2),
                 new TrajectoryDriveCmd(UpperSpeakerGamepiece1, drivetrain, waypointTimes, commandSequenceOne, 1)
         );
     }
