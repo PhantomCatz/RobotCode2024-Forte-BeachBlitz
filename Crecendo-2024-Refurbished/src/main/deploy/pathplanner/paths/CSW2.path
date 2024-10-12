@@ -3,6 +3,7 @@
   "waypoints": [
     {
       "anchor": {
+<<<<<<< Updated upstream:Crecendo-2024-Refurbished/src/main/deploy/pathplanner/paths/Test.path
         "x": 2.0,
         "y": 7.0
       },
@@ -10,12 +11,22 @@
       "nextControl": {
         "x": 3.0,
         "y": 7.0
+=======
+        "x": 1.3959954881393342,
+        "y": 5.527514849608872
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4959954881393343,
+        "y": 5.527514849608872
+>>>>>>> Stashed changes:Crecendo-2024-Refurbished/src/main/deploy/pathplanner/paths/CSW2.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< Updated upstream:Crecendo-2024-Refurbished/src/main/deploy/pathplanner/paths/Test.path
         "x": 2.157262600239487,
         "y": 3.7967995935991876
       },
@@ -54,6 +65,14 @@
       "prevControl": {
         "x": 6.8597917195834395,
         "y": 6.450161471751516
+=======
+        "x": 2.649054998537956,
+        "y": 5.527514849608872
+      },
+      "prevControl": {
+        "x": 2.549054998537956,
+        "y": 5.527514849608872
+>>>>>>> Stashed changes:Crecendo-2024-Refurbished/src/main/deploy/pathplanner/paths/CSW2.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -121,7 +140,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Autos",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

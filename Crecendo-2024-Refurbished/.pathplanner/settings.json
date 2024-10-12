@@ -1,9 +1,13 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.932,
+  "robotLength": 0.932,
   "holonomicMode": true,
   "pathFolders": [
+<<<<<<< Updated upstream
     "New Folder"
+=======
+    "Autos"
+>>>>>>> Stashed changes
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
