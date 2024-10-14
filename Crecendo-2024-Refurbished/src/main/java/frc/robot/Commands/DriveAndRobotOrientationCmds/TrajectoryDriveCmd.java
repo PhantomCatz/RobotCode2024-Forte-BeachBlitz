@@ -58,7 +58,7 @@ public class TrajectoryDriveCmd extends Command {
     private boolean done = false;
 
     //Constructor Logger
-    private int m_constructorLogger = 0; // For determining if the command is auto path find or autonomous
+    private int m_constructorLogger = 1; // For determining if the command is auto path find or autonomous
 
 
     /**
@@ -137,8 +137,8 @@ public class TrajectoryDriveCmd extends Command {
             */
             Trajectory.State state = new Trajectory.State(currentTime, 
                                                           goal.velocityMps,  //made the holonomic drive controller only rely on its current position, not its velocity because the target velocity is used as a ff
-                                                          goal.accelerationMpsSq, 
-                                                          new Pose2d(goal.positionMeters, new Rotation2d()),
+                                                          0.0, 
+                                                          new Pose2d(goal.positionMeters, goal.heading  ),
                                                           goal.curvatureRadPerMeter);
     
             //construct chassisspeeds

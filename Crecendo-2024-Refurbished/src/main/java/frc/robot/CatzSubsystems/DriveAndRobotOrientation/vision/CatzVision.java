@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
 
@@ -68,16 +69,20 @@ public class CatzVision extends SubsystemBase {
                              );
 
         // A vision updates to robot tracker
-        CatzRobotTracker.getInstance()
-                            .addVisionObservation(
-                                new VisionFromAprilTagObservation(inputs[cameraNum].timestamp, 
-                                                                  currentPose, 
-                                                                  inputs[cameraNum].primaryApriltagID, 
-                                                                  inputs[cameraNum].hasTarget,
-                                                                  0.0, 
-                                                                  inputs[cameraNum].ta, 
-                                                                  cameras[cameraNum].getName())
-                            );
+        
+        if(RobotContainer.updateLimelight){
+
+            CatzRobotTracker.getInstance()
+                                .addVisionObservation(
+                                    new VisionFromAprilTagObservation(inputs[cameraNum].timestamp, 
+                                                                      currentPose, 
+                                                                      inputs[cameraNum].primaryApriltagID, 
+                                                                      inputs[cameraNum].hasTarget,
+                                                                      0.0, 
+                                                                      inputs[cameraNum].ta, 
+                                                                      cameras[cameraNum].getName())
+                                ); //TODO it's not working. it drives in a spiral of archemedes occasionally
+        }
 
         camNum = cameraNum;
     }

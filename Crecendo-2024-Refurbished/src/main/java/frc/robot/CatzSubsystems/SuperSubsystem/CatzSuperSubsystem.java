@@ -132,7 +132,7 @@ public class CatzSuperSubsystem extends SubsystemBase {
           intakePivot.setIntakePivotState(IntakePivotPosition.HOLD);
           elevator.setTargetPosition(ElevatorPosition.STOW);
           turret.setTargetPosition(TurretPosition.HOME);
-          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.HOME);
+          shooterPivot.setTargetMotionMethod(ShooterPivotPositionType.SUBWOOFER);
         break;
 
         default:

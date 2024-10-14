@@ -65,14 +65,14 @@ public class CatzAutonomous {
         drivestraightBack = PathPlannerPath.fromPathFile("DriveStraightBack");
 
         //   AUTON Priority LIST 
-        autoPathChooser.addOption("Test Auto", testAuto());
+        // autoPathChooser.addOption("Test Auto", testAuto());
         autoPathChooser.addOption("UpperSpeakerWing1center1", upperSpeakerWing1Center1());
         autoPathChooser.addOption("DriveStraight back", driveStraightBackScore2());
 
 
 
-        autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
-        autoPathChooser.addOption("StraightLine", straightLine());
+        // autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
+        // autoPathChooser.addOption("StraightLine", straightLine());
 
         
     }

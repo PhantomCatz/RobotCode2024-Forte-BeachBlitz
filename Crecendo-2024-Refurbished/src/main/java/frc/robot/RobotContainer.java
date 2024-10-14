@@ -56,6 +56,8 @@ import frc.robot.Utilities.Alert.AlertType;
 
 public class RobotContainer {
 
+  public static boolean updateLimelight = true;
+
   // Subsystem Declaration
   private static CatzDrivetrain   drive                = new CatzDrivetrain();
   private static CatzShooterFeeder shooterFeeder       = new CatzShooterFeeder();
@@ -140,6 +142,7 @@ public class RobotContainer {
     xboxAux.y().onTrue(ControllerModeAbstraction.robotHandoff(this)); // Handoff between shooter and intake
     xboxAux.a().onTrue(superstructure.setSuperStructureState(SuperstructureState.STOW)); // ResetPosition
     xboxAux.x().onTrue(ControllerModeAbstraction.robotScore(this, ()->xboxAux.b().getAsBoolean()));  // Score // Override
+    xboxAux.back().onTrue(ControllerModeAbstraction.robotScoreSubwoofer(this, ()->xboxAux.b().getAsBoolean()));
 
     Trigger leftYTrigger = new Trigger(()->(xboxAux.getLeftY() > XboxInterfaceConstants.kDeadband)); // Manual ShooterPivot
     leftYTrigger.onTrue(superstructure.setShooterPivotManualPower(()->-xboxAux.getLeftY()));

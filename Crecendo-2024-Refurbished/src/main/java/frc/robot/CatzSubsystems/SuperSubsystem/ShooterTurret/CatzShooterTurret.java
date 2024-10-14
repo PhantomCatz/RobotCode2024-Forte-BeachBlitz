@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.CatzConstants;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.SuperSubsystem.ShooterPivot.CatzShooterPivot.ShooterPivotPositionType;
+import frc.robot.Utilities.CatzMathUtils;
 import lombok.RequiredArgsConstructor;
 
 
@@ -82,17 +83,18 @@ public class CatzShooterTurret {
 
     // Manual softlimits
     if((Math.abs(inputs.positionDegrees) > 11.0) && Math.abs(manualPwr) > 0) { //TODO test values
-      // manualPwr = 0;
-      // currentMotionType = TurretPosition.HOME;
-    } 
+      manualPwr = 0;
+       //currentMotionType = TurretPosition.HOME;
+    }
 
     // Run Setpoint Control
     if(DriverStation.isDisabled()) {
       io.runPercentOutput(0.0);
     } else if(currentMotionType == TurretPosition.MANUAL) {
-      io.runPercentOutput(manualPwr); 
+      io.runPercentOutput(manualPwr);
     } else {
-      io.runSetpointDegrees(inputs.positionDegrees, currentMotionType.getTargetMotionPosition());
+      double targetPos = CatzMathUtils.Clamp(TURRET_MIN_ANGLE_DEG, TURRET_MAX_ANGLE_DEG, currentMotionType.getTargetMotionPosition());
+      io.runSetpointDegrees(inputs.positionDegrees, targetPos);
     }
 
     Logger.recordOutput("Turret/ motion type", currentMotionType.getTargetMotionPosition());
