@@ -10,7 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CatzConstants;
 import frc.robot.RobotContainer;
+import frc.robot.CatzConstants.RobotHardwareMode;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker;
 import frc.robot.CatzSubsystems.DriveAndRobotOrientation.CatzRobotTracker.VisionFromAprilTagObservation;
 
@@ -31,7 +33,12 @@ public class CatzVision extends SubsystemBase {
         inputs = new VisionIOInputsAutoLogged[cameras.length];
 
         for(int i = 0; i < cameras.length; i++) {
-            inputs[i] = new VisionIOInputsAutoLogged();
+            if(CatzConstants.hardwareMode == RobotHardwareMode.REPLAY ||
+               CatzConstants.hardwareMode == RobotHardwareMode.SIM) {
+               inputs[i] = new VisionIOInputsAutoLogged() {};
+            } else {
+                inputs[i] = new VisionIOInputsAutoLogged();
+            }
         }
     }
 
@@ -54,9 +61,16 @@ public class CatzVision extends SubsystemBase {
                     processVision(i);
                 }
             }
+
         }        
+        Pose2d sobaPose2d = new Pose2d(inputs[1].x, inputs[1].y, new Rotation2d());
+        Logger.recordOutput("Vision/vision poses/soba", sobaPose2d);
+
+        Pose2d udonPose2d = new Pose2d(inputs[0].x, inputs[0].y, new Rotation2d());
+        Logger.recordOutput("Vision/vison poses/udon", udonPose2d); 
 
         //DEBUG
+
         //Logger.recordOutput("Vision/ResultCount", results.size());
     }
 
