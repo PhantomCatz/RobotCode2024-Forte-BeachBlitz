@@ -23,12 +23,12 @@ public class Questionaire {
     public Questionaire(RobotContainer container){
         this.container = container;
         questionairePath = new HashMap<>();
-        initializeMap();
+       // initializeMap();
 
-        for(String s : positions){
-            startPosChooser.addOption(s,s);
-            endPosChooser.addOption(s,s);
-        }
+        // for(String s : positions){
+        //     startPosChooser.addOption(s,s);
+        //     endPosChooser.addOption(s,s);
+        // }
     }
 
     public Command getSelectedPath(){

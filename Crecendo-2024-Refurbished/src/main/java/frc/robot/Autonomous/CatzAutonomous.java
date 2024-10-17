@@ -1,9 +1,12 @@
 package frc.robot.Autonomous;
 
+import java.io.File;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -11,6 +14,8 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,56 +39,45 @@ import frc.robot.Utilities.AllianceFlipUtil;
 import frc.robot.Utilities.AllianceFlipUtil.PathPlannerFlippingState;
 
 public class CatzAutonomous {
-    
     private static LoggedDashboardChooser<Command> autoPathChooser = new LoggedDashboardChooser<>("Chosen Autonomous Path");
     private RobotContainer m_container;
-
     private boolean trajectoriesLoaded = false;
-    private boolean isPathPlannerFlipped = false;
 
-    private PathPlannerPath US_W1_3_1; 
-    private PathPlannerPath US_W1_3_2; 
-    private PathPlannerPath US_W1_3_3; 
-    private PathPlannerPath testPath ; 
-    private PathPlannerPath straightLine;
-
+    private File pathsDirectory = new File("src/main/deploy/choreo");
+    private File autosDirectory = new File("src/main/deploy/pathplanner/autos");
 
     public CatzAutonomous(RobotContainer container) {
         this.m_container = container;
-        // Declare Paths
-        US_W1_3_1 = PathPlannerPath.fromPathFile("US_W1-3_1");
-        US_W1_3_2 = PathPlannerPath.fromPathFile("ver2 US_W1-3_2");
-        US_W1_3_3 = PathPlannerPath.fromPathFile("ver2 US_W1-3_3");
-        testPath  = PathPlannerPath.fromPathFile("Test");
-        straightLine = PathPlannerPath.fromPathFile("StraightLine");
 
-        //   AUTON Priority LIST 
-        autoPathChooser.addOption("Test Auto", testAuto());
-        autoPathChooser.addOption("Flywheel Characterization", flywheelCharacterization());
-        autoPathChooser.addOption("StraightLine", straightLine());
-
-        NamedCommands.registerCommand("PrintCMD", Commands.print("HI")); // TODO these comands are broken
-        NamedCommands.registerCommand("changeBoolean", AutomatedSequenceCmds.testSequence(container));
-        
-    }
-
-
-    private Command testAuto() {
-
-        preloadTrajectoryClass(US_W1_3_1);
-        
-
-        return new SequentialCommandGroup(
-            new ParallelCommandGroup(new TrajectoryDriveCmd(testPath, m_container.getCatzDrivetrain()))
+        CatzRobotTracker tracker = CatzRobotTracker.getInstance();
+        HolonomicPathFollowerConfig config = new HolonomicPathFollowerConfig(
+            DriveConstants.driveConfig.maxLinearVelocity(), 
+            DriveConstants.driveConfig.driveBaseRadius(), 
+            new ReplanningConfig()
         );
-    }
-
-    private Command straightLine(){
-        preloadTrajectoryClass(straightLine);
-
-        return new SequentialCommandGroup(
-            new TrajectoryDriveCmd(straightLine, m_container.getCatzDrivetrain())
+        
+        BooleanSupplier shouldFlip = ()->AllianceFlipUtil.shouldFlipToRed();
+        AutoBuilder.configureHolonomic(
+            tracker::getEstimatedPose,
+            tracker::resetPosition,
+            tracker::getRobotChassisSpeeds,
+            container.getCatzDrivetrain()::drive,
+            config,
+            shouldFlip,
+            container.getCatzDrivetrain()
         );
+
+        NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
+
+        for(File pathFile : pathsDirectory.listFiles()){
+            String pathName = pathFile.getName().replaceFirst("[.][^.]+$", ""); //to get rid of the extensions trailing the path names
+            PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            NamedCommands.registerCommand(pathName, new TrajectoryDriveCmd(path, container.getCatzDrivetrain()));
+        }
+        for (File autoFile: autosDirectory.listFiles()){
+            String autoName = autoFile.getName().replaceFirst("[.][^.]+$", "");
+            autoPathChooser.addOption(autoName, new PathPlannerAuto(autoName));
+        }
     }
 
     //---------------------------------------------------------------------------------------------------------
