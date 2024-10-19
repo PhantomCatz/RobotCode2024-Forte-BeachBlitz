@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,8 +44,8 @@ public class CatzAutonomous {
     private RobotContainer m_container;
     private boolean trajectoriesLoaded = false;
 
-    private File pathsDirectory = new File("src/main/deploy/choreo");
-    private File autosDirectory = new File("src/main/deploy/pathplanner/autos");
+    private File pathsDirectory = new File(Filesystem.getDeployDirectory(), "choreo");
+    private File autosDirectory = new File(Filesystem.getDeployDirectory(), "pathplanner/autos");
 
     public CatzAutonomous(RobotContainer container) {
         this.m_container = container;
@@ -52,7 +53,7 @@ public class CatzAutonomous {
         CatzRobotTracker tracker = CatzRobotTracker.getInstance();
         HolonomicPathFollowerConfig config = new HolonomicPathFollowerConfig(
             DriveConstants.driveConfig.maxLinearVelocity(), 
-            DriveConstants.driveConfig.driveBaseRadius(), 
+            DriveConstants.driveConfig.driveBaseRadius(),   
             new ReplanningConfig()
         );
         

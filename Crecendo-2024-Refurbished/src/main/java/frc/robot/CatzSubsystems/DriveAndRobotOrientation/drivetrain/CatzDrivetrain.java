@@ -192,7 +192,7 @@ public class CatzDrivetrain extends SubsystemBase {
     /** chassis speeds input w/ or w/o any correction for drift */
     public void drive(ChassisSpeeds chassisSpeeds) {
         chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-        
+        Logger.recordOutput("TargetChassisSpeeds", chassisSpeeds);
         // Convert chassis speeds to individual module states and set module states
         SwerveModuleState[] moduleStates = DriveConstants.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
