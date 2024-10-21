@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CatzConstants;
@@ -81,8 +82,10 @@ public class TrajectoryDriveCmd extends Command {
             usePath = path.flipPath();
         }
 
-        CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
-        
+        if(DriverStation.isAutonomous()) {
+            CatzRobotTracker.getInstance().resetPosition(usePath.getPreviewStartingHolonomicPose());
+        }
+
         this.trajectory = new PathPlannerTrajectory(
             usePath, 
             DriveConstants.

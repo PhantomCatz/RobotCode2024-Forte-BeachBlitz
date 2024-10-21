@@ -16,6 +16,12 @@
           "data": {
             "name": "Test"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteToShooterIntake"
+          }
         }
       ]
     }

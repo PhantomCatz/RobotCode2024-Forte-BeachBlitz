@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CatzConstants;
@@ -93,7 +94,7 @@ public class CatzIntakeRollers extends SubsystemBase {
   //-----------------------------------------------------------------------------------------
   public Command setRollersIn() {
     return startEnd(() -> setTargetRollerSpeed(TargetSpeed.INTAKE), 
-                    () -> setTargetRollerSpeed(TargetSpeed.IDLE))
+                    () -> setTargetRollerSpeed(TargetSpeed.IDLE)).alongWith(Commands.print("HII"))
               .withName("Rollers Intake");
   }
   

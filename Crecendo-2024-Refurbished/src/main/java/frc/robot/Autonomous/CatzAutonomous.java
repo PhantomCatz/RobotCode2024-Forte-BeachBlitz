@@ -68,17 +68,18 @@ public class CatzAutonomous {
             container.getCatzDrivetrain()
         );
 
-        NamedCommands.registerCommand("PrintCMD", Commands.print("HI"));
-
         for(File pathFile : pathsDirectory.listFiles()){
             String pathName = pathFile.getName().replaceFirst("[.][^.]+$", ""); //to get rid of the extensions trailing the path names
             PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(pathName);
             NamedCommands.registerCommand(pathName, new TrajectoryDriveCmd(path, container.getCatzDrivetrain()));
         }
         for (File autoFile: autosDirectory.listFiles()){
+            NamedCommands.registerCommand("noteToShooterIntake", AutomatedSequenceCmds.noteDetectIntakeToShooter(container));
             String autoName = autoFile.getName().replaceFirst("[.][^.]+$", "");
             autoPathChooser.addOption(autoName, new PathPlannerAuto(autoName));
         }
+        
+
     }
 
     //---------------------------------------------------------------------------------------------------------

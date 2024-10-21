@@ -22,7 +22,7 @@ public class AutomatedSequenceCmds {
         // declare subsystem requirements
         CatzIntakeRollers rollers = container.getCatzIntakeRollers();
         CatzSuperSubsystem superstructure = container.getCatzSuperstructure();
-        noteDetectIntakeToShooter(container).addRequirements(rollers, superstructure);
+        //noteDetectIntakeToShooter(container).addRequirements(rollers, superstructure);
 
         // return command sequence
         return new SequentialCommandGroup(
@@ -31,7 +31,7 @@ public class AutomatedSequenceCmds {
                 rollers.setRollersIn()
             ).until(() -> rollers.getBeamBreak()), // Until Intake Rollers have detected note,
             TransferNoteToShooter(container) //Stow is already called in method
-        );
+        ).alongWith(Commands.print("Note"));
     }
 
     /** 

@@ -104,11 +104,14 @@ public class CatzElevator {
         mmAcceleration,
         mmJerk);
 
+        
+
 
     // Run Setpoint Control
     if(DriverStation.isDisabled() || m_targetPosition == null) {
       io.stop();
     } else {
+      System.out.println(mmCruiseVelocity.getAsDouble());
       // System.out.println((m_targetPosition.getTargetPositionRotations()));
       io.runSetpoint(m_targetPosition.getTargetPositionRotations(), ff.calculate(inputs.velocityRps));
       // // Run Softlimit check

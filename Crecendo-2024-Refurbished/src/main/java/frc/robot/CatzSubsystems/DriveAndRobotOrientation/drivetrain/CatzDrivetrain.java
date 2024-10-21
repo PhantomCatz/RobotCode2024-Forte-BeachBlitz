@@ -216,6 +216,7 @@ public class CatzDrivetrain extends SubsystemBase {
 
     /**  Create a command to stop driving */
     public void stopDriving() {
+        drive(new ChassisSpeeds());
         for (CatzSwerveModule module : m_swerveModules) {
             module.stopDriving();
             module.setSteerPower(0.0);
