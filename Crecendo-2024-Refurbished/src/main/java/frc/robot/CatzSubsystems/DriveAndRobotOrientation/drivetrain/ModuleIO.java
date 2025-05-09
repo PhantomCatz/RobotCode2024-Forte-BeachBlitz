@@ -21,16 +21,19 @@ public interface ModuleIO {
    
    public boolean isSteerMotorConnected;
    public double steerAbsoluteInitPosition;
-   public Rotation2d steerPosition = new Rotation2d();
-   public double steerVelocityRadsPerSec;
-   public Rotation2d steerAbsoluteEncPosition = new Rotation2d();
-   public Rotation2d steerAbsolutePosition = new Rotation2d();
+
+   public Rotation2d rawAbsEncPosition = new Rotation2d();
+   public double     rawAbsEncValueRotation;
+   public Rotation2d steerAbsPosition = new Rotation2d();
+
    public double steerTorqueCurrentAmps;
-   public double steerBusVoltage;
    public double steerSupplyCurrentAmps;
    public double[] odometryDrivePositionsMeters = new double[0];
    public Rotation2d[] odometrySteerPositions = new Rotation2d[0];
 
+   // Simulation Inputs
+   public Rotation2d steerPosition = new Rotation2d();
+   public double steerVelocityRadsPerSec;
 
  }
 
@@ -59,9 +62,9 @@ public interface ModuleIO {
  //---------------------------------------------------------------------------
  public default void runSteerPercentOutput(double steerPwr) {}
 
- public default void runSteerPositionSetpoint(double currentAngleRad, double currentAngleRads) {}
+ public default void runSteerPositionSetpoint(double currentAngleRads, double targetAngleRads) {}
 
- public default void setSteerNeutralModeIO(IdleMode type) {}
+ public default void setSteerNeutralModeIO(NeutralModeValue type) {}
 
  public default void setSteerSimPwrIO(double volts) {}
 
